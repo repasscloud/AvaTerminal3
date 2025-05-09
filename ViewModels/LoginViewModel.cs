@@ -3,6 +3,8 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using AvaTerminal3.Helpers;
 using AvaTerminal3.Services.Interfaces;
+using AvaTerminal3.Views;
+using Microsoft.Maui.ApplicationModel;
 
 namespace AvaTerminal3.ViewModels;
 
@@ -14,6 +16,7 @@ public class LoginViewModel : INotifyPropertyChanged
     {
         _authService = ServiceHelper.Get<IAuthService>();
         LoginCommand = new Command(async () => await LoginAsync());
+        ForgotPasswordCommand = new Command(GoToForgotPassword);
     }
 
     private string _username = string.Empty;
@@ -52,6 +55,7 @@ public class LoginViewModel : INotifyPropertyChanged
     public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
 
     public ICommand LoginCommand { get; }
+    public ICommand ForgotPasswordCommand { get; }
 
     private async Task LoginAsync()
     {
@@ -68,9 +72,7 @@ public class LoginViewModel : INotifyPropertyChanged
             }
 
             await Task.Delay(500);
-            //await Shell.Current.GoToAsync("//MainPage");
             AppShell.LoadShell();
-
         }
         catch (Exception ex)
         {
@@ -81,11 +83,42 @@ public class LoginViewModel : INotifyPropertyChanged
             IsBusy = false;
         }
     }
-
-    public ICommand ForgotPasswordCommand => new Command(() =>
+    private async void GoToForgotPassword()
+{
+    try
     {
-        // TODO: Navigation or show toast
-    });
+        var window = Application.Current?.Windows.FirstOrDefault();
+        if (window?.Page is not null)
+        {
+            await window.Page.DisplayAlert(
+                "Reset Password",
+                "We'll open your browser to reset your password.",
+                "OK");
+
+            Uri uri = new("https://yourwebsite.com/forgot-password");
+            await Browser.Default.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
+        }
+    }
+    catch (Exception ex)
+    {
+        ErrorMessage = $"Failed to open browser: {ex.Message}";
+    }
+}
+
+    // private void GoToForgotPassword()
+    // {
+    //     try
+    //     {
+    //         Uri uri = new("https://yourwebsite.com/forgot-password");
+    //         Browser.Default.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         ErrorMessage = $"Failed to open browser: {ex.Message}";
+    //     }
+    // }
+
+
 
     public event PropertyChangedEventHandler? PropertyChanged;
     private void OnPropertyChanged([CallerMemberName] string? name = null) =>

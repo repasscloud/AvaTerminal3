@@ -2,14 +2,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:AvaTerminal3.ViewModels"
              x:Class="AvaTerminal3.Views.LoginPage"
+             x:DataType="vm:LoginViewModel"
              Title="Login"
              BackgroundColor="{DynamicResource BackgroundBrush}">
-    <ContentPage.BindingContext>
-        <vm:LoginViewModel />
-    </ContentPage.BindingContext>
 
     <ScrollView>
-        <VerticalStackLayout Padding="30" Spacing="18" HorizontalOptions="Center">
+        <VerticalStackLayout Padding="30" Spacing="18" HorizontalOptions="Center"
+                             x:DataType="vm:LoginViewModel">
+
             <Label Text="🔐 AvaTerminal Login"
                    FontSize="24"
                    HorizontalOptions="Center"
@@ -40,9 +40,9 @@
                    IsVisible="{Binding HasError}" />
 
             <Label Text="Forgot password?"
-                TextColor="{DynamicResource TextBrush}"
-                FontSize="12"
-                HorizontalOptions="Center">
+                   TextColor="{DynamicResource TextBrush}"
+                   FontSize="12"
+                   HorizontalOptions="Center">
                 <Label.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding ForgotPasswordCommand}" />
                 </Label.GestureRecognizers>

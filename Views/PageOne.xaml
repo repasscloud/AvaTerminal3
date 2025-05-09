@@ -2,7 +2,7 @@
 <ContentPage
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    x:Class="AvaTerminal3.PageOne"
+    x:Class="AvaTerminal3.Views.PageOne"
     Title="Page One">
     <VerticalStackLayout Padding="20">
         <Label Text="Welcome to Page One!" FontSize="32" HorizontalOptions="Center"/>

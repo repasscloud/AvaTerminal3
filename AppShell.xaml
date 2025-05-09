@@ -14,11 +14,11 @@
     </Shell.FlyoutHeader>
 
     <FlyoutItem Title="Page One" Icon="dotnet_bot.png">
-        <ShellContent ContentTemplate="{DataTemplate local:PageOne}" />
+        <ShellContent ContentTemplate="{DataTemplate views:PageOne}" />
     </FlyoutItem>
 
     <FlyoutItem Title="Page Two" Icon="dotnet_bot.png">
-        <ShellContent ContentTemplate="{DataTemplate local:PageTwo}" />
+        <ShellContent ContentTemplate="{DataTemplate views:PageTwo}" />
     </FlyoutItem>
 
     <FlyoutItem Title="Login" Icon="login_icon.png">

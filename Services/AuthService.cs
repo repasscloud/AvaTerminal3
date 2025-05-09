@@ -14,29 +14,47 @@ public class AuthService : IAuthService
 
     public async Task<bool> LoginAsync(string username, string password)
     {
-        var payload = new
+        // Demo hardcoded logic
+        if (username == "admin" && password == "Password1")
         {
-            username,
-            password
-        };
-
-        try
-        {
-            var res = await _http.PostAsJsonAsync("auth/login", payload);
-
-            if (!res.IsSuccessStatusCode)
-                return false;
-
-            var token = await res.Content.ReadAsStringAsync();
-
-            // Store it securely - later use SecureStorage or Preferences
-            Preferences.Set("access_token", token);
+            // Store fake token if needed
+            Preferences.Set("access_token", "demo-token-123");
 
             return true;
         }
-        catch
-        {
-            return false;
-        }
+
+        // Optional: simulate network delay
+        await Task.Delay(500);
+
+        return false;
     }
+
+
+    // public async Task<bool> LoginAsync(string username, string password)
+    // {
+    //     var payload = new
+    //     {
+    //         username,
+    //         password
+    //     };
+
+    //     try
+    //     {
+    //         var res = await _http.PostAsJsonAsync("auth/login", payload);
+
+    //         if (!res.IsSuccessStatusCode)
+    //             return false;
+
+    //         var token = await res.Content.ReadAsStringAsync();
+
+    //         // Store it securely - later use SecureStorage or Preferences
+    //         Preferences.Set("access_token", token);
+
+    //         return true;
+    //     }
+    //     catch
+    //     {
+    //         return false;
+    //     }
+    // }
 }

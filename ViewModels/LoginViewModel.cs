@@ -68,7 +68,9 @@ public class LoginViewModel : INotifyPropertyChanged
             }
 
             await Task.Delay(500);
-            await Shell.Current.GoToAsync("//MainPage");
+            //await Shell.Current.GoToAsync("//MainPage");
+            AppShell.LoadShell();
+
         }
         catch (Exception ex)
         {

@@ -1,4 +1,4 @@
-namespace AvaTerminal3;
+namespace AvaTerminal3.Views;
 
 public partial class PageTwo : ContentPage
 {

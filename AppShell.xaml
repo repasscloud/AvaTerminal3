@@ -22,7 +22,7 @@
     </FlyoutItem>
 
     <FlyoutItem Title="Login" Icon="login_icon.png">
-        <ShellContent ContentTemplate="{DataTemplate local:LoginPage}" />
+        <ShellContent ContentTemplate="{DataTemplate views:LoginPage}" />
     </FlyoutItem>
 
 

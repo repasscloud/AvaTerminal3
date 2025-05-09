@@ -9,12 +9,10 @@ namespace AvaTerminal3.ViewModels;
 public class LoginViewModel : INotifyPropertyChanged
 {
     private readonly IAuthService _authService;
-    private readonly INavigation _navigation;
 
     public LoginViewModel()
     {
         _authService = ServiceHelper.Get<IAuthService>();
-        _navigation = ServiceHelper.Get<INavigation>();
         LoginCommand = new Command(async () => await LoginAsync());
     }
 
@@ -70,7 +68,7 @@ public class LoginViewModel : INotifyPropertyChanged
             }
 
             await Task.Delay(500);
-            await _navigation.PushAsync(new MainPage()); // or NavigateTo root
+            await Shell.Current.GoToAsync("//MainPage");
         }
         catch (Exception ex)
         {
@@ -86,7 +84,6 @@ public class LoginViewModel : INotifyPropertyChanged
     {
         // TODO: Navigation or show toast
     });
-
 
     public event PropertyChangedEventHandler? PropertyChanged;
     private void OnPropertyChanged([CallerMemberName] string? name = null) =>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="AvaTerminal3.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:AvaTerminal3"
+    Shell.FlyoutBehavior="Flyout">
+
+    <Shell.FlyoutHeader>
+        <StackLayout Padding="20">
+            <Label Text="🌐 AvaTerminal" FontSize="24" FontAttributes="Bold" />
+        </StackLayout>
+    </Shell.FlyoutHeader>
+
+    <FlyoutItem Title="Page One" Icon="dotnet_bot.png">
+        <ShellContent ContentTemplate="{DataTemplate local:PageOne}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Page Two" Icon="dotnet_bot.png">
+        <ShellContent ContentTemplate="{DataTemplate local:PageTwo}" />
+    </FlyoutItem>
+
+    <Shell.FlyoutFooter>
+        <Grid Padding="20">
+            <Button Text="🌗 Toggle Theme"
+                    Clicked="OnToggleThemeClicked"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark={StaticResource PrimaryColorDark}}"
+                    TextColor="{AppThemeBinding Light={StaticResource TextColor}, Dark={StaticResource TextColorDark}}"
+                    FontAttributes="Bold"
+                    FontSize="16"
+                    HeightRequest="48"
+                    CornerRadius="10"
+                    HorizontalOptions="FillAndExpand"
+                    Style="{x:Null}" />
+        </Grid>
+    </Shell.FlyoutFooter>
+</Shell>

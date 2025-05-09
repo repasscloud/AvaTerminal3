@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AvaTerminal3.App">
+    <Application.Resources>
+        <ResourceDictionary>
+            <!-- Light Theme -->
+            <Color x:Key="PrimaryColor">#007AFF</Color>
+            <Color x:Key="SecondaryColor">#34C759</Color>
+            <Color x:Key="BackgroundColor">#FFFFFF</Color>
+            <Color x:Key="TextColor">#1C1C1E</Color>
+
+            <!-- Dark Theme -->
+            <Color x:Key="PrimaryColorDark">#0A84FF</Color>
+            <Color x:Key="SecondaryColorDark">#30D158</Color>
+            <Color x:Key="BackgroundColorDark">#1C1C1E</Color>
+            <Color x:Key="TextColorDark">#F2F2F7</Color>
+
+            <!-- Dynamic Brushes -->
+            <SolidColorBrush x:Key="PrimaryBrush" Color="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark={StaticResource PrimaryColorDark}}" />
+            <SolidColorBrush x:Key="SecondaryBrush" Color="{AppThemeBinding Light={StaticResource SecondaryColor}, Dark={StaticResource SecondaryColorDark}}" />
+            <SolidColorBrush x:Key="BackgroundBrush" Color="{AppThemeBinding Light={StaticResource BackgroundColor}, Dark={StaticResource BackgroundColorDark}}" />
+            <SolidColorBrush x:Key="TextBrush" Color="{AppThemeBinding Light={StaticResource TextColor}, Dark={StaticResource TextColorDark}}" />
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

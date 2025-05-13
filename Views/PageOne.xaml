@@ -6,5 +6,18 @@
     Title="Page One">
     <VerticalStackLayout Padding="20">
         <Label Text="Welcome to Page One!" FontSize="32" HorizontalOptions="Center"/>
+
+        <Button Text="Fish"
+            Clicked="Button_Clicked" />
+
+        <Button Text="Fish"
+                BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark={StaticResource PrimaryColorDark}}"
+                TextColor="{AppThemeBinding Light={StaticResource TextColor}, Dark={StaticResource TextColorDark}}"
+                FontAttributes="Bold"
+                FontSize="16"
+                HeightRequest="48"
+                CornerRadius="10"
+                HorizontalOptions="Start"
+                Style="{x:Null}" />
     </VerticalStackLayout>
 </ContentPage>

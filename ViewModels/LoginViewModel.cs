@@ -40,6 +40,13 @@ public class LoginViewModel : INotifyPropertyChanged
         set { _isBusy = value; OnPropertyChanged(); }
     }
 
+    private string _logSinkPath = LogSinkService.GetLogPath();
+    public string LogSinkPath
+    {
+        get => _logSinkPath;
+        set { _logSinkPath = value; OnPropertyChanged(); }
+    }
+
     private string _errorMessage = string.Empty;
     public string ErrorMessage
     {
@@ -62,6 +69,9 @@ public class LoginViewModel : INotifyPropertyChanged
         IsBusy = true;
         ErrorMessage = string.Empty;
 
+        // log login
+        LogSinkService.Write($"[Login] User '{Username}' attempted login.");
+
         try
         {
             var result = await _authService.LoginAsync(Username, Password);
@@ -71,12 +81,16 @@ public class LoginViewModel : INotifyPropertyChanged
                 return;
             }
 
+            // success login
+            LogSinkService.Write($"[Login] Login successful.");
+
             await Task.Delay(500);
             AppShell.LoadShell();
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Login failed: {ex.Message}";
+            LogSinkService.Write($"[Login] {ErrorMessage}");
         }
         finally
         {
@@ -84,41 +98,26 @@ public class LoginViewModel : INotifyPropertyChanged
         }
     }
     private async void GoToForgotPassword()
-{
-    try
     {
-        var window = Application.Current?.Windows.FirstOrDefault();
-        if (window?.Page is not null)
+        try
         {
-            await window.Page.DisplayAlert(
-                "Reset Password",
-                "We'll open your browser to reset your password.",
-                "OK");
+            var window = Application.Current?.Windows.FirstOrDefault();
+            if (window?.Page is not null)
+            {
+                await window.Page.DisplayAlert(
+                    "Reset Password",
+                    "We'll open your browser to reset your password.",
+                    "OK");
 
-            Uri uri = new("https://yourwebsite.com/forgot-password");
-            await Browser.Default.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
+                Uri uri = new("https://yourwebsite.com/forgot-password");
+                await Browser.Default.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"Failed to open browser: {ex.Message}";
         }
     }
-    catch (Exception ex)
-    {
-        ErrorMessage = $"Failed to open browser: {ex.Message}";
-    }
-}
-
-    // private void GoToForgotPassword()
-    // {
-    //     try
-    //     {
-    //         Uri uri = new("https://yourwebsite.com/forgot-password");
-    //         Browser.Default.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         ErrorMessage = $"Failed to open browser: {ex.Message}";
-    //     }
-    // }
-
-
 
     public event PropertyChangedEventHandler? PropertyChanged;
     private void OnPropertyChanged([CallerMemberName] string? name = null) =>

@@ -10,7 +10,7 @@
         <VerticalStackLayout Padding="30" Spacing="18" HorizontalOptions="Center"
                              x:DataType="vm:LoginViewModel">
 
-            <Label Text="🔐 AvaTerminal Login"
+            <Label Text="🔐 AvaTerminal3 Login"
                    FontSize="24"
                    HorizontalOptions="Center"
                    TextColor="{DynamicResource TextBrush}" />
@@ -38,6 +38,9 @@
             <Label Text="{Binding ErrorMessage}"
                    TextColor="Red"
                    IsVisible="{Binding HasError}" />
+
+            <Label Text="{Binding LogSinkPath}"
+                   TextColor="Chartreuse" />
 
             <Label Text="Forgot password?"
                    TextColor="{DynamicResource TextBrush}"

@@ -9,6 +9,7 @@ public partial class AppShell : Shell
         InitializeComponent();
         Routing.RegisterRoute("PageOne", typeof(Views.PageOne));
         Routing.RegisterRoute("PageTwo", typeof(Views.PageTwo));
+        Routing.RegisterRoute("ClientManagementPage", typeof(Views.CLT.ClientManagementPage));
     }
 
     private void OnToggleThemeClicked(object sender, EventArgs e)

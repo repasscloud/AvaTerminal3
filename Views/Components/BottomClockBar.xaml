@@ -7,20 +7,25 @@
     xmlns:components="clr-namespace:AvaTerminal3.Views.Components">
 
 
-    <Grid BackgroundColor="{StaticResource BackgroundBrush}" Padding="12">
-        <HorizontalStackLayout HorizontalOptions="Center" Spacing="32">
+    <Grid Padding="12"
+      BackgroundColor="{AppThemeBinding Light=#F1F1F1, Dark=#1C1C1C}">
+    <HorizontalStackLayout HorizontalOptions="End"
+        VerticalOptions="Center"
+        Spacing="32"
+        Padding="0,0,12,0">
 
-            <Label Text="{Binding LocalTime}"
-                   FontSize="16"
-                   FontAttributes="Bold"
-                   TextColor="{StaticResource TextBrush}" />
+        <Label Text="{Binding LocalTime}"
+               FontSize="16"
+               FontAttributes="Bold"
+               TextColor="{AppThemeBinding Light=#222222, Dark=White}" />
 
-            <Label Text="{Binding UtcTime}"
-                   FontSize="16"
-                   FontAttributes="Bold"
-                   TextColor="{StaticResource TextBrush}" />
+        <Label Text="{Binding UtcTime}"
+               FontSize="16"
+               FontAttributes="Bold"
+               TextColor="{AppThemeBinding Light=#222222, Dark=White}" />
 
-        </HorizontalStackLayout>
-    </Grid>
+    </HorizontalStackLayout>
+</Grid>
+
 </ContentView>
 

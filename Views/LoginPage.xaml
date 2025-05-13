@@ -1,55 +1,70 @@
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:AvaTerminal3.ViewModels"
-             x:Class="AvaTerminal3.Views.LoginPage"
-             x:DataType="vm:LoginViewModel"
-             Title="Login"
-             BackgroundColor="{DynamicResource BackgroundBrush}">
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="AvaTerminal3.Views.LoginPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewmodels="clr-namespace:AvaTerminal3.ViewModels"
+    x:DataType="viewmodels:LoginViewModel">
 
     <ScrollView>
-        <VerticalStackLayout Padding="30" Spacing="18" HorizontalOptions="Center"
-                             x:DataType="vm:LoginViewModel">
+        <Grid VerticalOptions="Center" HorizontalOptions="Center">
+            <Border
+                Stroke="#DDDDDD"
+                StrokeThickness="1"
+                BackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}"
+                Padding="32"
+                StrokeShape="RoundRectangle 12"
+                WidthRequest="380"
+                HorizontalOptions="Center">
 
-            <Label Text="🔐 AvaTerminal3 Login"
-                   FontSize="24"
-                   HorizontalOptions="Center"
-                   TextColor="{DynamicResource TextBrush}" />
+                <VerticalStackLayout Spacing="20">
 
-            <Entry Placeholder="Username"
-                   Text="{Binding Username}"
-                   Keyboard="Email"
-                   BackgroundColor="{DynamicResource BackgroundBrush}"
-                   TextColor="{DynamicResource TextBrush}" />
+                    <Label Text="Sign in"
+                           FontSize="28"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"
+                           TextColor="{AppThemeBinding Light=Black, Dark=White}" />
 
-            <Entry Placeholder="Password"
-                   Text="{Binding Password}"
-                   IsPassword="True"
-                   BackgroundColor="{DynamicResource BackgroundBrush}"
-                   TextColor="{DynamicResource TextBrush}" />
+                    <Entry Placeholder="Username"
+                           Text="{Binding Username}"
+                           Keyboard="Email"
+                           ReturnType="Next"
+                           BackgroundColor="{AppThemeBinding Light=#F6F6F6, Dark=#2C2C2C}"
+                           TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                           HeightRequest="44" />
 
-            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+                    <Entry Placeholder="Password"
+                           Text="{Binding Password}"
+                           IsPassword="True"
+                           ReturnType="Go"
+                           Completed="PasswordEntry_Completed"
+                           BackgroundColor="{AppThemeBinding Light=#F6F6F6, Dark=#2C2C2C}"
+                           TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                           HeightRequest="44" />
 
-            <Button Text="Login"
-                    Command="{Binding LoginCommand}"
-                    IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"
-                    BackgroundColor="{DynamicResource PrimaryBrush}"
-                    TextColor="{DynamicResource TextBrush}" />
+                    <Label Text="{Binding ErrorMessage}"
+                           TextColor="Red"
+                           IsVisible="{Binding HasError}"
+                           FontSize="13"
+                           FontAttributes="Italic" />
 
-            <Label Text="{Binding ErrorMessage}"
-                   TextColor="Red"
-                   IsVisible="{Binding HasError}" />
+                    <Button Text="🔐 Login"
+                            Command="{Binding LoginCommand}"
+                            BackgroundColor="#007bff"
+                            TextColor="White"
+                            CornerRadius="8"
+                            HeightRequest="48"
+                            FontAttributes="Bold" />
 
-            <Label Text="{Binding LogSinkPath}"
-                   TextColor="Chartreuse" />
-
-            <Label Text="Forgot password?"
-                   TextColor="{DynamicResource TextBrush}"
-                   FontSize="12"
-                   HorizontalOptions="Center">
-                <Label.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding ForgotPasswordCommand}" />
-                </Label.GestureRecognizers>
-            </Label>
-        </VerticalStackLayout>
+                    <Button Text="Forgot Password?"
+                            Command="{Binding ForgotPasswordCommand}"
+                            BackgroundColor="Transparent"
+                            TextColor="#007bff"
+                            FontSize="14"
+                            FontAttributes="Italic"
+                            HorizontalOptions="Center" />
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
     </ScrollView>
 </ContentPage>

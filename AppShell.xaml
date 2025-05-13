@@ -40,7 +40,7 @@
                     FontSize="16"
                     HeightRequest="48"
                     CornerRadius="10"
-                    HorizontalOptions="FillAndExpand"
+                    HorizontalOptions="Fill"
                     Style="{x:Null}" />
         </Grid>
     </Shell.FlyoutFooter>

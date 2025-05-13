@@ -2,22 +2,31 @@
 <ContentPage
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:components="clr-namespace:AvaTerminal3.Views.Components"
     x:Class="AvaTerminal3.Views.PageOne"
     Title="Page One">
-    <VerticalStackLayout Padding="20">
-        <Label Text="Welcome to Page One!" FontSize="32" HorizontalOptions="Center"/>
 
-        <Button Text="Fish"
-            Clicked="Button_Clicked" />
+    <Grid RowDefinitions="*,Auto" Padding="20">
 
-        <Button Text="Fish"
-                BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark={StaticResource PrimaryColorDark}}"
-                TextColor="{AppThemeBinding Light={StaticResource TextColor}, Dark={StaticResource TextColorDark}}"
-                FontAttributes="Bold"
-                FontSize="16"
-                HeightRequest="48"
-                CornerRadius="10"
-                HorizontalOptions="Start"
-                Style="{x:Null}" />
-    </VerticalStackLayout>
+        <!-- Main Content -->
+        <VerticalStackLayout Grid.Row="0" Spacing="20">
+            <Label Text="Welcome to Page One!" FontSize="32" HorizontalOptions="Center" />
+
+            <Button Text="Fish"
+                    Clicked="Button_Clicked" />
+
+            <Button Text="Fish"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark={StaticResource PrimaryColorDark}}"
+                    TextColor="{AppThemeBinding Light={StaticResource TextColor}, Dark={StaticResource TextColorDark}}"
+                    FontAttributes="Bold"
+                    FontSize="16"
+                    HeightRequest="48"
+                    CornerRadius="10"
+                    HorizontalOptions="Start"
+                    Style="{x:Null}" />
+        </VerticalStackLayout>
+
+        <!-- Bottom Clock Bar -->
+        <components:BottomClockBar Grid.Row="1" />
+    </Grid>
 </ContentPage>

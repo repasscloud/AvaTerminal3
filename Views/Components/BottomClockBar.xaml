@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="AvaTerminal3.Views.Components.BottomClockBar"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:DataType="components:BottomClockBar"
+    xmlns:components="clr-namespace:AvaTerminal3.Views.Components">
+
+
+    <Grid BackgroundColor="{StaticResource BackgroundBrush}" Padding="12">
+        <HorizontalStackLayout HorizontalOptions="Center" Spacing="32">
+
+            <Label Text="{Binding LocalTime}"
+                   FontSize="16"
+                   FontAttributes="Bold"
+                   TextColor="{StaticResource TextBrush}" />
+
+            <Label Text="{Binding UtcTime}"
+                   FontSize="16"
+                   FontAttributes="Bold"
+                   TextColor="{StaticResource TextBrush}" />
+
+        </HorizontalStackLayout>
+    </Grid>
+</ContentView>
+

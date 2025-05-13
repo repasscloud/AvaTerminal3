@@ -1,45 +1,52 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:viewmodels="clr-namespace:AvaTerminal3.ViewModels"
-             x:Class="AvaTerminal3.Views.CLT.ClientManagementPage"
-             x:DataType="viewmodels:ClientManagementNewViewModel">
-    <ContentPage.BindingContext>
-        <viewmodels:ClientManagementNewViewModel />
-    </ContentPage.BindingContext>
+<ContentPage
+    x:Class="AvaTerminal3.Views.CLT.ClientManagementPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewmodels="clr-namespace:AvaTerminal3.ViewModels"
+    x:DataType="viewmodels:ClientManagementNewViewModel">
 
     <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="12">
+        <VerticalStackLayout Spacing="24" Padding="24">
 
-            <Label Text="Create New Client" FontAttributes="Bold" FontSize="24" />
+            <!-- Client Details -->
+            <Border
+              Stroke="Gray"
+              StrokeThickness="1"
+              Padding="16"
+              StrokeShape="RoundRectangle 8">
+                <VerticalStackLayout>
+                    <Label Text="Client Details" FontAttributes="Bold" FontSize="18" />
+                    <Entry Placeholder="Client ID" Text="{Binding Client.ClientId}" />
+                    <Entry Placeholder="Company Name" Text="{Binding Client.CompanyName}" />
+                </VerticalStackLayout>
+            </Border>
 
-            <Entry Placeholder="Client ID"
-                   Text="{Binding Client.ClientId}"
-                   IsReadOnly="True" />
+            <!-- Address and Tax -->
+            <Border
+              Stroke="Gray"
+              StrokeThickness="1"
+              Padding="16"
+              StrokeShape="RoundRectangle 8">
+                <VerticalStackLayout>
+                    <Label Text="Address &amp; Tax Info" FontAttributes="Bold" FontSize="18" />
+                    <Entry Placeholder="Address Line 1" Text="{Binding Client.AddressLine1}" />
+                    <Entry Placeholder="Address Line 2" Text="{Binding Client.AddressLine2}" />
+                    <Entry Placeholder="City" Text="{Binding Client.City}" />
+                    <Entry Placeholder="Postal Code" Text="{Binding Client.PostalCode}" />
+                    <Entry Placeholder="Country" Text="{Binding Client.Country}" />
+                    <Entry Placeholder="Tax ID" Text="{Binding Client.TaxId}" />
+                </VerticalStackLayout>
+            </Border>
 
-            <Entry Placeholder="Company Name"
-                   Text="{Binding Client.CompanyName}" />
+            <!-- Save Button -->
+            <Button Text="💾 Save Client"
+                    Command="{Binding SaveCommand}"
+                    BackgroundColor="#4CAF50"
+                    TextColor="White"
+                    CornerRadius="12"
+                    HeightRequest="48" />
 
-            <Entry Placeholder="Tax ID Type"
-                   Text="{Binding Client.TaxIdType}" />
-
-            <Entry Placeholder="Tax ID"
-                   Text="{Binding Client.TaxId}" />
-
-            <Entry Placeholder="Address Line 1"
-                   Text="{Binding Client.AddressLine1}" />
-            <Entry Placeholder="Address Line 2"
-                   Text="{Binding Client.AddressLine2}" />
-            <Entry Placeholder="City"
-                   Text="{Binding Client.City}" />
-            <Entry Placeholder="State"
-                   Text="{Binding Client.State}" />
-            <Entry Placeholder="Postal Code"
-                   Text="{Binding Client.PostalCode}" />
-            <Entry Placeholder="Country"
-                   Text="{Binding Client.Country}" />
-
-            <Button Text="Save" Command="{Binding SaveCommand}" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

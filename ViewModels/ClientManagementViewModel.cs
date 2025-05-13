@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using AvaTerminal3.Services.Interfaces;
+using AvaTerminal3.Views.CLT.SubViews;
 
 namespace AvaTerminal3.ViewModels;
 
@@ -53,16 +54,27 @@ public class ClientManagementViewModel : INotifyPropertyChanged
 
     private async Task OnNewClient()
     {
-        var page = Application.Current?.Windows[0]?.Page;
+        var currentApp = Application.Current;
+        var window = currentApp?.Windows.FirstOrDefault();
 
-        if (page is not null)
+        if (window is not null && window.Page is not null)
         {
-            await page.DisplayAlert(
+            bool confirmed = await window.Page.DisplayAlert(
                 "New Client",
                 "This is where you'd add a new client.",
-                "OK");
+                "Continue",
+                "Cancel");
+
+            if (confirmed)
+            {
+                var vm = new ClientEditViewModel(_avaApiService);
+                var newClientPage = new AvaClientPage(vm);
+
+                window.Page = newClientPage;
+            }
         }
     }
+
 
     protected void SetField<T>(ref T field, T value, [CallerMemberName] string? propName = null)
     {

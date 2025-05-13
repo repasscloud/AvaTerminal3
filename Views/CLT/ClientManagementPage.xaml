@@ -1,52 +1,48 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage
-    x:Class="AvaTerminal3.Views.CLT.ClientManagementPage"
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:viewmodels="clr-namespace:AvaTerminal3.ViewModels"
-    x:DataType="viewmodels:ClientManagementNewViewModel">
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:AvaTerminal3.Views.Components"
+             x:Class="AvaTerminal3.Views.CLT.ClientManagementPage"
+             Title="Client Management">
 
-    <ScrollView>
-        <VerticalStackLayout Spacing="24" Padding="24">
+    <Grid RowDefinitions="*,Auto"
+          Padding="20">
 
-            <!-- Client Details -->
-            <Border
-              Stroke="Gray"
-              StrokeThickness="1"
-              Padding="16"
-              StrokeShape="RoundRectangle 8">
-                <VerticalStackLayout>
-                    <Label Text="Client Details" FontAttributes="Bold" FontSize="18" />
-                    <Entry Placeholder="Client ID" Text="{Binding Client.ClientId}" />
-                    <Entry Placeholder="Company Name" Text="{Binding Client.CompanyName}" />
-                </VerticalStackLayout>
-            </Border>
+        <!-- Main Content -->
+        <VerticalStackLayout Padding="20" Spacing="16">
 
-            <!-- Address and Tax -->
-            <Border
-              Stroke="Gray"
-              StrokeThickness="1"
-              Padding="16"
-              StrokeShape="RoundRectangle 8">
-                <VerticalStackLayout>
-                    <Label Text="Address &amp; Tax Info" FontAttributes="Bold" FontSize="18" />
-                    <Entry Placeholder="Address Line 1" Text="{Binding Client.AddressLine1}" />
-                    <Entry Placeholder="Address Line 2" Text="{Binding Client.AddressLine2}" />
-                    <Entry Placeholder="City" Text="{Binding Client.City}" />
-                    <Entry Placeholder="Postal Code" Text="{Binding Client.PostalCode}" />
-                    <Entry Placeholder="Country" Text="{Binding Client.Country}" />
-                    <Entry Placeholder="Tax ID" Text="{Binding Client.TaxId}" />
-                </VerticalStackLayout>
-            </Border>
+            <!-- Top Action Bar -->
+            <HorizontalStackLayout Spacing="12"
+                                   HorizontalOptions="Start"
+                                   VerticalOptions="Start">
 
-            <!-- Save Button -->
-            <Button Text="💾 Save Client"
-                    Command="{Binding SaveCommand}"
-                    BackgroundColor="#4CAF50"
-                    TextColor="White"
-                    CornerRadius="12"
-                    HeightRequest="48" />
+                <!-- Search Input -->
+                <Entry Placeholder="Enter Client ID, Company Name, etc..."
+                       Text="{Binding ClientId}"
+                       WidthRequest="400" />
+
+                <!-- Search Button -->
+                <Button Text="Search"
+                        Command="{Binding SearchCommand}"
+                        BackgroundColor="#0d6efd"
+                        TextColor="White" />
+
+                <!-- New Button (you can wire this to another command if needed) -->
+                <Button Text="New"
+                        Command="{Binding NewClientCommand}"
+                        BackgroundColor="#198754"
+                        TextColor="White" />
+            </HorizontalStackLayout>
+
+            <!-- Output area -->
+            <Label Text="{Binding ClientData}"
+                   FontSize="14"
+                   LineBreakMode="WordWrap"
+                   Margin="0,12,0,0" />
 
         </VerticalStackLayout>
-    </ScrollView>
+
+        <!-- Bottom Clock Bar -->
+        <components:BottomClockBar Grid.Row="1" />
+    </Grid>
 </ContentPage>

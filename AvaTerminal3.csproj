@@ -67,4 +67,16 @@
 		<PackageReference Include="Nanoid" Version="3.1.0" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Compile Update="Views\CLT\ClientManagement2Page.xaml.cs">
+	    <DependentUpon>ClientManagement2Page.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="Views\CLT\ClientManagementPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
+
 </Project>

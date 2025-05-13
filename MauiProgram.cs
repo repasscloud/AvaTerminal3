@@ -1,6 +1,7 @@
 ﻿using AvaTerminal3.Services;
 using AvaTerminal3.Services.Interfaces;
 using AvaTerminal3.ViewModels;
+using AvaTerminal3.Views.CLT;
 using Microsoft.Extensions.Logging;
 
 namespace AvaTerminal3;
@@ -48,6 +49,10 @@ public static class MauiProgram
         builder.Services.AddSingleton<IAuthService, AuthService>(); // your implementation
         builder.Services.AddSingleton<LoginViewModel>();
         builder.Services.AddTransient<Views.LoginPage>();
+
+        // pages with DI
+        builder.Services.AddTransient<ClientManagementViewModel>();
+        builder.Services.AddTransient<ClientManagementPage>();
 
         return builder.Build();
     }

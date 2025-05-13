@@ -6,26 +6,57 @@
     x:DataType="components:BottomClockBar"
     xmlns:components="clr-namespace:AvaTerminal3.Views.Components">
 
-
     <Grid Padding="12"
+          BackgroundColor="{AppThemeBinding Light=#F1F1F1, Dark=#1C1C1C}"
+          ColumnDefinitions="Auto,*">
+
+        <!-- Far Left Label -->
+        <HorizontalStackLayout Grid.Column="0"
+                           Spacing="6"
+                           VerticalOptions="Center">
+            <Label Text="Version:"
+               FontAttributes="Bold"
+               FontSize="16"
+               TextColor="{AppThemeBinding Light=#222222, Dark=White}" />
+            <Label Text="v1.2.59"
+               FontSize="16"
+               TextColor="{AppThemeBinding Light=#222222, Dark=White}" />
+        </HorizontalStackLayout>
+
+        <!-- Right-Aligned Stack -->
+        <HorizontalStackLayout HorizontalOptions="End"
+                           VerticalOptions="Center"
+                           Spacing="32"
+                           Padding="0,0,12,0"
+                           Grid.Column="1">
+
+            <Label Text="{Binding UtcTime}"
+               FontSize="16"
+               TextColor="{AppThemeBinding Light=#222222, Dark=White}" />
+
+            <Label Text="{Binding LocalTime}"
+               FontSize="16"
+               TextColor="{AppThemeBinding Light=#222222, Dark=White}" />
+        </HorizontalStackLayout>
+    </Grid>
+
+
+    <!--<Grid Padding="12"
       BackgroundColor="{AppThemeBinding Light=#F1F1F1, Dark=#1C1C1C}">
-    <HorizontalStackLayout HorizontalOptions="End"
-        VerticalOptions="Center"
-        Spacing="32"
-        Padding="0,0,12,0">
+        <HorizontalStackLayout HorizontalOptions="End"
+            VerticalOptions="Center"
+            Spacing="32"
+            Padding="0,0,12,0">
 
-        <Label Text="{Binding LocalTime}"
-               FontSize="16"
-               FontAttributes="Bold"
-               TextColor="{AppThemeBinding Light=#222222, Dark=White}" />
+            <Label Text="{Binding UtcTime}"
+                   FontSize="16"
+                   TextColor="{AppThemeBinding Light=#222222, Dark=White}" />
 
-        <Label Text="{Binding UtcTime}"
-               FontSize="16"
-               FontAttributes="Bold"
-               TextColor="{AppThemeBinding Light=#222222, Dark=White}" />
+            <Label Text="{Binding LocalTime}"
+                   FontSize="16"
+                   TextColor="{AppThemeBinding Light=#222222, Dark=White}" />
 
-    </HorizontalStackLayout>
-</Grid>
-
+        </HorizontalStackLayout>
+    </Grid>-->
+    
 </ContentView>
-

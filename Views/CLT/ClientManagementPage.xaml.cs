@@ -4,9 +4,9 @@ namespace AvaTerminal3.Views.CLT;
 
 public partial class ClientManagementPage : ContentPage
 {
-    public ClientManagementPage()
+    public ClientManagementPage(ClientManagementViewModel vm)
     {
         InitializeComponent();
-        BindingContext = new ClientManagementNewViewModel();
+        BindingContext = vm;
     }
 }

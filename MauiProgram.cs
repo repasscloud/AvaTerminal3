@@ -25,7 +25,7 @@ public static class MauiProgram
 
         builder.Services.AddHttpClient("AvaAPI", client =>
         {
-            client.BaseAddress = new Uri("https://api.avatools.internal/");
+            client.BaseAddress = new Uri("https://dev.ava-api.uzhv.com");
             client.DefaultRequestHeaders.Add("Accept", "application/json");
         });
 

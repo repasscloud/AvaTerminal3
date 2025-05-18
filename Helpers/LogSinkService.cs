@@ -7,12 +7,13 @@ public static class LogSinkService
     private static readonly string LogPath = Path.Combine(FileSystem.AppDataDirectory, "log.txt");
     private static readonly string DumpFilePath = Path.Combine(FileSystem.AppDataDirectory, "dumpfile.txt");
 
-    public static void Write(string message)
+    public static async Task WriteAsync(LogLevel level, string message)
     {
         try
         {
             Directory.CreateDirectory(Path.GetDirectoryName(LogPath)!);
-            File.AppendAllText(LogPath, $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] {message}\n");
+            var logEntry = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] [{level.ToString().ToUpper()}] {message}{Environment.NewLine}";
+            await File.AppendAllTextAsync(LogPath, logEntry);
         }
         catch (Exception ex)
         {
@@ -20,19 +21,20 @@ public static class LogSinkService
         }
     }
 
-    public static void DumpJson(object jsonObj)
+    public static async Task DumpJsonAsync(LogLevel level, object jsonObj)
     {
-        // Serialize whatever object you pass in
-        var jsonString = JsonSerializer.Serialize(jsonObj, new JsonSerializerOptions
-        {
-            WriteIndented = true,
-        });
-
         try
         {
             Directory.CreateDirectory(Path.GetDirectoryName(DumpFilePath)!);
-            File.AppendAllText(DumpFilePath, $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}]{Environment.NewLine}");
-            File.AppendAllText(DumpFilePath, $"{jsonString}{Environment.NewLine}");
+
+            var timestamp = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] [{level.ToString().ToUpper()}]{Environment.NewLine}";
+            var jsonString = JsonSerializer.Serialize(jsonObj, new JsonSerializerOptions
+            {
+                WriteIndented = true
+            }) + Environment.NewLine;
+
+            await File.AppendAllTextAsync(DumpFilePath, timestamp);
+            await File.AppendAllTextAsync(DumpFilePath, jsonString);
         }
         catch (Exception ex)
         {

@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="AvaTerminal3.Views.CLT.SubViews.NewAvaClientPage">
+             xmlns:vm="clr-namespace:AvaTerminal3.ViewModels"
+             xmlns:components="clr-namespace:AvaTerminal3.Views.Components"
+             x:Class="AvaTerminal3.Views.CLT.SubViews.NewAvaClientPage"
+             x:DataType="vm:ClientManagementViewModel">
 
     <ScrollView>
         <Grid Padding="16"
-              RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+              RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
               ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*,*"
               ColumnSpacing="8" RowSpacing="4">
 
@@ -38,7 +41,7 @@
 
                 <Picker ItemsSource="{Binding CurrencyDisplayList}"
                         SelectedItem="{Binding SelectedCurrencyDisplay, Mode=TwoWay}"
-                        HorizontalOptions="FillAndExpand"
+                        HorizontalOptions="Fill"
                         VerticalOptions="Center" />
 
                 <Image Source="{Binding SelectedCurrencyFlag}"
@@ -129,7 +132,7 @@
                 Grid.Row="16" Grid.Column="6" Grid.ColumnSpan="2"
                 ItemsSource="{Binding CountryDisplayList}"
                 SelectedItem="{Binding SeletedCountryDisplay, Mode=TwoWay}"
-                HorizontalOptions="FillAndExpand"
+                HorizontalOptions="Fill"
                 VerticalOptions="Center" />
             <!--<Entry Grid.Row="16" Grid.Column="6" Grid.ColumnSpan="2" Text="dddd" />-->
             <Entry Grid.Row="16" Grid.Column="8" Grid.ColumnSpan="4" Text="" />
@@ -212,21 +215,38 @@
             <!-- Row 31: Entry -->
             <Entry Grid.Row="31" Grid.Column="0" Grid.ColumnSpan="2" Text="Fish" IsEnabled="False" />
 
+            <!-- Row 32: Empty -->
+            <BoxView Grid.Row="32" Grid.Column="0" Grid.ColumnSpan="12" HeightRequest="32" />
+
             <!-- Save Button -->
-            <Button Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Text="Save" Command="{Binding SaveCommand}" />
+            <Button Text="💾 Save"
+              Grid.Row="33"
+              Grid.Column="8"
+              Grid.ColumnSpan="2"
+              Command="{Binding SaveCommand}"
+              BackgroundColor="#007bff"
+              TextColor="White"
+              CornerRadius="8"
+              HeightRequest="48"
+              FontAttributes="Bold" />
+            
+            <!-- Cancel Button -->
+            <Button Text="❌ Cancel"
+              Grid.Row="33"
+              Grid.Column="10"
+              Grid.ColumnSpan="2"
+              Command="{Binding SaveCommand}"
+              BackgroundColor="#6c757d"
+              TextColor="White"
+              CornerRadius="8"
+              HeightRequest="48"
+              FontAttributes="Bold" />
+
+            <!-- Row 34: Empty -->
+            <BoxView Grid.Row="34" Grid.Column="0" Grid.ColumnSpan="12" HeightRequest="32" />
+
+              <!-- Bottom Clock Bar -->
+              <components:BottomClockBar Grid.Row="35" Grid.Column="0" Grid.ColumnSpan="12" />
         </Grid>
     </ScrollView>
 </ContentPage>
-
-
-
-<!-- Company Name -->
-<!--
-            <Label Grid.Column="0" Grid.ColumnSpan="2" Text="Company Name:" VerticalOptions="Center" />
-            <Entry Grid.Column="2" Grid.ColumnSpan="6" Text="{Binding Client.CompanyName}" />
-
-            -->
-<!-- Tax ID -->
-<!--
-            <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="Tax ID:" VerticalOptions="Center" />
-            <Entry Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="4" Text="{Binding Client.TaxId}" />-->

@@ -50,8 +50,9 @@
 		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
 
 		<!-- Images -->
-		<MauiImage Include="Resources\Images\**\*" />
-		<MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185" />
+		<MauiImage Include="Resources\Images\*" />
+		<MauiImage Include="Resources\Images\Flags\**\*.png" />
+		<MauiImage Update="Resources\Images\Flags\dotnet_bot.png" Resize="True" BaseSize="300,185" />
 		<!--<MauiImage Include="Resources\Images\Flags\*" />-->
 
 
@@ -73,19 +74,21 @@
 	  <Compile Update="Views\CLT\ClientManagement2Page.xaml.cs">
 	    <DependentUpon>ClientManagement2Page.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="Views\CLT\SubViews\NewAvaClientPage.xaml.cs">
+	    <DependentUpon>NewAvaClientPage.xaml</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
 	  <MauiXaml Update="Views\CLT\ClientManagementPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\CLT\SubViews\AvaClientPage.xaml">
+	  <MauiXaml Update="Views\CLT\SubViews\NewAvaClientPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Resources\Images\Flags\" />
+	  <MauiXaml Update="Views\InterimPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	</ItemGroup>
 
 </Project>

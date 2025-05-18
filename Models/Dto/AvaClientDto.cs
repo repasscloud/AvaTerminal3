@@ -139,5 +139,5 @@ public class AvaClientDto
     
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     [JsonPropertyName("licenseAgreementId")]
-    public string? LicenseAgreementId { get; set; }
+    public string? LicenseAgreementId { get; set; } = Nanoid.Generate(Nanoid.Alphabets.UppercaseLettersAndDigits, 22);
 }

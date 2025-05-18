@@ -60,15 +60,15 @@ public class ClientManagementViewModel : INotifyPropertyChanged
         if (window is not null && window.Page is not null)
         {
             bool confirmed = await window.Page.DisplayAlert(
-                "New Client",
-                "This is where you'd add a new client.",
+                "Create New Client",
+                "Before adding a new client, please search to ensure they don't already exist.",
                 "Continue",
-                "Cancel");
+                "Search First");
 
             if (confirmed)
             {
                 var vm = new ClientEditViewModel(_avaApiService);
-                var newClientPage = new AvaClientPage(vm);
+                var newClientPage = new NewAvaClientPage(vm);
 
                 window.Page = newClientPage;
             }

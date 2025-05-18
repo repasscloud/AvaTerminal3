@@ -1,4 +1,4 @@
-﻿// File: ViewModels/ClientEditViewModel.cs
+﻿// File: ViewModels/ClientNewViewModel.cs
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
@@ -8,7 +8,7 @@ using AvaTerminal3.Services.Interfaces;
 
 namespace AvaTerminal3.ViewModels;
 
-public class ClientEditViewModel : INotifyPropertyChanged
+public class ClientNewViewModel : INotifyPropertyChanged
 {
     private readonly IAvaApiService _avaApiService;
 
@@ -66,7 +66,7 @@ public class ClientEditViewModel : INotifyPropertyChanged
         }
     }
 
-    public ClientEditViewModel(IAvaApiService avaApiService)
+    public ClientNewViewModel(IAvaApiService avaApiService)
     {
         _avaApiService = avaApiService;
         SaveCommand = new Command(async () => await SaveClientAsync());

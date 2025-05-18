@@ -3,11 +3,11 @@ using AvaTerminal3.ViewModels;
 
 namespace AvaTerminal3.Views.CLT.SubViews;
 
-public partial class AvaClientPage : ContentPage
+public partial class NewAvaClientPage : ContentPage
 {
     private readonly ClientEditViewModel _vm;
 
-    public AvaClientPage(ClientEditViewModel vm)
+    public NewAvaClientPage(ClientEditViewModel vm)
     {
         InitializeComponent();
         BindingContext = _vm = vm;

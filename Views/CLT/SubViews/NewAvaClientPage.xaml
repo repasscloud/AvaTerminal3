@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:AvaTerminal3.ViewModels"
+             xmlns:vm="clr-namespace:AvaTerminal3.ViewModels.CLT"
              xmlns:components="clr-namespace:AvaTerminal3.Views.Components"
              x:Class="AvaTerminal3.Views.CLT.SubViews.NewAvaClientPage"
-             x:DataType="vm:ClientManagementViewModel">
+             x:DataType="vm:NewAvaClientViewModel">
 
     <ScrollView>
         <Grid Padding="16"
@@ -93,10 +93,21 @@
 
             <!-- Row 10: Entry -->
             <Entry Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="2" Text="" />
-            <Entry Grid.Row="10" Grid.Column="2" Grid.ColumnSpan="2" Text="" />
-            <Entry Grid.Row="10" Grid.Column="4" Grid.ColumnSpan="4" Text="" />
+            <Picker
+                Grid.Row="10" Grid.Column="2" Grid.ColumnSpan="2"
+                ItemsSource="{Binding CountryList}"
+                SelectedItem="{Binding SelectedCountry, Mode=TwoWay}"
+                HorizontalOptions="Fill"
+                VerticalOptions="Center" />
+            <!-- <Entry Grid.Row="10" Grid.Column="4" Grid.ColumnSpan="4" Text="" /> -->
+            <Picker
+                Grid.Row="10" Grid.Column="4" Grid.ColumnSpan="4"
+                ItemsSource="{Binding TaxRegistrationList}"
+                SelectedItem="{Binding SelectedTaxRegistration, Mode=TwoWay}"
+                HorizontalOptions="Fill"
+                VerticalOptions="Center" />
             <Entry Grid.Row="10" Grid.Column="8" Grid.ColumnSpan="2" Text="" />
-            <Entry Grid.Row="10" Grid.Column="10" Grid.ColumnSpan="2" Text="" IsReadOnly="True" />
+            <Entry Grid.Row="10" Grid.Column="10" Grid.ColumnSpan="2" Text="{Binding Client.TaxLastValidated}" IsReadOnly="True" />
 
             <!-- Row 11: Empty -->
             <BoxView Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="12" HeightRequest="8" />
@@ -213,7 +224,7 @@
             <Label Grid.Row="30" Grid.Column="0" Grid.ColumnSpan="2" Text="Last Updated" />
             
             <!-- Row 31: Entry -->
-            <Entry Grid.Row="31" Grid.Column="0" Grid.ColumnSpan="2" Text="Fish" IsEnabled="False" />
+            <Entry Grid.Row="31" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding LastUpdatedLocalTime}" IsEnabled="False" />
 
             <!-- Row 32: Empty -->
             <BoxView Grid.Row="32" Grid.Column="0" Grid.ColumnSpan="12" HeightRequest="32" />

@@ -1,15 +1,17 @@
 // Models/Dto/AvaClientDto.cs
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using NanoidDotNet;
 
 namespace AvaTerminal3.Models.Dto;
 public class AvaClientDto
 {
+    [MaxLength(10)]
     [JsonPropertyName("clientId")]
     public string ClientId { get; set; } = Nanoid.Generate(Nanoid.Alphabets.UppercaseLettersAndDigits, 10);
-    
+
     [JsonPropertyName("companyName")]
-    public string CompanyName { get; set; } = null!;
+    public string CompanyName { get; set; } = string.Empty;
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     [JsonPropertyName("taxIdType")]
@@ -25,7 +27,7 @@ public class AvaClientDto
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     [JsonPropertyName("lastUpdated")]
-    public DateTime? LastUpdated { get; set; }
+    public DateTime? LastUpdated { get; set; } = DateTime.UtcNow;
     
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     [JsonPropertyName("addressLine1")]
@@ -103,7 +105,6 @@ public class AvaClientDto
     [JsonPropertyName("billingPersonJobTitle")]
     public string? BillingPersonJobTitle { get; set; }
 
-    
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     [JsonPropertyName("adminPersonFirstName")]
     public string? AdminPersonFirstName { get; set; }
@@ -128,16 +129,17 @@ public class AvaClientDto
     [JsonPropertyName("adminPersonJobTitle")]
     public string? AdminPersonJobTitle { get; set; }
 
-    
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     [JsonPropertyName("defaultCurrency")]
     public string? DefaultCurrency { get; set; }
     
+    [MaxLength(14)]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     [JsonPropertyName("defaultTravelPolicyId")]
-    public string? DefaultTravelPolicyId { get; set; }
-    
+    public string? DefaultTravelPolicyId { get; set; }  = Nanoid.Generate(Nanoid.Alphabets.HexadecimalUppercase, 14);
+
+    [MaxLength(14)]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     [JsonPropertyName("licenseAgreementId")]
-    public string? LicenseAgreementId { get; set; } = Nanoid.Generate(Nanoid.Alphabets.UppercaseLettersAndDigits, 22);
+    public string? LicenseAgreementId { get; set; }  = Nanoid.Generate(Nanoid.Alphabets.HexadecimalUppercase, 14);
 }

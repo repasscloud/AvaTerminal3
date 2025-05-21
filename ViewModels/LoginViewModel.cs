@@ -2,9 +2,8 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using AvaTerminal3.Helpers;
+using AvaTerminal3.Models.Dto;
 using AvaTerminal3.Services.Interfaces;
-using AvaTerminal3.Views;
-using Microsoft.Maui.ApplicationModel;
 
 namespace AvaTerminal3.ViewModels;
 
@@ -70,19 +69,42 @@ public class LoginViewModel : INotifyPropertyChanged
         ErrorMessage = string.Empty;
 
         // log login
-        LogSinkService.Write($"[Login] User '{Username}' attempted login.");
+        await LogSinkService.WriteAsync(LogLevel.Debug, $"[Login.PreAuth] User '{Username}' attempted login.");
+
+        var loginDto = new AvaEmployeeLoginDto
+        {
+            Username = Username,
+            Password = Password,
+        };
 
         try
         {
-            var result = await _authService.LoginAsync(Username, Password);
-            if (!result)
+            var result = await _authService.LoginAvaUserAsync(loginDto);
+            if (result is null)
             {
                 ErrorMessage = "Login failed. Please try again.";
                 return;
             }
 
+            var authToken = result.Token;
+            await _authService.SaveTokenAsync(authToken);
+            await LogSinkService.WriteAsync(LogLevel.Info, $"[Login.Auth] Token saved from login process.");
+
+            var jwtClaims = await _authService.GetClaimsAsync();
+            if (jwtClaims is not null)
+            {
+                var loggedInUserRole = jwtClaims.Role;
+                var loggedInUserId = jwtClaims.UniqueName;
+
+                await LogSinkService.WriteAsync(LogLevel.Info, $"[Login.Auth] Logged in user '{loggedInUserId}' with role '{loggedInUserRole}'.");
+            }
+            else
+            {
+                await LogSinkService.WriteAsync(LogLevel.Error, $"[Login.Error] User logged in, but not JWT token stored.");
+            }
+
             // success login
-            LogSinkService.Write($"[Login] Login successful.");
+            await LogSinkService.WriteAsync(LogLevel.Debug, $"[Login.Auth] Login successful.");
 
             await Task.Delay(500);
             AppShell.LoadShell();
@@ -90,7 +112,7 @@ public class LoginViewModel : INotifyPropertyChanged
         catch (Exception ex)
         {
             ErrorMessage = $"Login failed: {ex.Message}";
-            LogSinkService.Write($"[Login] {ErrorMessage}");
+            await LogSinkService.WriteAsync(LogLevel.Error, $"[Login.Error] {ErrorMessage}");
         }
         finally
         {

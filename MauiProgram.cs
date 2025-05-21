@@ -1,6 +1,9 @@
 ﻿using AvaTerminal3.Services;
 using AvaTerminal3.Services.Interfaces;
 using AvaTerminal3.ViewModels;
+using AvaTerminal3.ViewModels.CLT;
+using AvaTerminal3.Views.CLT;
+using AvaTerminal3.Views.CLT.SubViews;
 using Microsoft.Extensions.Logging;
 
 namespace AvaTerminal3;
@@ -24,7 +27,7 @@ public static class MauiProgram
 
         builder.Services.AddHttpClient("AvaAPI", client =>
         {
-            client.BaseAddress = new Uri("https://api.avatools.internal/");
+            client.BaseAddress = new Uri("https://dev.ava-api.uzhv.com");
             client.DefaultRequestHeaders.Add("Accept", "application/json");
         });
 
@@ -48,6 +51,12 @@ public static class MauiProgram
         builder.Services.AddSingleton<IAuthService, AuthService>(); // your implementation
         builder.Services.AddSingleton<LoginViewModel>();
         builder.Services.AddTransient<Views.LoginPage>();
+
+        // pages with DI
+        builder.Services.AddTransient<ClientManagementPage>();
+        builder.Services.AddTransient<ClientManagementViewModel>();
+        builder.Services.AddTransient<NewAvaClientPage>();
+        builder.Services.AddTransient<NewAvaClientViewModel>();
 
         return builder.Build();
     }

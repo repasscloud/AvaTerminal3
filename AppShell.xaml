@@ -10,7 +10,7 @@
 
     <Shell.FlyoutHeader>
         <StackLayout Padding="20">
-            <Label Text="🌐 AvaTerminal" FontSize="24" FontAttributes="Bold" />
+            <Label Text="AvaTerminal 3" FontSize="24" FontAttributes="Bold" />
         </StackLayout>
     </Shell.FlyoutHeader>
 

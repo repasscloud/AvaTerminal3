@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    x:Class="AvaTerminal3.Views.Popups.NoticePopup">
+
+    <Border
+        Padding="16"
+        BackgroundColor="{AppThemeBinding Light=White, Dark=#222}">
+
+        <VerticalStackLayout Spacing="16">
+            <Label x:Name="TitleLabel"
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   TextColor="{AppThemeBinding Light=Black, Dark=White}" />
+
+            <Label x:Name="MessageLabel"
+                   FontSize="16"
+                   HorizontalOptions="Center"
+                   TextColor="{AppThemeBinding Light=Black, Dark=White}" />
+
+            <Button Text="OK"
+                    Clicked="OnOkClicked"
+                    BackgroundColor="#007bff"
+                    TextColor="White"
+                    CornerRadius="8"
+                    WidthRequest="100"
+                    HorizontalOptions="Center" />
+        </VerticalStackLayout>
+    </Border>
+</toolkit:Popup>

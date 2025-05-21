@@ -2,8 +2,10 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:components="clr-namespace:AvaTerminal3.Views.Components"
+             xmlns:vm="clr-namespace:AvaTerminal3.ViewModels"
              x:Class="AvaTerminal3.Views.CLT.ClientManagementPage"
-             Title="Client Management">
+             Title="Client Management"
+             x:DataType="vm:ClientManagementViewModel">
 
     <Grid RowDefinitions="*,Auto"
           Padding="20">

@@ -42,6 +42,23 @@ public static class LogSinkService
         }
     }
 
+    public static async Task<string> ExportToTempJsonAsync<T>(T data, string? filename = null)
+    {
+        var fileName = filename ?? $"export_{DateTime.UtcNow:yyyyMMdd_HHmmss}.json";
+        var tempPath = Path.Combine(Path.GetTempPath(), fileName);
+
+        var options = new JsonSerializerOptions
+        {
+            WriteIndented = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
+
+        await using var stream = new FileStream(tempPath, FileMode.Create, FileAccess.Write, FileShare.None);
+        await JsonSerializer.SerializeAsync(stream, data, options);
+
+        return tempPath;
+    }
+
     public static string GetLogPath() => LogPath;
     public static string GetDumpFilePath() => DumpFilePath;
 }

@@ -19,7 +19,7 @@
 
                 <VerticalStackLayout Spacing="20">
 
-                    <Label Text="Sign in"
+                    <Label Text="Ava Terminal3 Sign In"
                            FontSize="28"
                            FontAttributes="Bold"
                            HorizontalOptions="Center"

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Views/Popups/EntryPopup.xaml -->
+<toolkit:Popup
+    x:Class="AvaTerminal3.Views.Popups.EntryPopup"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:local="clr-namespace:AvaTerminal3.Views.Popups"
+    x:DataType="local:EntryPopup">
+  <Border
+      BackgroundColor="{DynamicResource SecondaryContainer}"
+      Stroke="{DynamicResource Outline}"
+      StrokeThickness="1"
+      StrokeShape="RoundRectangle 12"
+      Padding="24">
+    <VerticalStackLayout Spacing="16">
+      <Label x:Name="TitleLabel"
+             FontSize="20"
+             FontAttributes="Bold"
+             TextColor="{DynamicResource OnSecondaryContainer}"
+             HorizontalOptions="Center" />
+      <Label x:Name="MessageLabel"
+             FontSize="16"
+             TextColor="{DynamicResource OnSecondaryContainer}" />
+      <Entry x:Name="InputEntry"
+             Text="{Binding InputText}"
+             Placeholder="Type here…" />
+      <HorizontalStackLayout Spacing="12" HorizontalOptions="End">
+        <Button Text="Cancel" Command="{Binding CancelCommand}" />
+        <Button Text="OK"     Command="{Binding OkCommand}" />
+      </HorizontalStackLayout>
+    </VerticalStackLayout>
+  </Border>
+</toolkit:Popup>

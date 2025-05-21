@@ -60,6 +60,8 @@ public static class MauiProgram
         builder.Services.AddTransient<NewAvaClientPage>();
         builder.Services.AddTransient<NewAvaClientViewModel>();
 
+        builder.Services.AddSingleton<IPopupService, Services.PopupService>();
+
         return builder.Build();
     }
 }

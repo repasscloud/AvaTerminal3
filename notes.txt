@@ -1,0 +1,8 @@
+- AvaClient.TaxId => IAvaApiService.GetTaxIds()
+- AvaClient.Country => IAvaApiService.GetAvailableCountries()
+- AvaClient.ContactPersonCountryCode => IAvaApiService.GetCountryDialCodes()
+- AvaClient.BillingPersonCountryCode => IAvaApiService.GetCountryDialCodes()
+- AvaClient.ContactPersonCountryCode => IAvaApiService.GetCountryDialCodes()
+- AvaClient.DefaultCurrency => IAvaApiService.GetAvailableCurrencies()
+
+And as I said, they will each return List<string>

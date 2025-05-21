@@ -2,7 +2,6 @@
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using AvaTerminal3.Services.Interfaces;
-using AvaTerminal3.ViewModels.CLT;
 using AvaTerminal3.Views.CLT.SubViews;
 
 namespace AvaTerminal3.ViewModels;
@@ -68,10 +67,11 @@ public class ClientManagementViewModel : INotifyPropertyChanged
 
             if (confirmed)
             {
-                var vm = new NewAvaClientViewModel(_avaApiService);
-                var newClientPage = new NewAvaClientPage(vm);
+                await Shell.Current.GoToAsync(nameof(NewAvaClientPage));
+                // var vm = new NewAvaClientViewModel(_avaApiService);
+                // var newClientPage = new NewAvaClientPage(vm);
 
-                window.Page = newClientPage;
+                // window.Page = newClientPage;
             }
         }
     }

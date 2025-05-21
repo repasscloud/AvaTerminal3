@@ -4,7 +4,9 @@ namespace AvaTerminal3.Views
     {
         public string TaskType { get; set; }
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
         public InterimPage()
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
         {
             InitializeComponent();
         }
@@ -13,7 +15,9 @@ namespace AvaTerminal3.Views
         {
             if (query.ContainsKey("taskType"))
             {
+#pragma warning disable CS8601 // Possible null reference assignment.
                 TaskType = query["taskType"]?.ToString();
+#pragma warning restore CS8601 // Possible null reference assignment.
             }
         }
 

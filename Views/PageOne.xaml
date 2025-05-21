@@ -12,6 +12,8 @@
         <VerticalStackLayout Grid.Row="0" Spacing="20">
             <Label Text="Welcome to Page One!" FontSize="32" HorizontalOptions="Center" />
 
+            <Label Text="{Binding LogPath}" />
+
             <Button Text="Fish"
                     Clicked="Button_Clicked" />
 

@@ -1,3 +1,4 @@
+using AvaTerminal3.Views.CLT.SubViews;
 using Microsoft.Maui.Controls;
 
 namespace AvaTerminal3;
@@ -9,7 +10,10 @@ public partial class AppShell : Shell
         InitializeComponent();
         Routing.RegisterRoute("PageOne", typeof(Views.PageOne));
         Routing.RegisterRoute("PageTwo", typeof(Views.PageTwo));
+
+        // CLT
         Routing.RegisterRoute("ClientManagementPage", typeof(Views.CLT.ClientManagementPage));
+        Routing.RegisterRoute(nameof(NewAvaClientPage), typeof(NewAvaClientPage));
     }
 
     private void OnToggleThemeClicked(object sender, EventArgs e)

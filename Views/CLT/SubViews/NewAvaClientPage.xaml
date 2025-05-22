@@ -51,7 +51,7 @@
             <!-- Button triggers our SelectPopup via SelectCurrencyCommand -->
             <Button
                 Grid.Row="2" Grid.Column="7"
-                Text="{Binding Client.DefaultCurrency, TargetNullValue='Currency'}"
+                Text="{Binding Client.DefaultCurrency, TargetNullValue='XXX'}"
                 Command="{Binding SelectCurrencyCommand}"
                 Style="{StaticResource BootstrapPrimaryButton}" />
 
@@ -167,9 +167,15 @@
         <Label Grid.Row="13" Grid.Column="8" Grid.ColumnSpan="4" Text="Job Title" />
 
         <!-- Row 14: Entry -->
-        <Entry Grid.Row="14" Grid.Column="0" Grid.ColumnSpan="4" Text="{Binding Client.ContactPersonFirstName}" />
-        <Entry Grid.Row="14" Grid.Column="4" Grid.ColumnSpan="4" Text="{Binding Client.ContactPersonLastName}" />
-        <Entry Grid.Row="14" Grid.Column="8" Grid.ColumnSpan="4" Text="{Binding Client.ContactPersonJobTitle}" />
+        <Entry Grid.Row="14" Grid.Column="0" Grid.ColumnSpan="4"
+            Style="{StaticResource PrimaryEntryStyle}"
+            Text="{Binding Client.ContactPersonFirstName}" />
+        <Entry Grid.Row="14" Grid.Column="4" Grid.ColumnSpan="4"
+            Style="{StaticResource PrimaryEntryStyle}"
+            Text="{Binding Client.ContactPersonLastName}" />
+        <Entry Grid.Row="14" Grid.Column="8" Grid.ColumnSpan="4"
+            Style="{StaticResource PrimaryEntryStyle}"
+            Text="{Binding Client.ContactPersonJobTitle}" />
 
         <!-- Row 15: Label -->
         <Label Grid.Row="15" Grid.Column="0" Grid.ColumnSpan="4" Text="Email" />
@@ -177,14 +183,18 @@
         <Label Grid.Row="15" Grid.Column="8" Grid.ColumnSpan="4" Text="Phone" />
 
         <!-- Row 16: Entry -->
-        <Entry Grid.Row="16" Grid.Column="0" Grid.ColumnSpan="6" Text="{Binding Client.ContactPersonEmail}" />
+        <Entry Grid.Row="16" Grid.Column="0" Grid.ColumnSpan="6"
+            Style="{StaticResource PrimaryEntryStyle}"
+            Text="{Binding Client.ContactPersonEmail}" />
         <Picker
             Grid.Row="16" Grid.Column="6" Grid.ColumnSpan="2"
             ItemsSource="{Binding CountryDisplayList}"
             SelectedItem="{Binding SelectedContactCountryDisplay, Mode=TwoWay}"
             HorizontalOptions="Fill"
             VerticalOptions="Center" />
-        <Entry Grid.Row="16" Grid.Column="8" Grid.ColumnSpan="4" Text="{Binding Client.ContactPersonPhone}" />
+        <Entry Grid.Row="16" Grid.Column="8" Grid.ColumnSpan="4"
+            Style="{StaticResource PrimaryEntryStyle}"
+            Text="{Binding Client.ContactPersonPhone}" />
 
         <!-- BILLING PERSON -->
         <!-- Row 17: Empty -->
@@ -221,9 +231,15 @@
         <Label Grid.Row="19" Grid.Column="8" Grid.ColumnSpan="4" Text="Job Title" />
 
         <!-- Row 20: Entry -->
-        <Entry Grid.Row="20" Grid.Column="0" Grid.ColumnSpan="4" Text="{Binding Client.BillingPersonFirstName}" />
-        <Entry Grid.Row="20" Grid.Column="4" Grid.ColumnSpan="4" Text="{Binding Client.BillingPersonLastName}" />
-        <Entry Grid.Row="20" Grid.Column="8" Grid.ColumnSpan="4" Text="{Binding Client.BillingPersonJobTitle}" />
+        <Entry Grid.Row="20" Grid.Column="0" Grid.ColumnSpan="4"
+            Style="{StaticResource PrimaryEntryStyle}"
+            Text="{Binding Client.BillingPersonFirstName}" />
+        <Entry Grid.Row="20" Grid.Column="4" Grid.ColumnSpan="4"
+            Style="{StaticResource PrimaryEntryStyle}"
+            Text="{Binding Client.BillingPersonLastName}" />
+        <Entry Grid.Row="20" Grid.Column="8" Grid.ColumnSpan="4"
+            Style="{StaticResource PrimaryEntryStyle}"
+            Text="{Binding Client.BillingPersonJobTitle}" />
 
         <!-- Row 21: Label -->
         <Label Grid.Row="21" Grid.Column="0" Grid.ColumnSpan="4" Text="Email" />
@@ -238,7 +254,9 @@
                 SelectedItem="{Binding SelectedBillingCountryDisplay, Mode=TwoWay}"
                 HorizontalOptions="Fill"
                 VerticalOptions="Center" />
-        <Entry Grid.Row="22" Grid.Column="8" Grid.ColumnSpan="4" Text="{Binding Client.BillingPersonJobTitle}" />
+        <Entry Grid.Row="22" Grid.Column="8" Grid.ColumnSpan="4"
+            Style="{StaticResource PrimaryEntryStyle}"
+            Text="{Binding Client.BillingPersonJobTitle}" />
 
         <!-- ADMIN PERSON -->
         <!-- Row 23: Empty -->
@@ -284,9 +302,15 @@
         <Label Grid.Row="25" Grid.Column="8" Grid.ColumnSpan="4" Text="Job Title" />
 
         <!-- Row 26: Entry -->
-        <Entry Grid.Row="26" Grid.Column="0" Grid.ColumnSpan="4" Text="{Binding Client.AdminPersonFirstName}" />
-        <Entry Grid.Row="26" Grid.Column="4" Grid.ColumnSpan="4" Text="{Binding Client.AdminPersonLastName}" />
-        <Entry Grid.Row="26" Grid.Column="8" Grid.ColumnSpan="4" Text="{Binding Client.AdminPersonJobTitle}" />
+        <Entry Grid.Row="26" Grid.Column="0" Grid.ColumnSpan="4"
+            Style="{StaticResource PrimaryEntryStyle}"
+            Text="{Binding Client.AdminPersonFirstName}" />
+        <Entry Grid.Row="26" Grid.Column="4" Grid.ColumnSpan="4"
+            Style="{StaticResource PrimaryEntryStyle}"
+            Text="{Binding Client.AdminPersonLastName}" />
+        <Entry Grid.Row="26" Grid.Column="8" Grid.ColumnSpan="4"
+            Style="{StaticResource PrimaryEntryStyle}"
+            Text="{Binding Client.AdminPersonJobTitle}" />
 
         <!-- Row 27: Label -->
         <Label Grid.Row="27" Grid.Column="0" Grid.ColumnSpan="4" Text="Email" />
@@ -310,7 +334,9 @@
         <Label Grid.Row="30" Grid.Column="0" Grid.ColumnSpan="2" Text="Last Updated" />
 
         <!-- Row 31: Entry -->
-        <Entry Grid.Row="31" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding LastUpdatedLocalTime}" IsEnabled="False" />
+        <Entry Grid.Row="31" Grid.Column="0" Grid.ColumnSpan="2"
+            Style="{StaticResource PrimaryEntryStyle}"
+            Text="{Binding LastUpdatedLocalTime}" IsEnabled="False" />
 
         <!-- Row 32: Empty -->
         <BoxView Grid.Row="32" Grid.Column="0" Grid.ColumnSpan="12" HeightRequest="32" />

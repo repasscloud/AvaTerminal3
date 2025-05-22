@@ -1,32 +1,194 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:converters="clr-namespace:AvaTerminal3.Converters"
-             x:Class="AvaTerminal3.App">
-    <Application.Resources>
-        <ResourceDictionary>
-            <!-- Light Theme -->
-            <Color x:Key="PrimaryColor">#007AFF</Color>
-            <Color x:Key="SecondaryColor">#34C759</Color>
-            <Color x:Key="BackgroundColor">#FFFFFF</Color>
-            <Color x:Key="TextColor">#1C1C1E</Color>
+<Application
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:AvaTerminal3.Converters"
+    x:Class="AvaTerminal3.App">
 
-            <!-- Dark Theme -->
-            <Color x:Key="PrimaryColorDark">#0A84FF</Color>
-            <Color x:Key="SecondaryColorDark">#30D158</Color>
-            <Color x:Key="BackgroundColorDark">#1C1C1E</Color>
-            <Color x:Key="TextColorDark">#F2F2F7</Color>
+  <Application.Resources>
+    <ResourceDictionary>
 
-            <!-- Dynamic Brushes -->
-            <SolidColorBrush x:Key="PrimaryBrush" Color="{AppThemeBinding Light={StaticResource PrimaryColor}, Dark={StaticResource PrimaryColorDark}}" />
-            <SolidColorBrush x:Key="SecondaryBrush" Color="{AppThemeBinding Light={StaticResource SecondaryColor}, Dark={StaticResource SecondaryColorDark}}" />
-            <SolidColorBrush x:Key="BackgroundBrush" Color="{AppThemeBinding Light={StaticResource BackgroundColor}, Dark={StaticResource BackgroundColorDark}}" />
-            <SolidColorBrush x:Key="TextBrush" Color="{AppThemeBinding Light={StaticResource TextColor}, Dark={StaticResource TextColorDark}}" />
-        </ResourceDictionary>
+      <!-- Light Theme Colors -->
+      <Color x:Key="PrimaryColor">#007AFF</Color>
+      <Color x:Key="SecondaryColor">#34C759</Color>
+      <Color x:Key="BackgroundColor">#FFFFFF</Color>
+      <Color x:Key="TextColor">#1C1C1E</Color>
 
-        <ResourceDictionary>
-            <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
-        </ResourceDictionary>
+      <!-- Dark Theme Colors -->
+      <Color x:Key="PrimaryColorDark">#0A84FF</Color>
+      <Color x:Key="SecondaryColorDark">#30D158</Color>
+      <Color x:Key="BackgroundColorDark">#1C1C1E</Color>
+      <Color x:Key="TextColorDark">#F2F2F7</Color>
 
-    </Application.Resources>
+      <!-- Dynamic Brushes -->
+      <SolidColorBrush
+        x:Key="PrimaryBrush"
+        Color="{AppThemeBinding
+                  Light={StaticResource PrimaryColor},
+                  Dark={StaticResource PrimaryColorDark}}" />
+      <SolidColorBrush
+        x:Key="SecondaryBrush"
+        Color="{AppThemeBinding
+                  Light={StaticResource SecondaryColor},
+                  Dark={StaticResource SecondaryColorDark}}" />
+      <SolidColorBrush
+        x:Key="BackgroundBrush"
+        Color="{AppThemeBinding
+                  Light={StaticResource BackgroundColor},
+                  Dark={StaticResource BackgroundColorDark}}" />
+      <SolidColorBrush
+        x:Key="TextBrush"
+        Color="{AppThemeBinding
+                  Light={StaticResource TextColor},
+                  Dark={StaticResource TextColorDark}}" />
+
+      <!-- Converters -->
+      <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+
+      <!-- 1) Shared base for all buttons -->
+      <Style x:Key="BootstrapButtonBase" TargetType="Button">
+        <Setter Property="CornerRadius"     Value="8" />
+        <Setter Property="HeightRequest"    Value="48" />
+        <Setter Property="FontAttributes"   Value="Bold" />
+        <Setter Property="HorizontalOptions" Value="Fill" />
+        <Setter Property="VerticalOptions"   Value="Center" />
+        <Setter Property="Padding"          Value="12,6" />
+      </Style>
+
+      <!-- 2) Solid (filled) variants -->
+      <Style x:Key="BootstrapPrimaryButton"
+             TargetType="Button"
+             BasedOn="{StaticResource BootstrapButtonBase}">
+        <Setter Property="BackgroundColor" Value="{DynamicResource PrimaryBrush}" />
+        <Setter Property="TextColor"       Value="White" />
+      </Style>
+      <Style x:Key="BootstrapSecondaryButton"
+             TargetType="Button"
+             BasedOn="{StaticResource BootstrapButtonBase}">
+        <Setter Property="BackgroundColor" Value="#6c757d" />
+        <Setter Property="TextColor"       Value="White" />
+      </Style>
+      <Style x:Key="BootstrapSuccessButton"
+             TargetType="Button"
+             BasedOn="{StaticResource BootstrapButtonBase}">
+        <Setter Property="BackgroundColor" Value="#28a745" />
+        <Setter Property="TextColor"       Value="White" />
+      </Style>
+      <Style x:Key="BootstrapDangerButton"
+             TargetType="Button"
+             BasedOn="{StaticResource BootstrapButtonBase}">
+        <Setter Property="BackgroundColor" Value="#dc3545" />
+        <Setter Property="TextColor"       Value="White" />
+      </Style>
+      <Style x:Key="BootstrapWarningButton"
+             TargetType="Button"
+             BasedOn="{StaticResource BootstrapButtonBase}">
+        <Setter Property="BackgroundColor" Value="#ffc107" />
+        <Setter Property="TextColor"       Value="Black" />
+      </Style>
+      <Style x:Key="BootstrapInfoButton"
+             TargetType="Button"
+             BasedOn="{StaticResource BootstrapButtonBase}">
+        <Setter Property="BackgroundColor" Value="#17a2b8" />
+        <Setter Property="TextColor"       Value="White" />
+      </Style>
+      <Style x:Key="BootstrapLightButton"
+             TargetType="Button"
+             BasedOn="{StaticResource BootstrapButtonBase}">
+        <Setter Property="BackgroundColor" Value="#f8f9fa" />
+        <Setter Property="TextColor"       Value="Black" />
+      </Style>
+      <Style x:Key="BootstrapDarkButton"
+             TargetType="Button"
+             BasedOn="{StaticResource BootstrapButtonBase}">
+        <Setter Property="BackgroundColor" Value="#343a40" />
+        <Setter Property="TextColor"       Value="White" />
+      </Style>
+      <Style x:Key="BootstrapLinkButton"
+             TargetType="Button"
+             BasedOn="{StaticResource BootstrapButtonBase}">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="TextColor"       Value="{DynamicResource PrimaryBrush}" />
+        <Setter Property="BorderWidth"     Value="0" />
+        <Setter Property="Padding"         Value="0" />
+      </Style>
+
+      <!-- 3) Outline variants -->
+      <Style x:Key="BootstrapPrimaryOutlineButton"
+             TargetType="Button"
+             BasedOn="{StaticResource BootstrapButtonBase}">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="BorderColor"     Value="{DynamicResource PrimaryBrush}" />
+        <Setter Property="BorderWidth"     Value="1" />
+        <Setter Property="TextColor"       Value="{DynamicResource PrimaryBrush}" />
+      </Style>
+      <Style x:Key="BootstrapSecondaryOutlineButton"
+             TargetType="Button"
+             BasedOn="{StaticResource BootstrapButtonBase}">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="BorderColor"     Value="#6c757d" />
+        <Setter Property="BorderWidth"     Value="1" />
+        <Setter Property="TextColor"       Value="#6c757d" />
+      </Style>
+      <Style x:Key="BootstrapSuccessOutlineButton"
+             TargetType="Button"
+             BasedOn="{StaticResource BootstrapButtonBase}">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="BorderColor"     Value="#28a745" />
+        <Setter Property="BorderWidth"     Value="1" />
+        <Setter Property="TextColor"       Value="#28a745" />
+      </Style>
+      <Style x:Key="BootstrapDangerOutlineButton"
+             TargetType="Button"
+             BasedOn="{StaticResource BootstrapButtonBase}">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="BorderColor"     Value="#dc3545" />
+        <Setter Property="BorderWidth"     Value="1" />
+        <Setter Property="TextColor"       Value="#dc3545" />
+      </Style>
+      <Style x:Key="BootstrapWarningOutlineButton"
+             TargetType="Button"
+             BasedOn="{StaticResource BootstrapButtonBase}">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="BorderColor"     Value="#ffc107" />
+        <Setter Property="BorderWidth"     Value="1" />
+        <Setter Property="TextColor"       Value="#ffc107" />
+      </Style>
+      <Style x:Key="BootstrapInfoOutlineButton"
+             TargetType="Button"
+             BasedOn="{StaticResource BootstrapButtonBase}">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="BorderColor"     Value="#17a2b8" />
+        <Setter Property="BorderWidth"     Value="1" />
+        <Setter Property="TextColor"       Value="#17a2b8" />
+      </Style>
+      <Style x:Key="BootstrapLightOutlineButton"
+             TargetType="Button"
+             BasedOn="{StaticResource BootstrapButtonBase}">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="BorderColor"     Value="#f8f9fa" />
+        <Setter Property="BorderWidth"     Value="1" />
+        <Setter Property="TextColor"       Value="#f8f9fa" />
+      </Style>
+      <Style x:Key="BootstrapDarkOutlineButton"
+             TargetType="Button"
+             BasedOn="{StaticResource BootstrapButtonBase}">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="BorderColor"     Value="#343a40" />
+        <Setter Property="BorderWidth"     Value="1" />
+        <Setter Property="TextColor"       Value="#343a40" />
+      </Style>
+
+      <!-- Entry style -->
+      <Style x:Key="PrimaryEntryStyle" TargetType="Entry">
+        <Setter Property="HeightRequest"   Value="48" />
+        <Setter Property="VerticalOptions" Value="Center" />
+        <Setter Property="FontSize"        Value="16" />
+        <Setter Property="BackgroundColor" Value="{DynamicResource BackgroundBrush}" />
+        <Setter Property="TextColor"       Value="{DynamicResource TextBrush}" />
+        <Setter Property="Margin"          Value="0,4" />
+      </Style>
+
+    </ResourceDictionary>
+  </Application.Resources>
 </Application>

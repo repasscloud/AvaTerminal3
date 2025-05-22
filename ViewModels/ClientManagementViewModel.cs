@@ -68,10 +68,6 @@ public class ClientManagementViewModel : INotifyPropertyChanged
             if (confirmed)
             {
                 await Shell.Current.GoToAsync(nameof(NewAvaClientPage));
-                // var vm = new NewAvaClientViewModel(_avaApiService);
-                // var newClientPage = new NewAvaClientPage(vm);
-
-                // window.Page = newClientPage;
             }
         }
     }

@@ -1,310 +1,349 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:AvaTerminal3.ViewModels.CLT"
-             xmlns:components="clr-namespace:AvaTerminal3.Views.Components"
-             x:Class="AvaTerminal3.Views.CLT.SubViews.NewAvaClientPage"
-             x:DataType="vm:NewAvaClientViewModel">
+<ContentPage
+    x:Class="AvaTerminal3.Views.CLT.SubViews.NewAvaClientPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:AvaTerminal3.ViewModels.CLT"
+    x:DataType="vm:NewAvaClientViewModel"
+    xmlns:components="clr-namespace:AvaTerminal3.Views.Components" >
 
     <ScrollView>
         <Grid Padding="16"
-              RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
-              ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*,*"
-              ColumnSpacing="8" RowSpacing="4">
+            RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+            ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*,*"
+            ColumnSpacing="8" RowSpacing="4">
 
-            <!-- Row 0: Heading -->
-            <Label Grid.Row="0"
-                   Grid.Column="0"
-                   Grid.ColumnSpan="12"
-                   Text="💼 Client"
-                   FontSize="20"
-                   FontAttributes="Bold"
-                   TextColor="{AppThemeBinding Light=Black, Dark=White}"
-                   Margin="0,12,0,6" />
+        <!-- Row 0: Heading -->
+        <Label Grid.Row="0"
+            Grid.Column="0"
+            Grid.ColumnSpan="12"
+            Text="💼 Client"
+            FontSize="20"
+            FontAttributes="Bold"
+            TextColor="{AppThemeBinding Light=Black, Dark=White}"
+            Margin="0,12,0,6" />
 
-            <!-- Row 1: Label -->
-            <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="Client ID" />
-            <Label Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="4" Text="Company Name" />
-            <Label Grid.Row="1" Grid.Column="7" Grid.ColumnSpan="1" Text="Default Currency" />
-            <Label Grid.Row="1" Grid.Column="8" Grid.ColumnSpan="1" Text="Default Policy ID" />
-            <Label Grid.Row="1" Grid.Column="10" Grid.ColumnSpan="1" Text="License Agreement ID" />
+        <!-- Row 1: Label -->
+        <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="Client ID" />
+        <Label Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="4" Text="Company Name" />
+        <Label Grid.Row="1" Grid.Column="7" Grid.ColumnSpan="1" Text="Default Currency" />
+        <Label Grid.Row="1" Grid.Column="8" Grid.ColumnSpan="1" Text="Default Policy ID" />
+        <Label Grid.Row="1" Grid.Column="10" Grid.ColumnSpan="1" Text="License Agreement ID" />
 
-            <!-- Row 2: Entry -->
-            <Entry Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Client.ClientId}" IsReadOnly="True" />
-            <Entry Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="5" Text="{Binding Client.CompanyName}" />
-            <HorizontalStackLayout Grid.Row="2"
-                                   Grid.Column="7"
-                                   Grid.ColumnSpan="1"
-                                   Spacing="2"
-                                   VerticalOptions="Center"
-                                   HorizontalOptions="Fill">
+        <!-- Row 2: Client ID & Company Name -->
+        <Entry
+            Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+            Text="{Binding Client.ClientId}"
+            IsReadOnly="True" />
 
-                <Picker ItemsSource="{Binding CurrencyDisplayList}"
-                        SelectedItem="{Binding SelectedCurrencyDisplay, Mode=TwoWay}"
-                        HorizontalOptions="Fill"
-                        VerticalOptions="Center" />
+        <Entry
+            Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="5"
+            Text="{Binding Client.CompanyName, Mode=TwoWay}"
+            Placeholder="Company Name" />
 
-                <Image Source="{Binding SelectedCurrencyFlag}"
-                       WidthRequest="32"
-                       HeightRequest="24"
-                       VerticalOptions="Center" />
-            </HorizontalStackLayout>
-            <Entry Grid.Row="2" Grid.Column="8" Grid.ColumnSpan="2" Text="{Binding Client.DefaultTravelPolicyId}" IsReadOnly="True" />
-            <Entry Grid.Row="2" Grid.Column="10" Grid.ColumnSpan="2" Text="{Binding Client.LicenseAgreementId}" IsReadOnly="True" />
+        <!-- Row 2: Default Currency Selector -->
+        <HorizontalStackLayout
+            Grid.Row="2" Grid.Column="7" Grid.ColumnSpan="1"
+            Spacing="4"
+            VerticalOptions="Center"
+            HorizontalOptions="Fill">
 
-            <!-- Row 3: Empty -->
-            <BoxView Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="12" HeightRequest="8" />
+            <!-- Button triggers our SelectPopup via SelectCurrencyCommand -->
+            <Button
+                Grid.Row="2" Grid.Column="7"
+                Text="{Binding Client.DefaultCurrency, TargetNullValue='Currency'}"
+                Command="{Binding SelectCurrencyCommand}"
+                Style="{StaticResource BootstrapPrimaryButton}" />
 
-            <!-- Row 4: Heading -->
-            <Label Grid.Row="4"
-                   Grid.Column="0"
-                   Grid.ColumnSpan="12"
-                   Text="🏢 Address &amp; Tax"
-                   FontSize="20"
-                   FontAttributes="Bold"
-                   TextColor="{AppThemeBinding Light=Black, Dark=White}"
-                   Margin="0,12,0,6" />
+            <!-- Still show a flag/icon if you have one -->
+            <Image
+                Source="{Binding SelectedCurrencyFlag}"
+                WidthRequest="64"
+                HeightRequest="48"
+                VerticalOptions="Center" />
+        </HorizontalStackLayout>
+
+        <!-- Row 2: IDs (read-only) -->
+        <Entry
+            Grid.Row="2" Grid.Column="8" Grid.ColumnSpan="2"
+            Text="{Binding Client.DefaultTravelPolicyId}"
+            IsReadOnly="True" />
+
+        <Entry
+            Grid.Row="2" Grid.Column="10" Grid.ColumnSpan="2"
+            Text="{Binding Client.LicenseAgreementId}"
+            IsReadOnly="True" />
 
 
-            <!-- Row 5: Label -->
-            <Label Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="6" Text="Address Line 1" />
-            <Label Grid.Row="5" Grid.Column="6" Grid.ColumnSpan="6" Text="Address Line 2" />
+        <!-- Row 3: Empty -->
+        <BoxView Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="12" HeightRequest="8" />
+
+        <!-- Row 4: Heading -->
+        <Label Grid.Row="4"
+            Grid.Column="0"
+            Grid.ColumnSpan="12"
+            Text="🏢 Address &amp; Tax"
+            FontSize="20"
+            FontAttributes="Bold"
+            TextColor="{AppThemeBinding Light=Black, Dark=White}"
+            Margin="0,12,0,6" />
+
+
+        <!-- Row 5: Label -->
+        <Label Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="6" Text="Address Line 1" />
+        <Label Grid.Row="5" Grid.Column="6" Grid.ColumnSpan="6" Text="Address Line 2" />
+
+        <!-- Row 6: Entry -->
+        <Entry Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="6"
+            Style="{StaticResource PrimaryEntryStyle}"
+            Text="{Binding Client.AddressLine1}" />
+
+        <Entry Grid.Row="6" Grid.Column="6" Grid.ColumnSpan="6"
+            Style="{StaticResource PrimaryEntryStyle}"
+            Text="{Binding Client.AddressLine2}" />
+
+
+        <!-- Row 7: Label -->
+        <Label Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="6" Text="Address Line 3" />
+        <Label Grid.Row="7" Grid.Column="6" Grid.ColumnSpan="3" Text="City" />
+        <Label Grid.Row="7" Grid.Column="9" Grid.ColumnSpan="3" Text="State" />
+
+        <!-- Row 8: Entry -->
+        <Entry Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="6"
+            Style="{StaticResource PrimaryEntryStyle}"
+            Text="{Binding Client.AddressLine3}" />
+        <Entry Grid.Row="8" Grid.Column="6" Grid.ColumnSpan="3"
+            Style="{StaticResource PrimaryEntryStyle}"
+            Text="{Binding Client.City}" />
+        <Entry Grid.Row="8" Grid.Column="9" Grid.ColumnSpan="3"
+            Style="{StaticResource PrimaryEntryStyle}"
+            Text="{Binding Client.State}" />
+
+        <!-- Row 9: Label -->
+        <Label Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" Text="Postal Code" />
+        <Label Grid.Row="9" Grid.Column="2" Grid.ColumnSpan="2" Text="Country" />
+        <Label Grid.Row="9" Grid.Column="4" Grid.ColumnSpan="4" Text="Tax Registration" />
+        <Label Grid.Row="9" Grid.Column="8" Grid.ColumnSpan="2" Text="Tax ID" />
+        <Label Grid.Row="9" Grid.Column="10" Grid.ColumnSpan="2" Text="Tax Last Validated" />
+
+        <!-- Row 10: Entry -->
+        <Entry Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="2"
+            Style="{StaticResource PrimaryEntryStyle}"
+            Text="{Binding Client.PostalCode}" />
             
-            <!-- Row 6: Entry -->
-            <Entry Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="6" Text="{Binding Client.AddressLine1}" />
-            <Entry Grid.Row="6" Grid.Column="6" Grid.ColumnSpan="6" Text="{Binding Client.AddressLine2}" />
-
-            <!-- Row 7: Label -->
-            <Label Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="6" Text="Address Line 3" />
-            <Label Grid.Row="7" Grid.Column="6" Grid.ColumnSpan="3" Text="City" />
-            <Label Grid.Row="7" Grid.Column="9" Grid.ColumnSpan="3" Text="State" />
-
-            <!-- Row 8: Entry -->
-            <Entry Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="6" Text="{Binding Client.AddressLine3}" />
-            <Entry Grid.Row="8" Grid.Column="6" Grid.ColumnSpan="3" Text="{Binding Client.City}" />
-            <Entry Grid.Row="8" Grid.Column="9" Grid.ColumnSpan="3" Text="{Binding Client.State}" />
-
-            <!-- Row 9: Label -->
-            <Label Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" Text="Postal Code" />
-            <Label Grid.Row="9" Grid.Column="2" Grid.ColumnSpan="2" Text="Country" />
-            <Label Grid.Row="9" Grid.Column="4" Grid.ColumnSpan="4" Text="Tax Registration" />
-            <Label Grid.Row="9" Grid.Column="8" Grid.ColumnSpan="2" Text="Tax ID" />
-            <Label Grid.Row="9" Grid.Column="10" Grid.ColumnSpan="2" Text="Tax Last Validated" />
-
-            <!-- Row 10: Entry -->
-            <Entry Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Client.PostalCode}" />
-            <Picker
-                Grid.Row="10" Grid.Column="2" Grid.ColumnSpan="2"
-                ItemsSource="{Binding CountryList}"
-                SelectedItem="{Binding SelectedCountry, Mode=TwoWay}"
-                HorizontalOptions="Fill"
-                VerticalOptions="Center" />
+        <Picker
+            Grid.Row="10" Grid.Column="2" Grid.ColumnSpan="2"
+            ItemsSource="{Binding CountryList}"
+            SelectedItem="{Binding SelectedCountry, Mode=TwoWay}"
+            HorizontalOptions="Fill"
+            VerticalOptions="Center" />
             <!-- <Entry Grid.Row="10" Grid.Column="4" Grid.ColumnSpan="4" Text="{Binding Client}" /> -->
-            <Picker
-                Grid.Row="10" Grid.Column="4" Grid.ColumnSpan="4"
-                ItemsSource="{Binding TaxRegistrationList}"
-                SelectedItem="{Binding SelectedTaxRegistration, Mode=TwoWay}"
-                HorizontalOptions="Fill"
+        <Picker
+            Grid.Row="10" Grid.Column="4" Grid.ColumnSpan="4"
+            ItemsSource="{Binding TaxRegistrationList}"
+            SelectedItem="{Binding SelectedTaxRegistration, Mode=TwoWay}"
+            HorizontalOptions="Fill"
+            VerticalOptions="Center" />
+
+        <Entry Grid.Row="10" Grid.Column="8" Grid.ColumnSpan="2" Text="{Binding Client.TaxId}" />
+        <Entry Grid.Row="10" Grid.Column="10" Grid.ColumnSpan="2" Text="{Binding Client.TaxLastValidated}" IsReadOnly="True" />
+
+        <!-- Row 11: Empty -->
+        <BoxView Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="12" HeightRequest="8" />
+
+        <!-- Row 12: Heading -->
+        <Label Grid.Row="12"
+            Grid.Column="0"
+            Grid.ColumnSpan="12"
+            Text="👤 Contact Person"
+            FontSize="20"
+            FontAttributes="Bold"
+            TextColor="{AppThemeBinding Light=Black, Dark=White}"
+            Margin="0,12,0,6" />
+
+        <!-- Row 13: Label -->
+        <Label Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="4" Text="First Name" />
+        <Label Grid.Row="13" Grid.Column="4" Grid.ColumnSpan="4" Text="Last Name" />
+        <Label Grid.Row="13" Grid.Column="8" Grid.ColumnSpan="4" Text="Job Title" />
+
+        <!-- Row 14: Entry -->
+        <Entry Grid.Row="14" Grid.Column="0" Grid.ColumnSpan="4" Text="{Binding Client.ContactPersonFirstName}" />
+        <Entry Grid.Row="14" Grid.Column="4" Grid.ColumnSpan="4" Text="{Binding Client.ContactPersonLastName}" />
+        <Entry Grid.Row="14" Grid.Column="8" Grid.ColumnSpan="4" Text="{Binding Client.ContactPersonJobTitle}" />
+
+        <!-- Row 15: Label -->
+        <Label Grid.Row="15" Grid.Column="0" Grid.ColumnSpan="4" Text="Email" />
+        <Label Grid.Row="15" Grid.Column="6" Grid.ColumnSpan="2" Text="Country Code" />
+        <Label Grid.Row="15" Grid.Column="8" Grid.ColumnSpan="4" Text="Phone" />
+
+        <!-- Row 16: Entry -->
+        <Entry Grid.Row="16" Grid.Column="0" Grid.ColumnSpan="6" Text="{Binding Client.ContactPersonEmail}" />
+        <Picker
+            Grid.Row="16" Grid.Column="6" Grid.ColumnSpan="2"
+            ItemsSource="{Binding CountryDisplayList}"
+            SelectedItem="{Binding SelectedContactCountryDisplay, Mode=TwoWay}"
+            HorizontalOptions="Fill"
+            VerticalOptions="Center" />
+        <Entry Grid.Row="16" Grid.Column="8" Grid.ColumnSpan="4" Text="{Binding Client.ContactPersonPhone}" />
+
+        <!-- BILLING PERSON -->
+        <!-- Row 17: Empty -->
+        <BoxView Grid.Row="17" Grid.Column="0" Grid.ColumnSpan="12" HeightRequest="8" />
+
+        <!-- Row 18: Heading -->
+        <HorizontalStackLayout Grid.Row="18"
+            Grid.Column="0"
+            Grid.ColumnSpan="12"
+            Spacing="12"
+            VerticalOptions="Center">
+
+            <!-- Heading Label -->
+            <Label Text="👤 Billing Person"
+                FontSize="20"
+                FontAttributes="Bold"
+                TextColor="{AppThemeBinding Light=Black, Dark=White}"
                 VerticalOptions="Center" />
-            <Entry Grid.Row="10" Grid.Column="8" Grid.ColumnSpan="2" Text="{Binding Client.TaxId}" />
-            <Entry Grid.Row="10" Grid.Column="10" Grid.ColumnSpan="2" Text="{Binding Client.TaxLastValidated}" IsReadOnly="True" />
 
-            <!-- Row 11: Empty -->
-            <BoxView Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="12" HeightRequest="8" />
-
-            <!-- Row 12: Heading -->
-            <Label Grid.Row="12"
-                   Grid.Column="0"
-                   Grid.ColumnSpan="12"
-                   Text="👤 Contact Person"
-                   FontSize="20"
-                   FontAttributes="Bold"
-                   TextColor="{AppThemeBinding Light=Black, Dark=White}"
-                   Margin="0,12,0,6" />
-
-            <!-- Row 13: Label -->
-            <Label Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="4" Text="First Name" />
-            <Label Grid.Row="13" Grid.Column="4" Grid.ColumnSpan="4" Text="Last Name" />
-            <Label Grid.Row="13" Grid.Column="8" Grid.ColumnSpan="4" Text="Job Title" />
-
-            <!-- Row 14: Entry -->
-            <Entry Grid.Row="14" Grid.Column="0" Grid.ColumnSpan="4" Text="{Binding Client.ContactPersonFirstName}" />
-            <Entry Grid.Row="14" Grid.Column="4" Grid.ColumnSpan="4" Text="{Binding Client.ContactPersonLastName}" />
-            <Entry Grid.Row="14" Grid.Column="8" Grid.ColumnSpan="4" Text="{Binding Client.ContactPersonJobTitle}" />
-
-            <!-- Row 15: Label -->
-            <Label Grid.Row="15" Grid.Column="0" Grid.ColumnSpan="4" Text="Email" />
-            <Label Grid.Row="15" Grid.Column="6" Grid.ColumnSpan="2" Text="Country Code" />
-            <Label Grid.Row="15" Grid.Column="8" Grid.ColumnSpan="4" Text="Phone" />
-
-            <!-- Row 16: Entry -->
-            <Entry Grid.Row="16" Grid.Column="0" Grid.ColumnSpan="6" Text="{Binding Client.ContactPersonEmail}" />
-            <Picker
-                Grid.Row="16" Grid.Column="6" Grid.ColumnSpan="2"
-                ItemsSource="{Binding CountryDisplayList}"
-                SelectedItem="{Binding SelectedContactCountryDisplay, Mode=TwoWay}"
-                HorizontalOptions="Fill"
+            <!-- Checkbox -->
+            <CheckBox IsChecked="{Binding IsBillingPersonSameAsContact}"
                 VerticalOptions="Center" />
-            <Entry Grid.Row="16" Grid.Column="8" Grid.ColumnSpan="4" Text="{Binding Client.ContactPersonPhone}" />
 
-            <!-- BILLING PERSON -->
-            <!-- Row 17: Empty -->
-            <BoxView Grid.Row="17" Grid.Column="0" Grid.ColumnSpan="12" HeightRequest="8" />
+            <!-- Checkbox Label -->
+            <Label Text="Copy from Contact Person"
+                FontSize="16"
+                TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                VerticalOptions="Center" />
+        </HorizontalStackLayout>
 
-            <!-- Row 18: Heading -->
-            <HorizontalStackLayout Grid.Row="18"
-                       Grid.Column="0"
-                       Grid.ColumnSpan="12"
-                       Spacing="12"
-                       VerticalOptions="Center">
-    
-                     <!-- Heading Label -->
-                     <Label Text="👤 Billing Person"
-                            FontSize="20"
-                            FontAttributes="Bold"
-                            TextColor="{AppThemeBinding Light=Black, Dark=White}"
-                            VerticalOptions="Center" />
+        <!-- Row 19: Label -->
+        <Label Grid.Row="19" Grid.Column="0" Grid.ColumnSpan="4" Text="First Name" />
+        <Label Grid.Row="19" Grid.Column="4" Grid.ColumnSpan="4" Text="Last Name" />
+        <Label Grid.Row="19" Grid.Column="8" Grid.ColumnSpan="4" Text="Job Title" />
 
-                     <!-- Checkbox -->
-                     <CheckBox IsChecked="{Binding IsBillingPersonSameAsContact}"
-                            VerticalOptions="Center" />
+        <!-- Row 20: Entry -->
+        <Entry Grid.Row="20" Grid.Column="0" Grid.ColumnSpan="4" Text="{Binding Client.BillingPersonFirstName}" />
+        <Entry Grid.Row="20" Grid.Column="4" Grid.ColumnSpan="4" Text="{Binding Client.BillingPersonLastName}" />
+        <Entry Grid.Row="20" Grid.Column="8" Grid.ColumnSpan="4" Text="{Binding Client.BillingPersonJobTitle}" />
 
-                     <!-- Checkbox Label -->
-                     <Label Text="Copy from Contact Person"
-                            FontSize="16"
-                            TextColor="{AppThemeBinding Light=Black, Dark=White}"
-                            VerticalOptions="Center" />
-              </HorizontalStackLayout>
+        <!-- Row 21: Label -->
+        <Label Grid.Row="21" Grid.Column="0" Grid.ColumnSpan="4" Text="Email" />
+        <Label Grid.Row="21" Grid.Column="6" Grid.ColumnSpan="2" Text="Country Code" />
+        <Label Grid.Row="21" Grid.Column="8" Grid.ColumnSpan="4" Text="Phone" />
 
-            <!-- Row 19: Label -->
-            <Label Grid.Row="19" Grid.Column="0" Grid.ColumnSpan="4" Text="First Name" />
-            <Label Grid.Row="19" Grid.Column="4" Grid.ColumnSpan="4" Text="Last Name" />
-            <Label Grid.Row="19" Grid.Column="8" Grid.ColumnSpan="4" Text="Job Title" />
-
-            <!-- Row 20: Entry -->
-            <Entry Grid.Row="20" Grid.Column="0" Grid.ColumnSpan="4" Text="{Binding Client.BillingPersonFirstName}" />
-            <Entry Grid.Row="20" Grid.Column="4" Grid.ColumnSpan="4" Text="{Binding Client.BillingPersonLastName}" />
-            <Entry Grid.Row="20" Grid.Column="8" Grid.ColumnSpan="4" Text="{Binding Client.BillingPersonJobTitle}" />
-
-            <!-- Row 21: Label -->
-            <Label Grid.Row="21" Grid.Column="0" Grid.ColumnSpan="4" Text="Email" />
-            <Label Grid.Row="21" Grid.Column="6" Grid.ColumnSpan="2" Text="Country Code" />
-            <Label Grid.Row="21" Grid.Column="8" Grid.ColumnSpan="4" Text="Phone" />
-
-            <!-- Row 22: Entry -->
-            <Entry Grid.Row="22" Grid.Column="0" Grid.ColumnSpan="6" Text="{Binding Client.BillingPersonEmail}" />
+        <!-- Row 22: Entry -->
+        <Entry Grid.Row="22" Grid.Column="0" Grid.ColumnSpan="6" Text="{Binding Client.BillingPersonEmail}" />
             <Picker
                 Grid.Row="22" Grid.Column="6" Grid.ColumnSpan="2"
                 ItemsSource="{Binding CountryDisplayList}"
-    SelectedItem="{Binding SelectedBillingCountryDisplay, Mode=TwoWay}"
+                SelectedItem="{Binding SelectedBillingCountryDisplay, Mode=TwoWay}"
                 HorizontalOptions="Fill"
                 VerticalOptions="Center" />
-            <Entry Grid.Row="22" Grid.Column="8" Grid.ColumnSpan="4" Text="{Binding Client.BillingPersonJobTitle}" />
+        <Entry Grid.Row="22" Grid.Column="8" Grid.ColumnSpan="4" Text="{Binding Client.BillingPersonJobTitle}" />
 
-            <!-- ADMIN PERSON -->
-            <!-- Row 23: Empty -->
-            <BoxView Grid.Row="23" Grid.Column="0" Grid.ColumnSpan="12" HeightRequest="8" />
+        <!-- ADMIN PERSON -->
+        <!-- Row 23: Empty -->
+        <BoxView Grid.Row="23" Grid.Column="0" Grid.ColumnSpan="12" HeightRequest="8" />
 
-            <!-- Row 24: Heading -->
-            <HorizontalStackLayout Grid.Row="24"
-                       Grid.Column="0"
-                       Grid.ColumnSpan="12"
-                       Spacing="12"
-                       VerticalOptions="Center">
-    
-                     <!-- Heading Label -->
-                     <Label Text="👤 Admin Person"
-                            FontSize="20"
-                            FontAttributes="Bold"
-                            TextColor="{AppThemeBinding Light=Black, Dark=White}"
-                            VerticalOptions="Center" />
+        <!-- Row 24: Heading -->
+        <HorizontalStackLayout Grid.Row="24"
+            Grid.Column="0"
+            Grid.ColumnSpan="12"
+            Spacing="12"
+            VerticalOptions="Center">
 
-                     <!-- Checkbox -->
-                     <CheckBox IsChecked="{Binding IsAdminPersonSameAsContact}"
-                            VerticalOptions="Center" />
-
-                     <!-- Checkbox Label -->
-                     <Label Text="Copy from Contact Person"
-                            FontSize="16"
-                            TextColor="{AppThemeBinding Light=Black, Dark=White}"
-                            VerticalOptions="Center" />
-              </HorizontalStackLayout>
-
-            <!-- <Label Grid.Row="24"
-                   Grid.Column="0"
-                   Grid.ColumnSpan="12"
-                   Text="👤Admin Person"
-                   FontSize="20"
-                   FontAttributes="Bold"
-                   TextColor="{AppThemeBinding Light=Black, Dark=White}"
-                   Margin="0,12,0,6" /> -->
-
-            <!-- Row 25: Label -->
-            <Label Grid.Row="25" Grid.Column="0" Grid.ColumnSpan="4" Text="First Name" />
-            <Label Grid.Row="25" Grid.Column="4" Grid.ColumnSpan="4" Text="Last Name" />
-            <Label Grid.Row="25" Grid.Column="8" Grid.ColumnSpan="4" Text="Job Title" />
-
-            <!-- Row 26: Entry -->
-            <Entry Grid.Row="26" Grid.Column="0" Grid.ColumnSpan="4" Text="{Binding Client.AdminPersonFirstName}" />
-            <Entry Grid.Row="26" Grid.Column="4" Grid.ColumnSpan="4" Text="{Binding Client.AdminPersonLastName}" />
-            <Entry Grid.Row="26" Grid.Column="8" Grid.ColumnSpan="4" Text="{Binding Client.AdminPersonJobTitle}" />
-
-            <!-- Row 27: Label -->
-            <Label Grid.Row="27" Grid.Column="0" Grid.ColumnSpan="4" Text="Email" />
-            <Label Grid.Row="27" Grid.Column="6" Grid.ColumnSpan="2" Text="Country Code" />
-            <Label Grid.Row="27" Grid.Column="8" Grid.ColumnSpan="4" Text="Phone" />
-
-            <!-- Row 28: Entry -->
-            <Entry Grid.Row="28" Grid.Column="0" Grid.ColumnSpan="6" Text="{Binding Client.AdminPersonEmail}" />
-            <Picker
-                Grid.Row="28" Grid.Column="6" Grid.ColumnSpan="2"
-                ItemsSource="{Binding CountryDisplayList}"
-    SelectedItem="{Binding SelectedAdminCountryDisplay, Mode=TwoWay}"
-                HorizontalOptions="Fill"
+            <!-- Heading Label -->
+            <Label Text="👤 Admin Person"
+                FontSize="20"
+                FontAttributes="Bold"
+                TextColor="{AppThemeBinding Light=Black, Dark=White}"
                 VerticalOptions="Center" />
+
+            <!-- Checkbox -->
+            <CheckBox IsChecked="{Binding IsAdminPersonSameAsContact}"
+                VerticalOptions="Center" />
+
+            <!-- Checkbox Label -->
+            <Label Text="Copy from Contact Person"
+                FontSize="16"
+                TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                VerticalOptions="Center" />
+        </HorizontalStackLayout>
+
+        <!-- <Label Grid.Row="24"
+        Grid.Column="0"
+        Grid.ColumnSpan="12"
+        Text="👤Admin Person"
+        FontSize="20"
+        FontAttributes="Bold"
+        TextColor="{AppThemeBinding Light=Black, Dark=White}"
+        Margin="0,12,0,6" /> -->
+
+        <!-- Row 25: Label -->
+        <Label Grid.Row="25" Grid.Column="0" Grid.ColumnSpan="4" Text="First Name" />
+        <Label Grid.Row="25" Grid.Column="4" Grid.ColumnSpan="4" Text="Last Name" />
+        <Label Grid.Row="25" Grid.Column="8" Grid.ColumnSpan="4" Text="Job Title" />
+
+        <!-- Row 26: Entry -->
+        <Entry Grid.Row="26" Grid.Column="0" Grid.ColumnSpan="4" Text="{Binding Client.AdminPersonFirstName}" />
+        <Entry Grid.Row="26" Grid.Column="4" Grid.ColumnSpan="4" Text="{Binding Client.AdminPersonLastName}" />
+        <Entry Grid.Row="26" Grid.Column="8" Grid.ColumnSpan="4" Text="{Binding Client.AdminPersonJobTitle}" />
+
+        <!-- Row 27: Label -->
+        <Label Grid.Row="27" Grid.Column="0" Grid.ColumnSpan="4" Text="Email" />
+        <Label Grid.Row="27" Grid.Column="6" Grid.ColumnSpan="2" Text="Country Code" />
+        <Label Grid.Row="27" Grid.Column="8" Grid.ColumnSpan="4" Text="Phone" />
+
+        <!-- Row 28: Entry -->
+        <Entry Grid.Row="28" Grid.Column="0" Grid.ColumnSpan="6" Text="{Binding Client.AdminPersonEmail}" />
+        <Picker
+            Grid.Row="28" Grid.Column="6" Grid.ColumnSpan="2"
+            ItemsSource="{Binding CountryDisplayList}"
+            SelectedItem="{Binding SelectedAdminCountryDisplay, Mode=TwoWay}"
+            HorizontalOptions="Fill"
+            VerticalOptions="Center" />
             <Entry Grid.Row="28" Grid.Column="8" Grid.ColumnSpan="4" Text="{Binding Client.AdminPersonPhone}" />
 
-            <!-- Row 29: Empty -->
-            <BoxView Grid.Row="29" Grid.Column="0" Grid.ColumnSpan="12" HeightRequest="32" />
+        <!-- Row 29: Empty -->
+        <BoxView Grid.Row="29" Grid.Column="0" Grid.ColumnSpan="12" HeightRequest="32" />
 
-            <!-- Row 30: Label -->
-            <Label Grid.Row="30" Grid.Column="0" Grid.ColumnSpan="2" Text="Last Updated" />
-            
-            <!-- Row 31: Entry -->
-            <Entry Grid.Row="31" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding LastUpdatedLocalTime}" IsEnabled="False" />
+        <!-- Row 30: Label -->
+        <Label Grid.Row="30" Grid.Column="0" Grid.ColumnSpan="2" Text="Last Updated" />
 
-            <!-- Row 32: Empty -->
-            <BoxView Grid.Row="32" Grid.Column="0" Grid.ColumnSpan="12" HeightRequest="32" />
+        <!-- Row 31: Entry -->
+        <Entry Grid.Row="31" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding LastUpdatedLocalTime}" IsEnabled="False" />
 
-            <!-- Save Button -->
-            <Button Text="💾 Save"
-              Grid.Row="33"
-              Grid.Column="9"
-              Grid.ColumnSpan="1"
-              Command="{Binding SaveCommand}"
-              BackgroundColor="#007bff"
-              TextColor="White"
-              CornerRadius="8"
-              HeightRequest="48"
-              FontAttributes="Bold" />
-            
-            <!-- Cancel Button -->
-            <Button Text="❌ Cancel"
-              Grid.Row="33"
-              Grid.Column="10"
-              Grid.ColumnSpan="1"
-              Command="{Binding CancelCommand}"
-              BackgroundColor="#6c757d"
-              TextColor="White"
-              CornerRadius="8"
-              HeightRequest="48"
-              FontAttributes="Bold" />
+        <!-- Row 32: Empty -->
+        <BoxView Grid.Row="32" Grid.Column="0" Grid.ColumnSpan="12" HeightRequest="32" />
+
+        <!-- Save Button -->
+        <Button Text="💾 Save"
+            Grid.Row="33"
+            Grid.Column="9"
+            Grid.ColumnSpan="1"
+            Command="{Binding SaveCommand}"
+            BackgroundColor="#007bff"
+            TextColor="White"
+            CornerRadius="8"
+            HeightRequest="48"
+            FontAttributes="Bold" />
+
+        <!-- Cancel Button -->
+        <Button Text="❌ Cancel"
+            Grid.Row="33"
+            Grid.Column="10"
+            Grid.ColumnSpan="1"
+            Command="{Binding CancelCommand}"
+            BackgroundColor="#6c757d"
+            TextColor="White"
+            CornerRadius="8"
+            HeightRequest="48"
+            FontAttributes="Bold" />
 
             <!-- Row 34: Empty -->
             <BoxView Grid.Row="34" Grid.Column="0" Grid.ColumnSpan="12" HeightRequest="32" />
 
-              <!-- Bottom Clock Bar -->
-              <components:BottomClockBar Grid.Row="35" Grid.Column="0" Grid.ColumnSpan="12" />
+            <!-- Bottom Clock Bar -->
+            <components:BottomClockBar Grid.Row="35" Grid.Column="0" Grid.ColumnSpan="12" />
         </Grid>
     </ScrollView>
 </ContentPage>

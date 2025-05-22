@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Timers;
+using AvaTerminal3.Models.Static;
 using Timer = System.Timers.Timer;
 
 namespace AvaTerminal3.Views.Components;
@@ -10,6 +11,8 @@ public partial class BottomClockBar : ContentView, INotifyPropertyChanged
 
     public string LocalTime => $"🕒 Local: {DateTime.Now:HH:mm:ss}";
     public string UtcTime => $"🌍 UTC: {DateTime.UtcNow:HH:mm:ss}";
+
+    public string AppVersionInfo { get; } = $"v{AppVersion.VersionInfo}";
 
     public BottomClockBar()
     {

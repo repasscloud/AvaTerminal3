@@ -53,7 +53,7 @@ public partial class NewAvaClientViewModel : ObservableObject, INotifyPropertyCh
             "Select Tax ID", TaxIdList, Client.TaxId);
         if (sel is not null)
         {
-            Client.TaxId = sel;
+            Client.TaxIdType = sel;
             OnPropertyChanged(nameof(Client));
         }
     }

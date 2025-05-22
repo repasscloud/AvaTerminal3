@@ -50,10 +50,17 @@
 
             <!-- Button triggers our SelectPopup via SelectCurrencyCommand -->
             <Button
-                Grid.Row="2" Grid.Column="7"
                 Text="{Binding Client.DefaultCurrency, TargetNullValue='XXX'}"
                 Command="{Binding SelectCurrencyCommand}"
-                Style="{StaticResource BootstrapPrimaryButton}" />
+                BackgroundColor="Transparent"
+                TextColor="{DynamicResource TextBrush}"
+                BorderColor="{AppThemeBinding Light=Gray, Dark=LightGray}"
+                BorderWidth="1"
+                CornerRadius="4"
+                HeightRequest="48"
+                HorizontalOptions="Fill"
+                VerticalOptions="Center"
+                Padding="12,0" />
 
             <!-- Still show a flag/icon if you have one -->
             <Image
@@ -131,22 +138,42 @@
             Style="{StaticResource PrimaryEntryStyle}"
             Text="{Binding Client.PostalCode}" />
             
-        <Picker
-            Grid.Row="10" Grid.Column="2" Grid.ColumnSpan="2"
-            ItemsSource="{Binding CountryList}"
-            SelectedItem="{Binding SelectedCountry, Mode=TwoWay}"
+        <Button
+            Grid.Row="10"
+            Grid.Column="2"
+            Grid.ColumnSpan="2"
+            Text="{Binding Client.Country, TargetNullValue='Select Country'}"
+            Command="{Binding SelectCountryCommand}"
+            BackgroundColor="Transparent"
+            TextColor="{DynamicResource TextBrush}"
+            BorderColor="{AppThemeBinding Light=Gray, Dark=LightGray}"
+            BorderWidth="1"
+            CornerRadius="4"
+            HeightRequest="48"
             HorizontalOptions="Fill"
-            VerticalOptions="Center" />
-            <!-- <Entry Grid.Row="10" Grid.Column="4" Grid.ColumnSpan="4" Text="{Binding Client}" /> -->
-        <Picker
-            Grid.Row="10" Grid.Column="4" Grid.ColumnSpan="4"
-            ItemsSource="{Binding TaxRegistrationList}"
-            SelectedItem="{Binding SelectedTaxRegistration, Mode=TwoWay}"
-            HorizontalOptions="Fill"
-            VerticalOptions="Center" />
+            VerticalOptions="Center"
+            Padding="12,0" />
 
-        <Entry Grid.Row="10" Grid.Column="8" Grid.ColumnSpan="2" Text="{Binding Client.TaxId}" />
-        <Entry Grid.Row="10" Grid.Column="10" Grid.ColumnSpan="2" Text="{Binding Client.TaxLastValidated}" IsReadOnly="True" />
+        <Button
+            Grid.Row="10" Grid.Column="4" Grid.ColumnSpan="4"
+            Text="{Binding Client.TaxIdType, TargetNullValue='Select Tax Registration'}"
+            Command="{Binding SelectTaxIdCommand}"
+            BackgroundColor="Transparent"
+            TextColor="{DynamicResource TextBrush}"
+            BorderColor="{AppThemeBinding Light=Gray, Dark=LightGray}"
+            BorderWidth="1"
+            CornerRadius="4"
+            HeightRequest="48"
+            HorizontalOptions="Fill"
+            VerticalOptions="Center"
+            Padding="12,0" />
+
+        <Entry Grid.Row="10" Grid.Column="8" Grid.ColumnSpan="2"
+            Style="{StaticResource PrimaryEntryStyle}"
+            Text="{Binding Client.TaxId}" />
+        <Entry Grid.Row="10" Grid.Column="10" Grid.ColumnSpan="2"
+            Style="{StaticResource PrimaryEntryStyle}"
+            Text="{Binding Client.TaxLastValidated}" IsReadOnly="True" />
 
         <!-- Row 11: Empty -->
         <BoxView Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="12" HeightRequest="8" />
@@ -186,12 +213,21 @@
         <Entry Grid.Row="16" Grid.Column="0" Grid.ColumnSpan="6"
             Style="{StaticResource PrimaryEntryStyle}"
             Text="{Binding Client.ContactPersonEmail}" />
-        <Picker
+
+        <Button
             Grid.Row="16" Grid.Column="6" Grid.ColumnSpan="2"
-            ItemsSource="{Binding CountryDisplayList}"
-            SelectedItem="{Binding SelectedContactCountryDisplay, Mode=TwoWay}"
+            Text="{Binding Client.ContactPersonCountryCode, TargetNullValue='Select Dial Code'}"
+            Command="{Binding SelectContactDialCodeCommand}"
+            BackgroundColor="Transparent"
+            TextColor="{DynamicResource TextBrush}"
+            BorderColor="{AppThemeBinding Light=Gray, Dark=LightGray}"
+            BorderWidth="1"
+            CornerRadius="4"
+            HeightRequest="48"
             HorizontalOptions="Fill"
-            VerticalOptions="Center" />
+            VerticalOptions="Center"
+            Padding="12,0" />
+
         <Entry Grid.Row="16" Grid.Column="8" Grid.ColumnSpan="4"
             Style="{StaticResource PrimaryEntryStyle}"
             Text="{Binding Client.ContactPersonPhone}" />
@@ -247,13 +283,23 @@
         <Label Grid.Row="21" Grid.Column="8" Grid.ColumnSpan="4" Text="Phone" />
 
         <!-- Row 22: Entry -->
-        <Entry Grid.Row="22" Grid.Column="0" Grid.ColumnSpan="6" Text="{Binding Client.BillingPersonEmail}" />
-            <Picker
-                Grid.Row="22" Grid.Column="6" Grid.ColumnSpan="2"
-                ItemsSource="{Binding CountryDisplayList}"
-                SelectedItem="{Binding SelectedBillingCountryDisplay, Mode=TwoWay}"
-                HorizontalOptions="Fill"
-                VerticalOptions="Center" />
+        <Entry Grid.Row="22" Grid.Column="0" Grid.ColumnSpan="6"
+            Style="{StaticResource PrimaryEntryStyle}"
+            Text="{Binding Client.BillingPersonEmail}" />
+        <Button
+            Grid.Row="22" Grid.Column="6" Grid.ColumnSpan="2"
+            Text="{Binding Client.BillingPersonCountryCode, TargetNullValue='Select Dial Code'}"
+            Command="{Binding SelectBillingDialCodeCommand}"
+            BackgroundColor="Transparent"
+            TextColor="{DynamicResource TextBrush}"
+            BorderColor="{AppThemeBinding Light=Gray, Dark=LightGray}"
+            BorderWidth="1"
+            CornerRadius="4"
+            HeightRequest="48"
+            HorizontalOptions="Fill"
+            VerticalOptions="Center"
+            Padding="12,0" />
+
         <Entry Grid.Row="22" Grid.Column="8" Grid.ColumnSpan="4"
             Style="{StaticResource PrimaryEntryStyle}"
             Text="{Binding Client.BillingPersonJobTitle}" />
@@ -287,15 +333,6 @@
                 VerticalOptions="Center" />
         </HorizontalStackLayout>
 
-        <!-- <Label Grid.Row="24"
-        Grid.Column="0"
-        Grid.ColumnSpan="12"
-        Text="👤Admin Person"
-        FontSize="20"
-        FontAttributes="Bold"
-        TextColor="{AppThemeBinding Light=Black, Dark=White}"
-        Margin="0,12,0,6" /> -->
-
         <!-- Row 25: Label -->
         <Label Grid.Row="25" Grid.Column="0" Grid.ColumnSpan="4" Text="First Name" />
         <Label Grid.Row="25" Grid.Column="4" Grid.ColumnSpan="4" Text="Last Name" />
@@ -318,14 +355,27 @@
         <Label Grid.Row="27" Grid.Column="8" Grid.ColumnSpan="4" Text="Phone" />
 
         <!-- Row 28: Entry -->
-        <Entry Grid.Row="28" Grid.Column="0" Grid.ColumnSpan="6" Text="{Binding Client.AdminPersonEmail}" />
-        <Picker
+        <Entry Grid.Row="28" Grid.Column="0" Grid.ColumnSpan="6"
+            Style="{StaticResource PrimaryEntryStyle}"
+            Text="{Binding Client.AdminPersonEmail}" />
+
+        <Button
             Grid.Row="28" Grid.Column="6" Grid.ColumnSpan="2"
-            ItemsSource="{Binding CountryDisplayList}"
-            SelectedItem="{Binding SelectedAdminCountryDisplay, Mode=TwoWay}"
+            Text="{Binding Client.AdminPersonCountryCode, TargetNullValue='Select Dial Code'}"
+            Command="{Binding SelectAdminDialCodeCommand}"
+            BackgroundColor="Transparent"
+            TextColor="{DynamicResource TextBrush}"
+            BorderColor="{AppThemeBinding Light=Gray, Dark=LightGray}"
+            BorderWidth="1"
+            CornerRadius="4"
+            HeightRequest="48"
             HorizontalOptions="Fill"
-            VerticalOptions="Center" />
-            <Entry Grid.Row="28" Grid.Column="8" Grid.ColumnSpan="4" Text="{Binding Client.AdminPersonPhone}" />
+            VerticalOptions="Center"
+            Padding="12,0" />
+
+        <Entry Grid.Row="28" Grid.Column="8" Grid.ColumnSpan="4"
+            Style="{StaticResource PrimaryEntryStyle}"
+            Text="{Binding Client.AdminPersonPhone}" />
 
         <!-- Row 29: Empty -->
         <BoxView Grid.Row="29" Grid.Column="0" Grid.ColumnSpan="12" HeightRequest="32" />
@@ -338,12 +388,9 @@
             Style="{StaticResource PrimaryEntryStyle}"
             Text="{Binding LastUpdatedLocalTime}" IsEnabled="False" />
 
-        <!-- Row 32: Empty -->
-        <BoxView Grid.Row="32" Grid.Column="0" Grid.ColumnSpan="12" HeightRequest="32" />
-
         <!-- Save Button -->
         <Button Text="💾 Save"
-            Grid.Row="33"
+            Grid.Row="31"
             Grid.Column="9"
             Grid.ColumnSpan="1"
             Command="{Binding SaveCommand}"
@@ -355,7 +402,7 @@
 
         <!-- Cancel Button -->
         <Button Text="❌ Cancel"
-            Grid.Row="33"
+            Grid.Row="31"
             Grid.Column="10"
             Grid.ColumnSpan="1"
             Command="{Binding CancelCommand}"
@@ -366,10 +413,10 @@
             FontAttributes="Bold" />
 
             <!-- Row 34: Empty -->
-            <BoxView Grid.Row="34" Grid.Column="0" Grid.ColumnSpan="12" HeightRequest="32" />
+            <BoxView Grid.Row="32" Grid.Column="0" Grid.ColumnSpan="12" HeightRequest="32" />
 
             <!-- Bottom Clock Bar -->
-            <components:BottomClockBar Grid.Row="35" Grid.Column="0" Grid.ColumnSpan="12" />
+            <components:BottomClockBar Grid.Row="33" Grid.Column="0" Grid.ColumnSpan="12" />
         </Grid>
     </ScrollView>
 </ContentPage>

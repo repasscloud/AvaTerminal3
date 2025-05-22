@@ -53,9 +53,6 @@ echo "✅ Updated $VersionFile → v$newVersion"
 # clean the project
 dotnet clean
 
-# run the newly created program
-dotnet run -f net9.0-maccatalyst 2>&1 | tee _logs/launch.log
-
 # ───── GIT STUFF ─────
 #git checkout "$Branch"
 #git add "$VersionFile"
@@ -66,3 +63,6 @@ git push -u origin "$Branch"
 #git tag -s "v$newVersion" -m "Release v$newVersion"
 #git push origin "v$newVersion"
 #echo "🔖 Tagged and pushed release: https://github.com/repasscloud/ssh-c/releases/tag/v$newVersion"
+
+# run the newly created program
+dotnet run -f net9.0-maccatalyst 2>&1 | tee _logs/launch.log

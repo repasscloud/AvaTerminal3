@@ -138,6 +138,70 @@ public partial class NewAvaClientViewModel : ObservableObject, INotifyPropertyCh
         await Shell.Current.GoToAsync("..");
     }
 
+    // - copy/unset billing contact
+
+    [ObservableProperty]
+    private bool isBillingPersonSameAsContact;
+
+    // partial method is called whenever that bool changes:
+    partial void OnIsBillingPersonSameAsContactChanged(bool value)
+    {
+        if (value)
+        {
+            // copy from contact
+            Client.BillingPersonFirstName = Client.ContactPersonFirstName;
+            Client.BillingPersonLastName = Client.ContactPersonLastName;
+            Client.BillingPersonCountryCode = Client.ContactPersonCountryCode;
+            Client.BillingPersonPhone = Client.ContactPersonPhone;
+            Client.BillingPersonEmail = Client.ContactPersonEmail;
+            Client.BillingPersonJobTitle = Client.ContactPersonJobTitle;
+        }
+        else
+        {
+            // clear out or leave as-is
+            Client.BillingPersonFirstName = string.Empty;
+            Client.BillingPersonLastName = string.Empty;
+            Client.BillingPersonCountryCode = null;
+            Client.BillingPersonPhone = string.Empty;
+            Client.BillingPersonEmail = string.Empty;
+            Client.BillingPersonJobTitle = string.Empty;
+        }
+
+        // notify the UI that the Client data has changed:
+        OnPropertyChanged(nameof(Client));
+    }
+
+    [ObservableProperty]
+    private bool isAdminPersonSameAsContact;
+
+    // partial method is called whenever that bool changes:
+    partial void OnIsAdminPersonSameAsContactChanged(bool value)
+    {
+        if (value)
+        {
+            // copy from contact
+            Client.AdminPersonFirstName = Client.ContactPersonFirstName;
+            Client.AdminPersonLastName = Client.ContactPersonLastName;
+            Client.AdminPersonCountryCode = Client.ContactPersonCountryCode;
+            Client.AdminPersonPhone = Client.ContactPersonPhone;
+            Client.AdminPersonEmail = Client.ContactPersonEmail;
+            Client.AdminPersonJobTitle = Client.ContactPersonJobTitle;
+        }
+        else
+        {
+            // clear out or leave as-is
+            Client.AdminPersonFirstName = string.Empty;
+            Client.AdminPersonLastName = string.Empty;
+            Client.AdminPersonCountryCode = null;
+            Client.AdminPersonPhone = string.Empty;
+            Client.AdminPersonEmail = string.Empty;
+            Client.AdminPersonJobTitle = string.Empty;
+        }
+
+        // notify the UI that the Client data has changed:
+        OnPropertyChanged(nameof(Client));
+    }
+
     // - other stuff -
     public string SelectedCurrencyFlag
         => $"{Client?.DefaultCurrency?.ToLower()}.png";

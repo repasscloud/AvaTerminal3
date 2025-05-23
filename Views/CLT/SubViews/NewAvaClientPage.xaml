@@ -269,13 +269,16 @@
         <!-- Row 20: Entry -->
         <Entry Grid.Row="20" Grid.Column="0" Grid.ColumnSpan="4"
             Style="{StaticResource PrimaryEntryStyle}"
-            Text="{Binding Client.BillingPersonFirstName}" />
+            Text="{Binding Client.BillingPersonFirstName}"
+            IsReadOnly="{Binding IsBillingPersonSameAsContact}" />
         <Entry Grid.Row="20" Grid.Column="4" Grid.ColumnSpan="4"
             Style="{StaticResource PrimaryEntryStyle}"
-            Text="{Binding Client.BillingPersonLastName}" />
+            Text="{Binding Client.BillingPersonLastName}"
+            IsReadOnly="{Binding IsBillingPersonSameAsContact}" />
         <Entry Grid.Row="20" Grid.Column="8" Grid.ColumnSpan="4"
             Style="{StaticResource PrimaryEntryStyle}"
-            Text="{Binding Client.BillingPersonJobTitle}" />
+            Text="{Binding Client.BillingPersonJobTitle}"
+            IsReadOnly="{Binding IsBillingPersonSameAsContact}" />
 
         <!-- Row 21: Label -->
         <Label Grid.Row="21" Grid.Column="0" Grid.ColumnSpan="4" Text="Email" />
@@ -285,7 +288,8 @@
         <!-- Row 22: Entry -->
         <Entry Grid.Row="22" Grid.Column="0" Grid.ColumnSpan="6"
             Style="{StaticResource PrimaryEntryStyle}"
-            Text="{Binding Client.BillingPersonEmail}" />
+            Text="{Binding Client.BillingPersonEmail}"
+            IsReadOnly="{Binding IsBillingPersonSameAsContact}" />
         <Button
             Grid.Row="22" Grid.Column="6" Grid.ColumnSpan="2"
             Text="{Binding Client.BillingPersonCountryCode, TargetNullValue='Select Dial Code'}"
@@ -298,11 +302,13 @@
             HeightRequest="48"
             HorizontalOptions="Fill"
             VerticalOptions="Center"
-            Padding="12,0" />
+            Padding="12,0"
+            IsEnabled="{Binding IsBillingPersonSameAsContact, Converter={StaticResource InverseBoolConverter}, ConverterParameter=true}" />
 
         <Entry Grid.Row="22" Grid.Column="8" Grid.ColumnSpan="4"
             Style="{StaticResource PrimaryEntryStyle}"
-            Text="{Binding Client.BillingPersonJobTitle}" />
+            Text="{Binding Client.BillingPersonJobTitle}"
+            IsReadOnly="{Binding IsBillingPersonSameAsContact}" />
 
         <!-- ADMIN PERSON -->
         <!-- Row 23: Empty -->
@@ -341,13 +347,16 @@
         <!-- Row 26: Entry -->
         <Entry Grid.Row="26" Grid.Column="0" Grid.ColumnSpan="4"
             Style="{StaticResource PrimaryEntryStyle}"
-            Text="{Binding Client.AdminPersonFirstName}" />
+            Text="{Binding Client.AdminPersonFirstName}"
+            IsReadOnly="{Binding IsAdminPersonSameAsContact}" />
         <Entry Grid.Row="26" Grid.Column="4" Grid.ColumnSpan="4"
             Style="{StaticResource PrimaryEntryStyle}"
-            Text="{Binding Client.AdminPersonLastName}" />
+            Text="{Binding Client.AdminPersonLastName}"
+            IsReadOnly="{Binding IsAdminPersonSameAsContact}" />
         <Entry Grid.Row="26" Grid.Column="8" Grid.ColumnSpan="4"
             Style="{StaticResource PrimaryEntryStyle}"
-            Text="{Binding Client.AdminPersonJobTitle}" />
+            Text="{Binding Client.AdminPersonJobTitle}"
+            IsReadOnly="{Binding IsAdminPersonSameAsContact}" />
 
         <!-- Row 27: Label -->
         <Label Grid.Row="27" Grid.Column="0" Grid.ColumnSpan="4" Text="Email" />
@@ -357,7 +366,8 @@
         <!-- Row 28: Entry -->
         <Entry Grid.Row="28" Grid.Column="0" Grid.ColumnSpan="6"
             Style="{StaticResource PrimaryEntryStyle}"
-            Text="{Binding Client.AdminPersonEmail}" />
+            Text="{Binding Client.AdminPersonEmail}"
+            IsReadOnly="{Binding IsAdminPersonSameAsContact}" />
 
         <Button
             Grid.Row="28" Grid.Column="6" Grid.ColumnSpan="2"
@@ -371,11 +381,13 @@
             HeightRequest="48"
             HorizontalOptions="Fill"
             VerticalOptions="Center"
-            Padding="12,0" />
+            Padding="12,0"
+            IsEnabled="{Binding IsAdminPersonSameAsContact, Converter={StaticResource InverseBoolConverter}, ConverterParameter=true}" />
 
         <Entry Grid.Row="28" Grid.Column="8" Grid.ColumnSpan="4"
             Style="{StaticResource PrimaryEntryStyle}"
-            Text="{Binding Client.AdminPersonPhone}" />
+            Text="{Binding Client.AdminPersonPhone}"
+            IsReadOnly="{Binding IsAdminPersonSameAsContact}" />
 
         <!-- Row 29: Empty -->
         <BoxView Grid.Row="29" Grid.Column="0" Grid.ColumnSpan="12" HeightRequest="32" />

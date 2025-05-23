@@ -31,4 +31,9 @@ public partial class PageOne : ContentPage
     popup.Close(); // This now closes properly without user input
 }
 
+    private void Button_Clicked1(object sender, EventArgs e)
+    {
+        LogSinkService.DeleteLogFile();
+    }
+
 }

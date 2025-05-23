@@ -34,6 +34,13 @@
                     TextColor="White"
                     FontAttributes="Bold"
                     HeightRequest="48" />
+
+            <Button Text="Delete Log File"
+                Clicked="Button_Clicked1"
+                BackgroundColor="DarkSlateGray"
+                TextColor="White"
+                FontAttributes="Bold"
+                HeightRequest="48" />
         </VerticalStackLayout>
 
         <!-- Bottom Clock Bar -->

@@ -59,6 +59,8 @@ public static class LogSinkService
         return tempPath;
     }
 
+    public static void DeleteLogFile() => File.Delete(GetLogPath());
+
     public static string GetLogPath() => LogPath;
     public static string GetDumpFilePath() => DumpFilePath;
 }

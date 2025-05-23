@@ -130,8 +130,10 @@ public partial class NewAvaClientViewModel : ObservableObject, INotifyPropertyCh
         var errors = DataValidator.ValidateAvaClientDto(Client);
         var firstError = errors.FirstOrDefault(e => !e.isValid);
 
-        if (!firstError.isValid)
+        if (!string.IsNullOrEmpty(firstError.Title))
         {
+            // a real error
+            await LogSinkService.WriteAsync(LogLevel.Warn, $"[NewClient.SaveAsync] Error saving record '{firstError.Title}' with message '{firstError.Message}'.");
             await _popupService.ShowNoticeAsync(firstError.Title, firstError.Message);
             return;
         }
@@ -144,17 +146,21 @@ public partial class NewAvaClientViewModel : ObservableObject, INotifyPropertyCh
 
         await LogSinkService.WriteAsync(LogLevel.Debug, "[NewClient.SaveAsync] Sanitize email addresses.");
 
-        // sanitize the country‐code fields (only before saving)
+        // sanitize country‐code and phone fields (only before saving)
         Client.ContactPersonCountryCode = DataValidator.ReturnOnlyCountryCode(Client.ContactPersonCountryCode);
         Client.BillingPersonCountryCode = DataValidator.ReturnOnlyCountryCode(Client.BillingPersonCountryCode);
         Client.AdminPersonCountryCode = DataValidator.ReturnOnlyCountryCode(Client.AdminPersonCountryCode);
 
-        await LogSinkService.WriteAsync(LogLevel.Debug, "[NewClient.SaveAsync] Sanitize the country‐code fields.");
+        Client.ContactPersonPhone = DataValidator.CleanPhoneNumber(Client.ContactPersonPhone);
+        Client.BillingPersonPhone = DataValidator.CleanPhoneNumber(Client.BillingPersonPhone);
+        Client.AdminPersonPhone = DataValidator.CleanPhoneNumber(Client.AdminPersonPhone);
+
+        await LogSinkService.WriteAsync(LogLevel.Debug, "[NewClient.SaveAsync] Sanitize the phone number values.");
 
         // save the data to a tmp file (debug)
-        if (File.Exists(System.IO.Path.Combine(Microsoft.Maui.Storage.FileSystem.AppDataDirectory, "new_client.json")))
-            File.Delete(System.IO.Path.Combine(Microsoft.Maui.Storage.FileSystem.AppDataDirectory, "new_client.json"));
-        await SaveAsJsonAsync(Client, System.IO.Path.Combine(Microsoft.Maui.Storage.FileSystem.AppDataDirectory, "new_client.json"));
+        if (File.Exists(Path.Combine(FileSystem.AppDataDirectory, "new_client.json")))
+            File.Delete(Path.Combine(FileSystem.AppDataDirectory, "new_client.json"));
+        await SaveAsJsonAsync(Client, Path.Combine(FileSystem.AppDataDirectory, "new_client.json"));
 
         await LogSinkService.WriteAsync(LogLevel.Debug, "[NewClient.SaveAsync] Create json dump 'new_client.json'.");
 

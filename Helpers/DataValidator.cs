@@ -6,12 +6,24 @@ namespace AvaTerminal3.Helpers;
 public static class DataValidator
 {
     public static string? ReturnOnlyCountryCode(string? s)
-    {
-        if (s == null)
-            return null;
-        else
-            return Regex.Replace(s ?? "", @"\D", "");
-    }
+        => s is null
+        ? null
+        : Regex.Replace(s ?? "", @"\D", "");
+
+    /// <summary>
+    /// Removes all leading zeros from the string. 
+    /// If the input is null or empty, returns it unchanged.
+    /// </summary>
+    public static string? StripLeadingZeros(this string? s)
+        => string.IsNullOrEmpty(s) 
+            ? s 
+            : s.TrimStart('0');
+
+    public static string? CleanPhoneNumber(this string? s)
+        => s is null
+        ? null
+        : StripLeadingZeros(ReturnOnlyCountryCode(s));
+
 
     /// <summary>
     /// Validates the essential fields of an AvaClientDto.

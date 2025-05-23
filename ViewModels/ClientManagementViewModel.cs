@@ -1,67 +1,55 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Windows.Input;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.Controls;
 using AvaTerminal3.Services.Interfaces;
 using AvaTerminal3.Views.CLT.SubViews;
 
-namespace AvaTerminal3.ViewModels;
-
-public class ClientManagementViewModel : INotifyPropertyChanged
+namespace AvaTerminal3.ViewModels
 {
-    private readonly IAvaApiService _avaApiService;
-
-    private string _clientId = string.Empty;
-    private string _clientData = string.Empty;
-
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    public string ClientId
+    public partial class ClientManagementViewModel : ObservableObject
     {
-        get => _clientId;
-        set => SetField(ref _clientId, value);
-    }
+        private readonly IAvaApiService _avaApiService;
 
-    public string ClientData
-    {
-        get => _clientData;
-        set => SetField(ref _clientData, value);
-    }
-
-    public ICommand SearchCommand { get; }
-    public ICommand NewClientCommand { get; }
-
-    public ClientManagementViewModel(IAvaApiService avaApiService)
-    {
-        _avaApiService = avaApiService;
-        SearchCommand = new Command(async () => await SearchClientAsync());
-        NewClientCommand = new Command(async () => await OnNewClient());
-    }
-
-    private async Task SearchClientAsync()
-    {
-        if (!string.IsNullOrWhiteSpace(ClientId))
+        public ClientManagementViewModel(IAvaApiService avaApiService)
         {
+            _avaApiService = avaApiService;
+        }
+
+        [ObservableProperty]
+        private string clientId = string.Empty;
+
+        [ObservableProperty]
+        private string clientData = string.Empty;
+
+        [RelayCommand]
+        private async Task SearchClientAsync()
+        {
+            if (string.IsNullOrWhiteSpace(ClientId))
+                return;
+
             try
             {
-                ClientData = await _avaApiService.GetClientAsync(ClientId);
+                var data = await _avaApiService.GetClientAsync(ClientId);
+                ClientData = data;
+
+                if (!string.IsNullOrWhiteSpace(ClientData))
+                {
+                    // Navigate to existing client page when a result is found
+                    await Shell.Current.GoToAsync(nameof(ExistingAvaClientPage));
+                }
             }
             catch (Exception ex)
             {
                 ClientData = $"Error: {ex.Message}";
             }
         }
-    }
 
-    private async Task OnNewClient()
-    {
-        var currentApp = Application.Current;
-        var window = currentApp?.Windows.FirstOrDefault();
-
-        if (window is not null && window.Page is not null)
+        [RelayCommand]
+        private async Task NewClientAsync()
         {
-            bool confirmed = await window.Page.DisplayAlert(
+            bool confirmed = await Shell.Current.DisplayAlert(
                 "Create New Client",
-                "Before adding a new client, please search to ensure they don't already exist.",
+                "Search before creating a new client.",
                 "Continue",
                 "Search First");
 
@@ -69,16 +57,6 @@ public class ClientManagementViewModel : INotifyPropertyChanged
             {
                 await Shell.Current.GoToAsync(nameof(NewAvaClientPage));
             }
-        }
-    }
-
-
-    protected void SetField<T>(ref T field, T value, [CallerMemberName] string? propName = null)
-    {
-        if (!EqualityComparer<T>.Default.Equals(field, value))
-        {
-            field = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
         }
     }
 }

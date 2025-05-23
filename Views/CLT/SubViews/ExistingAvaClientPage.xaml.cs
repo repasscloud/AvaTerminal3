@@ -1,14 +1,14 @@
-// File: Views/CLT/SubViews/NewAvaClientPage.xaml.cs
+// File: Views/CLT/SubViews/ExistingAvaClientPage.xaml.cs
 using AvaTerminal3.ViewModels.CLT;
 
 namespace AvaTerminal3.Views.CLT.SubViews
 {
-    public partial class NewAvaClientPage : ContentPage
+    public partial class ExistingAvaClientPage : ContentPage
     {
         // 1) Strongly-typed, non-nullable ViewModel property
-        public NewAvaClientViewModel ViewModel { get; }
+        public ExistingAvaClientViewModel ViewModel { get; }
 
-        public NewAvaClientPage(NewAvaClientViewModel vm)
+        public ExistingAvaClientPage(ExistingAvaClientViewModel vm)
         {
             InitializeComponent();
 

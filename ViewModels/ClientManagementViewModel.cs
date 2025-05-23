@@ -1,25 +1,30 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Maui.Controls;
 using AvaTerminal3.Services.Interfaces;
 using AvaTerminal3.Views.CLT.SubViews;
+using AvaTerminal3.Models.Dto;
 
 namespace AvaTerminal3.ViewModels
 {
     public partial class ClientManagementViewModel : ObservableObject
     {
         private readonly IAvaApiService _avaApiService;
+        private readonly ISharedStateService _sharedStateService;
 
-        public ClientManagementViewModel(IAvaApiService avaApiService)
+        public ClientManagementViewModel(IAvaApiService avaApiService, ISharedStateService sharedStateService)
         {
             _avaApiService = avaApiService;
+            _sharedStateService = sharedStateService;
         }
+
+        [ObservableProperty]
+        private string errorMessage = string.Empty;
 
         [ObservableProperty]
         private string clientId = string.Empty;
 
         [ObservableProperty]
-        private string clientData = string.Empty;
+        private AvaClientDto clientData = new();
 
         [RelayCommand]
         private async Task SearchClientAsync()
@@ -29,18 +34,20 @@ namespace AvaTerminal3.ViewModels
 
             try
             {
-                var data = await _avaApiService.GetClientAsync(ClientId);
-                ClientData = data;
+                var data = await _avaApiService.GetAvaClientBySearchEverythingAsync(ClientId);
 
-                if (!string.IsNullOrWhiteSpace(ClientData))
+                if (data is not null)
                 {
+                    ClientData = data;
+                    _sharedStateService.SaveAvaClientDto(ClientData);
+                    
                     // Navigate to existing client page when a result is found
                     await Shell.Current.GoToAsync(nameof(ExistingAvaClientPage));
                 }
             }
             catch (Exception ex)
             {
-                ClientData = $"Error: {ex.Message}";
+                ErrorMessage = $"Error: {ex.Message}";
             }
         }
 

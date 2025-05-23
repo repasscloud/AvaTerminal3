@@ -9,7 +9,7 @@ public interface IAvaApiService
 
 
     Task<bool> CreateClientAsync(AvaClientDto client);
-    Task<AvaClientDto> GetClientByIdAsync(string clientId);
+    Task<AvaClientDto> GetAvaClientBySearchEverythingAsync(string searchValue);
     Task UpdateClientAsync(string clientId, AvaClientDto client);
 
 

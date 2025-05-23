@@ -14,6 +14,7 @@ public partial class AppShell : Shell
         // CLT
         Routing.RegisterRoute("ClientManagementPage", typeof(Views.CLT.ClientManagementPage));
         Routing.RegisterRoute(nameof(NewAvaClientPage), typeof(NewAvaClientPage));
+        Routing.RegisterRoute(nameof(ExistingAvaClientPage), typeof(ExistingAvaClientPage));
     }
 
     private void OnToggleThemeClicked(object sender, EventArgs e)

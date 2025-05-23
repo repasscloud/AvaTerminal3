@@ -59,8 +59,11 @@ public static class MauiProgram
         builder.Services.AddTransient<ClientManagementViewModel>();
         builder.Services.AddTransient<NewAvaClientPage>();
         builder.Services.AddTransient<NewAvaClientViewModel>();
+        builder.Services.AddTransient<ExistingAvaClientPage>();
+        builder.Services.AddTransient<ExistingAvaClientViewModel>();
 
         builder.Services.AddSingleton<IPopupService, Services.PopupService>();
+        builder.Services.AddSingleton<ISharedStateService, SharedStateService>();
 
         return builder.Build();
     }

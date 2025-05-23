@@ -72,10 +72,64 @@ public class AvaApiService : IAvaApiService
         return false;
     }
 
-
-    Task<AvaClientDto> IAvaApiService.GetClientByIdAsync(string clientId)
+    public async Task<AvaClientDto> GetAvaClientBySearchEverythingAsync(string searchValue)
     {
-        throw new NotImplementedException();
+        string loggingPrefix = $"[AvaApiService.GetAvaClientBySearchEverythingAsync]";
+        string apiEndpoint = $"/api/v1/avaclient/search-everything/{searchValue}";
+
+        await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} Starting ava client (ge) get process.");
+
+        // retrieve token from service
+        string jwtToken = await _authService.GetTokenAsync() ?? string.Empty;
+
+        if (!string.IsNullOrEmpty(jwtToken))
+        {
+            await LogSinkService.WriteAsync(LogLevel.Debug, $"{loggingPrefix} Obtained JWT token.");
+
+            try
+            {
+                using var request = new HttpRequestMessage(HttpMethod.Post, apiEndpoint);
+                // no request.Content = …, so we send an empty POST
+
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+
+                await LogSinkService.WriteAsync(LogLevel.Debug, $"{loggingPrefix} Sending POST request to {apiEndpoint} with search value: {searchValue}");
+
+                var response = await _http.SendAsync(request);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    await LogSinkService.WriteAsync(LogLevel.Error, $"{loggingPrefix} Failed to create client: {response.StatusCode} - {errorContent}");
+
+                    throw new HttpRequestException(
+                        $"SearchEverything API error {(int)response.StatusCode}: {errorContent}"
+                    );
+                }
+
+                await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} Client created/updated successfully. Response status: {response.StatusCode}");
+                
+                var dto = await response.Content
+                        .ReadFromJsonAsync<AvaClientDto>()
+                        ?? throw new InvalidOperationException("Empty response body");
+
+                return dto;
+            }
+            catch (Exception ex)
+            {
+                await LogSinkService.WriteAsync(LogLevel.Fatal, $"{loggingPrefix} Exception during client creation: {ex.Message}");
+                throw new HttpRequestException(
+                    $"SearchEverything API call failed: {ex.Message}", 
+                    ex              // preserve original as InnerException
+                );
+            }
+        }
+
+        await LogSinkService.WriteAsync(LogLevel.Error, $"{loggingPrefix} Missing or invalid JWT Token with value: '{jwtToken}'.");
+
+        throw new HttpRequestException(
+            $"SearchEverything API call failed: {loggingPrefix} Missing or invalid JWT Token with value: '{jwtToken}'."
+        );
     }
 
     Task IAvaApiService.UpdateClientAsync(string clientId, AvaClientDto client)

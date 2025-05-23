@@ -59,8 +59,20 @@ public partial class ExistingAvaClientViewModel : ObservableObject
         // select the DTO's existing code
         if (Client?.ContactPersonCountryCode is not null)
         {
-            SelectedDialCode = DialCodeList
+            ContactPersonSelectedDialCode = DialCodeList
                 .FirstOrDefault(x => x.CountryCode == Client.ContactPersonCountryCode);
+        }
+
+        if (Client?.BillingPersonCountryCode is not null)
+        {
+            BillingPersonSelectedDialCode = DialCodeList
+                .FirstOrDefault(x => x.CountryCode == Client.BillingPersonCountryCode);
+        }
+
+        if (Client?.AdminPersonCountryCode is not null)
+        {
+            AdminPersonSelectedDialCode = DialCodeList
+                .FirstOrDefault(x => x.CountryCode == Client.AdminPersonCountryCode);
         }
 
         OnPropertyChanged(nameof(TaxIdList));
@@ -282,6 +294,10 @@ public partial class ExistingAvaClientViewModel : ObservableObject
         ?? DateTime.UtcNow
             .ToLocalTime()
             .ToString("f");
+
+    public SupportedDialCodeDto? ContactPersonSelectedDialCode { get; private set; }
+    public SupportedDialCodeDto? BillingPersonSelectedDialCode { get; private set; }
+    public SupportedDialCodeDto? AdminPersonSelectedDialCode { get; private set; }
 
     public static Task SaveAsJsonAsync<T>(T obj, string path)
         => File.WriteAllTextAsync(path, JsonSerializer.Serialize(obj, new JsonSerializerOptions { WriteIndented = true }));

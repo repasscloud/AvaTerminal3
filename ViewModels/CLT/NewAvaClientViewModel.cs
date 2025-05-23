@@ -2,8 +2,10 @@
 using CommunityToolkit.Mvvm.Input;
 using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
-using AvaTerminal3.Models.Dto;                  // your DTO
-using AvaTerminal3.Services.Interfaces;         // IAvaApiService
+using AvaTerminal3.Models.Dto;
+using AvaTerminal3.Services.Interfaces;
+using System.Text.Json;
+using AvaTerminal3.Helpers;
 
 namespace AvaTerminal3.ViewModels.CLT;
 
@@ -124,12 +126,50 @@ public partial class NewAvaClientViewModel : ObservableObject, INotifyPropertyCh
     [RelayCommand]
     private async Task SaveAsync()
     {
+        // do client validation first, else return
+        var errors = DataValidator.ValidateAvaClientDto(Client);
+        var firstError = errors.FirstOrDefault(e => !e.isValid);
+
+        if (!firstError.isValid)
+        {
+            await _popupService.ShowNoticeAsync(firstError.Title, firstError.Message);
+            return;
+        }
+
+        await LogSinkService.WriteAsync(LogLevel.Debug, "[NewClient.SaveAsync] Client passed validations.");
+
+        Client.ContactPersonEmail = Client.ContactPersonEmail.SetLowerCase();
+        Client.BillingPersonEmail = Client.BillingPersonEmail.SetLowerCase();
+        Client.AdminPersonEmail = Client.AdminPersonEmail.SetLowerCase();
+
+        await LogSinkService.WriteAsync(LogLevel.Debug, "[NewClient.SaveAsync] Sanitize email addresses.");
+
+        // sanitize the country‐code fields (only before saving)
+        Client.ContactPersonCountryCode = DataValidator.ReturnOnlyCountryCode(Client.ContactPersonCountryCode);
+        Client.BillingPersonCountryCode = DataValidator.ReturnOnlyCountryCode(Client.BillingPersonCountryCode);
+        Client.AdminPersonCountryCode = DataValidator.ReturnOnlyCountryCode(Client.AdminPersonCountryCode);
+
+        await LogSinkService.WriteAsync(LogLevel.Debug, "[NewClient.SaveAsync] Sanitize the country‐code fields.");
+
+        // save the data to a tmp file (debug)
+        if (File.Exists(System.IO.Path.Combine(Microsoft.Maui.Storage.FileSystem.AppDataDirectory, "new_client.json")))
+            File.Delete(System.IO.Path.Combine(Microsoft.Maui.Storage.FileSystem.AppDataDirectory, "new_client.json"));
+        await SaveAsJsonAsync(Client, System.IO.Path.Combine(Microsoft.Maui.Storage.FileSystem.AppDataDirectory, "new_client.json"));
+
+        await LogSinkService.WriteAsync(LogLevel.Debug, "[NewClient.SaveAsync] Create json dump 'new_client.json'.");
+
         var ok = await _avaApiService.CreateClientAsync(Client);
+
         if (ok)
+        {
+            await LogSinkService.WriteAsync(LogLevel.Info, "[NewClient.SaveAsync] Record saved successfully to API.");
             await Shell.Current.GoToAsync("..");
+        }
         else
+        {
             await _popupService.ShowNoticeAsync(
                 "Error", "Unable to save client. Please try again.");
+        }
     }
 
     [RelayCommand]
@@ -205,5 +245,16 @@ public partial class NewAvaClientViewModel : ObservableObject, INotifyPropertyCh
     // - other stuff -
     public string SelectedCurrencyFlag
         => $"{Client?.DefaultCurrency?.ToLower()}.png";
+
+    public string LastUpdatedLocalTime =>
+        Client.LastUpdated?
+            .ToLocalTime()
+            .ToString("f")
+        ?? DateTime.UtcNow
+            .ToLocalTime()
+            .ToString("f");
+
+    public static Task SaveAsJsonAsync<T>(T obj, string path)
+        => File.WriteAllTextAsync(path, JsonSerializer.Serialize(obj, new JsonSerializerOptions { WriteIndented = true }));
 
 }

@@ -1,35 +1,50 @@
 // ViewModels/CLT/ExistingAvaClientViewModel.cs
-using CommunityToolkit.Mvvm.Input;
-using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using AvaTerminal3.Models.Dto;
 using AvaTerminal3.Services.Interfaces;
-using System.Text.Json;
 using AvaTerminal3.Helpers;
+using System.ComponentModel;
+using System.Text.Json;
 
 namespace AvaTerminal3.ViewModels.CLT;
 
-public partial class ExistingAvaClientViewModel : ObservableObject, INotifyPropertyChanged
+public partial class ExistingAvaClientViewModel : ObservableObject
 {
-    private readonly IAvaApiService _avaApiService;
-    private readonly IPopupService _popupService;
+    readonly IAvaApiService _avaApiService;
+    readonly IPopupService _popupService;
+    readonly ISharedStateService _sharedState;
 
-    public AvaClientDto Client { get; private set; } = new();
+    [ObservableProperty]
+    private AvaClientDto? client;
 
     // — lists fetched from API —
-    public List<string> TaxIdList { get; private set; } = new();
-    public List<string> CountryList { get; private set; } = new();
-    public List<string> DialCodeList { get; private set; } = new();
-    public List<string> CurrencyList { get; private set; } = new();
+    [ObservableProperty]
+    private List<string> taxIdList = new();
+
+    [ObservableProperty]
+    private List<string> countryList = new();
+
+    [ObservableProperty]
+    private List<string> currencyList = new();
+
+    // ← now strongly-typed
+    [ObservableProperty]
+    private List<SupportedDialCodeDto> dialCodeList = new();
 
     public ExistingAvaClientViewModel(
+        ISharedStateService sharedStateService,
         IAvaApiService avaApiService,
         IPopupService popupService)
     {
+        _sharedState  = sharedStateService;
         _avaApiService = avaApiService;
-        _popupService = popupService;
+        _popupService  = popupService;
 
-        // fire-and-forget load
+        // **pull it out of your singleton state service**
+        Client = _sharedState.ReadAvaClientDto();
+
+        // kick off the API‐backed lookups as before
         _ = LoadAsync();
     }
 
@@ -37,8 +52,16 @@ public partial class ExistingAvaClientViewModel : ObservableObject, INotifyPrope
     {
         TaxIdList = await _avaApiService.GetTaxIdsAsync();
         CountryList = await _avaApiService.GetAvailableCountriesAsync();
-        DialCodeList = await _avaApiService.GetCountryDialCodesAsync();
+        DialCodeList = await _avaApiService.GetCountryDialCodes2Async();
+
         CurrencyList = await _avaApiService.GetAvailableCurrencyCodesAsync();
+
+        // select the DTO's existing code
+        if (Client?.ContactPersonCountryCode is not null)
+        {
+            SelectedDialCode = DialCodeList
+                .FirstOrDefault(x => x.CountryCode == Client.ContactPersonCountryCode);
+        }
 
         OnPropertyChanged(nameof(TaxIdList));
         OnPropertyChanged(nameof(CountryList));

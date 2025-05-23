@@ -17,11 +17,21 @@ namespace AvaTerminal3.Views.CLT.SubViews
             BindingContext = vm;
         }
 
-        protected override void OnAppearing()
+        protected override async void OnAppearing()
         {
             base.OnAppearing();
-            // You can now safely refer to ViewModel without null checks.
-            // e.g. await ViewModel.LoadClientAsync(id);
+            if (ViewModel.Client is null)
+            {
+                // show bounce back message
+                await Shell.Current.DisplayAlert(
+                    "Malformed Client",
+                    "Search results of client are malformed.",
+                    "OK"
+                );
+
+                // go back
+                await Shell.Current.GoToAsync("..");
+            }
         }
     }
 }

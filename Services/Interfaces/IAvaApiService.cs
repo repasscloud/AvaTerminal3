@@ -18,4 +18,7 @@ public interface IAvaApiService
     Task<List<string>> GetAvailableCountriesAsync();
     Task<List<string>> GetCountryDialCodesAsync();
     Task<List<string>> GetAvailableCurrencyCodesAsync();
+
+    // for the ExistingAvaClientViewModel
+    Task<List<SupportedDialCodeDto>> GetCountryDialCodes2Async();
 }

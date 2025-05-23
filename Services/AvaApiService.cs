@@ -392,4 +392,68 @@ public class AvaApiService : IAvaApiService
             return new List<string> { "ERROR" };
         }
     }
+
+    public async Task<List<SupportedDialCodeDto>> GetCountryDialCodes2Async()
+    {
+        string loggingPrefix = $"[AvaApiService.GetCountryDialCodes2Async]";
+        await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} Starting available dial code retrieval.");
+
+        // get JWT
+        string jwtToken = await _authService.GetTokenAsync() ?? string.Empty;
+        if (string.IsNullOrEmpty(jwtToken))
+        {
+            await LogSinkService.WriteAsync(LogLevel.Error, $"{loggingPrefix} Missing or invalid JWT token.");
+            throw new HttpRequestException(
+                $"{loggingPrefix} Missing or invalid JWT token."
+            );
+        }
+
+        await LogSinkService.WriteAsync(LogLevel.Debug, $"{loggingPrefix} Obtained JWT token.");
+
+        try
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Get, "/api/v1/attrib/dialcodes");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+
+            await LogSinkService.WriteAsync(LogLevel.Debug,
+                $"{loggingPrefix} Sending GET to /api/v1/attrib/dialcodes");
+            var response = await _http.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                await LogSinkService.WriteAsync(LogLevel.Error,
+                    $"{loggingPrefix} GET failed: {response.StatusCode} – {errorContent}");
+                throw new HttpRequestException(
+                    $"{loggingPrefix} GET failed: {response.StatusCode} – {errorContent}"
+                );
+            }
+
+            // deserialize into your model
+            var dialList = await response.Content
+                                .ReadFromJsonAsync<List<SupportedDialCodeDto>>() 
+                            ?? new List<SupportedDialCodeDto>();
+
+            if (dialList.Count > 0)
+            {
+                await LogSinkService.WriteAsync(LogLevel.Info,
+                    $"{loggingPrefix} Retrieved {dialList.Count} dial codes successfully.");
+                return dialList;
+            }
+
+            await LogSinkService.WriteAsync(LogLevel.Error,
+                $"{loggingPrefix} No dial codes returned from API.");
+            throw new HttpRequestException(
+                $"{loggingPrefix} No dial codes returned from API."
+            );
+        }
+        catch (Exception ex)
+        {
+            await LogSinkService.WriteAsync(LogLevel.Fatal,
+                $"{loggingPrefix} Exception during GET: {ex.Message}");
+            throw new HttpRequestException(
+                $"{loggingPrefix} Exception during GET: {ex.Message}"
+            );
+        }
+    }
 }

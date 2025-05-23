@@ -18,7 +18,7 @@
                FontAttributes="Bold"
                FontSize="16"
                TextColor="{AppThemeBinding Light=#222222, Dark=White}" />
-            <Label Text="v1.2.59"
+            <Label Text="{Binding AppVersionInfo}"
                FontSize="16"
                TextColor="{AppThemeBinding Light=#222222, Dark=White}" />
         </HorizontalStackLayout>

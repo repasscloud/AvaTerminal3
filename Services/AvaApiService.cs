@@ -2,6 +2,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using AvaTerminal3.Helpers;
 using AvaTerminal3.Models.Dto;
+using AvaTerminal3.Models.Kernel.Client.Attribs;
 using AvaTerminal3.Services.Interfaces;
 
 namespace AvaTerminal3.Services;
@@ -80,5 +81,261 @@ public class AvaApiService : IAvaApiService
     Task IAvaApiService.UpdateClientAsync(string clientId, AvaClientDto client)
     {
         throw new NotImplementedException();
+    }
+
+    public async Task<List<string>> GetTaxIdsAsync()
+    {
+        string loggingPrefix = $"[AvaApiService.GetTaxIdsAsync]";
+        await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} Starting tax-ID retrieval.");
+
+        // get JWT
+        string jwtToken = await _authService.GetTokenAsync() ?? string.Empty;
+        if (string.IsNullOrEmpty(jwtToken))
+        {
+            await LogSinkService.WriteAsync(LogLevel.Error, $"{loggingPrefix} Missing or invalid JWT token.");
+            return new List<string> { "ERROR" };
+        }
+
+        await LogSinkService.WriteAsync(LogLevel.Debug, $"{loggingPrefix} Obtained JWT token.");
+
+        try
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Get, "/api/v1/attrib/taxids");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+
+            await LogSinkService.WriteAsync(LogLevel.Debug, $"{loggingPrefix} Sending GET to /api/v1/attrib/taxids");
+            var response = await _http.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                await LogSinkService.WriteAsync(LogLevel.Error,
+                    $"{loggingPrefix} GET failed: {response.StatusCode} – {errorContent}");
+                return new List<string> { "ERROR" };
+            }
+
+            // deserialize into your model
+            var items = await response.Content
+                                    .ReadFromJsonAsync<List<SupportedTaxId>>() 
+                        ?? new List<SupportedTaxId>();
+
+            // filter out any null/empty TaxIdType, and cast away the nullable
+            var taxTypes = items
+                .Where(x => !string.IsNullOrWhiteSpace(x.TaxIdType))
+                .Select(x => x.TaxIdType!)      
+                .ToList();
+
+            // if we got at least one, return it
+            if (taxTypes.Count > 0)
+            {
+                await LogSinkService.WriteAsync(
+                    LogLevel.Info,
+                    $"{loggingPrefix} Retrieved {taxTypes.Count} tax ID types successfully.");
+                return taxTypes;
+            }
+
+            // otherwise, fallback to an error indicator (or empty list, up to you)
+            await LogSinkService.WriteAsync(
+                LogLevel.Error,
+                $"{loggingPrefix} No tax ID types returned from API.");
+            return new List<string> { "ERROR" };
+        }
+        catch (Exception ex)
+        {
+            await LogSinkService.WriteAsync(LogLevel.Fatal,
+                $"{loggingPrefix} Exception during GET: {ex.Message}");
+            return new List<string> { "ERROR" };
+        }
+    }
+
+    public async Task<List<string>> GetAvailableCountriesAsync()
+    {
+        string loggingPrefix = $"[AvaApiService.GetAvailableCountriesAsync]";
+        await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} Starting available country retrieval.");
+
+        // get JWT
+        string jwtToken = await _authService.GetTokenAsync() ?? string.Empty;
+        if (string.IsNullOrEmpty(jwtToken))
+        {
+            await LogSinkService.WriteAsync(LogLevel.Error, $"{loggingPrefix} Missing or invalid JWT token.");
+            return new List<string> { "ERROR" };
+        }
+
+        await LogSinkService.WriteAsync(LogLevel.Debug, $"{loggingPrefix} Obtained JWT token.");
+
+        try
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Get, "/api/v1/attrib/countries");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+
+            await LogSinkService.WriteAsync(LogLevel.Debug, $"{loggingPrefix} Sending GET to /api/v1/attrib/countries");
+            var response = await _http.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                await LogSinkService.WriteAsync(LogLevel.Error,
+                    $"{loggingPrefix} GET failed: {response.StatusCode} – {errorContent}");
+                return new List<string> { "ERROR" };
+            }
+
+            // deserialize into your model
+            var items = await response.Content
+                                    .ReadFromJsonAsync<List<SupportedCountry>>() 
+                        ?? new List<SupportedCountry>();
+
+            // filter out any null/empty Country, and cast away the nullable
+            var countries = items
+                .Where(x => !string.IsNullOrWhiteSpace(x.Country))
+                .Select(x => x.Country!)      
+                .ToList();
+
+            // if we got at least one, return it
+            if (countries.Count > 0)
+            {
+                await LogSinkService.WriteAsync(
+                    LogLevel.Info,
+                    $"{loggingPrefix} Retrieved {countries.Count} countries successfully.");
+                return countries;
+            }
+
+            // otherwise, fallback to an error indicator (or empty list, up to you)
+            await LogSinkService.WriteAsync(
+                LogLevel.Error,
+                $"{loggingPrefix} No countries returned from API.");
+            return new List<string> { "ERROR" };
+        }
+        catch (Exception ex)
+        {
+            await LogSinkService.WriteAsync(LogLevel.Fatal,
+                $"{loggingPrefix} Exception during GET: {ex.Message}");
+            return new List<string> { "ERROR" };
+        }
+    }
+
+    public async Task<List<string>> GetCountryDialCodesAsync()
+    {
+        string loggingPrefix = $"[AvaApiService.GetCountryDialCodesAsync]";
+        await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} Starting available dial code retrieval.");
+
+        // get JWT
+        string jwtToken = await _authService.GetTokenAsync() ?? string.Empty;
+        if (string.IsNullOrEmpty(jwtToken))
+        {
+            await LogSinkService.WriteAsync(LogLevel.Error, $"{loggingPrefix} Missing or invalid JWT token.");
+            return new List<string> { "ERROR" };
+        }
+
+        await LogSinkService.WriteAsync(LogLevel.Debug, $"{loggingPrefix} Obtained JWT token.");
+
+        try
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Get, "/api/v1/attrib/dialcodes");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+
+            await LogSinkService.WriteAsync(LogLevel.Debug,
+                $"{loggingPrefix} Sending GET to /api/v1/attrib/dialcodes");
+            var response = await _http.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                await LogSinkService.WriteAsync(LogLevel.Error,
+                    $"{loggingPrefix} GET failed: {response.StatusCode} – {errorContent}");
+                return new List<string> { "ERROR" };
+            }
+
+            // deserialize into your model
+            var items = await response.Content
+                                    .ReadFromJsonAsync<List<SupportedDialCode>>() 
+                        ?? new List<SupportedDialCode>();
+
+            // format each as "(+<code>) <name>"
+            var dialList = items
+                .Select(x => $"(+{x.CountryCode}) {x.CountryName}")
+                .ToList();
+
+            if (dialList.Count > 0)
+            {
+                await LogSinkService.WriteAsync(LogLevel.Info,
+                    $"{loggingPrefix} Retrieved {dialList.Count} dial codes successfully.");
+                return dialList;
+            }
+
+            await LogSinkService.WriteAsync(LogLevel.Error,
+                $"{loggingPrefix} No dial codes returned from API.");
+            return new List<string> { "ERROR" };
+        }
+        catch (Exception ex)
+        {
+            await LogSinkService.WriteAsync(LogLevel.Fatal,
+                $"{loggingPrefix} Exception during GET: {ex.Message}");
+            return new List<string> { "ERROR" };
+        }
+    }
+
+    public async Task<List<string>> GetAvailableCurrencyCodesAsync()
+    {
+        string loggingPrefix = $"[AvaApiService.GetAvailableCurrencyCodesAsync";
+        await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} Starting currency code retrieval.");
+
+        // get JWT
+        string jwtToken = await _authService.GetTokenAsync() ?? string.Empty;
+        if (string.IsNullOrEmpty(jwtToken))
+        {
+            await LogSinkService.WriteAsync(LogLevel.Error, $"{loggingPrefix} Missing or invalid JWT token.");
+            return new List<string> { "ERROR" };
+        }
+
+        await LogSinkService.WriteAsync(LogLevel.Debug, $"{loggingPrefix} Obtained JWT token.");
+
+        try
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Get, "/api/v1/attrib/currencies");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+
+            await LogSinkService.WriteAsync(LogLevel.Debug, $"{loggingPrefix} Sending GET to /api/v1/attrib/currencies");
+            var response = await _http.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                await LogSinkService.WriteAsync(LogLevel.Error,
+                    $"{loggingPrefix} GET failed: {response.StatusCode} – {errorContent}");
+                return new List<string> { "ERROR" };
+            }
+
+            // deserialize into your model
+            var items = await response.Content
+                                    .ReadFromJsonAsync<List<SupportedCurrency>>() 
+                        ?? new List<SupportedCurrency>();
+
+            // filter out any null/empty Iso4217, and cast away the nullable
+            var currencyCodes = items
+                .Where(x => !string.IsNullOrWhiteSpace(x.Iso4217))
+                .Select(x => x.Iso4217!)      
+                .ToList();
+
+            // if we got at least one, return it
+            if (currencyCodes.Count > 0)
+            {
+                await LogSinkService.WriteAsync(
+                    LogLevel.Info,
+                    $"{loggingPrefix} Retrieved {currencyCodes.Count} currency codes successfully.");
+                return currencyCodes;
+            }
+
+            // otherwise, fallback to an error indicator (or empty list, up to you)
+            await LogSinkService.WriteAsync(
+                LogLevel.Error,
+                $"{loggingPrefix} No currency codes returned from API.");
+            return new List<string> { "ERROR" };
+        }
+        catch (Exception ex)
+        {
+            await LogSinkService.WriteAsync(LogLevel.Fatal,
+                $"{loggingPrefix} Exception during GET: {ex.Message}");
+            return new List<string> { "ERROR" };
+        }
     }
 }

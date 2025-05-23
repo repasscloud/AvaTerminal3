@@ -26,6 +26,21 @@
                     CornerRadius="10"
                     HorizontalOptions="Start"
                     Style="{x:Null}" />
+
+            <!-- NEW Button to show loading popup -->
+            <Button Text="Show Loading Popup (10s)"
+                    Clicked="ShowLoadingPopup_Clicked"
+                    BackgroundColor="DarkGreen"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    HeightRequest="48" />
+
+            <Button Text="Delete Log File"
+                Clicked="Button_Clicked1"
+                BackgroundColor="DarkSlateGray"
+                TextColor="White"
+                FontAttributes="Bold"
+                HeightRequest="48" />
         </VerticalStackLayout>
 
         <!-- Bottom Clock Bar -->

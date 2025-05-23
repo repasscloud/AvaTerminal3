@@ -136,10 +136,10 @@ public class AvaClientDto
     [MaxLength(14)]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     [JsonPropertyName("defaultTravelPolicyId")]
-    public string? DefaultTravelPolicyId { get; set; }  = Nanoid.Generate(Nanoid.Alphabets.HexadecimalUppercase, 14);
+    public string DefaultTravelPolicyId { get; set; } = Nanoid.Generate(Nanoid.Alphabets.HexadecimalUppercase, 14);
 
     [MaxLength(14)]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     [JsonPropertyName("licenseAgreementId")]
-    public string? LicenseAgreementId { get; set; }  = Nanoid.Generate(Nanoid.Alphabets.HexadecimalUppercase, 14);
+    public string LicenseAgreementId { get; set; } = Nanoid.Generate(Nanoid.Alphabets.HexadecimalUppercase, 14);
 }

@@ -1,293 +1,266 @@
-// File: ViewModels/CLT/NewAvaClientViewModel.cs
+// ViewModels/CLT/NewAvaClientViewModel.cs
+using CommunityToolkit.Mvvm.Input;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Windows.Input;
-using AvaTerminal3.Helpers;
+using CommunityToolkit.Mvvm.ComponentModel;
 using AvaTerminal3.Models.Dto;
 using AvaTerminal3.Services.Interfaces;
+using System.Text.Json;
+using AvaTerminal3.Helpers;
 
 namespace AvaTerminal3.ViewModels.CLT;
 
-public class NewAvaClientViewModel : INotifyPropertyChanged
+public partial class NewAvaClientViewModel : ObservableObject, INotifyPropertyChanged
 {
     private readonly IAvaApiService _avaApiService;
+    private readonly IPopupService _popupService;
 
-    public event PropertyChangedEventHandler? PropertyChanged;
+    public AvaClientDto Client { get; private set; } = new();
 
-    private AvaClientDto _client = new();
-    public AvaClientDto Client
-    {
-        get => _client;
-        set => SetField(ref _client, value);
-    }
+    // — lists fetched from API —
+    public List<string> TaxIdList { get; private set; } = new();
+    public List<string> CountryList { get; private set; } = new();
+    public List<string> DialCodeList { get; private set; } = new();
+    public List<string> CurrencyList { get; private set; } = new();
 
-    // billing copy check box
-    private bool _isBillingPersonSameAsContact;
-    public bool IsBillingPersonSameAsContact
-    {
-        get => _isBillingPersonSameAsContact;
-        set
-        {
-            if (_isBillingPersonSameAsContact != value)
-            {
-                _isBillingPersonSameAsContact = value;
-                OnPropertyChanged();
-
-                if (value)
-                {
-                    CopyContactToBilling();
-                }
-            }
-        }
-    }
-
-    // admin copy check box
-    private bool _isAdminPersonSameAsContact;
-    public bool IsAdminPersonSameAsContact
-    {
-        get => _isAdminPersonSameAsContact;
-        set
-        {
-            if (_isAdminPersonSameAsContact != value)
-            {
-                _isAdminPersonSameAsContact = value;
-                OnPropertyChanged();
-
-                if (value)
-                {
-                    CopyContactToAdmin();
-                }
-            }
-        }
-    }
-
-    public string? LastUpdatedLocalTime =>
-        Client?.LastUpdated.HasValue == true
-            ? Client.LastUpdated.Value.ToLocalTime().ToString("yyyy-MM-dd HH:mm")
-            : null;
-
-    public ICommand SaveCommand { get; }
-    public ICommand CancelCommand { get; }
-
-    // Address.Country
-    public List<string> CountryList { get; } = CountryHelper.GetCountryList();
-    public string? SelectedCountry
-    {
-        get => Client.Country;
-        set
-        {
-            if (Client.Country != value)
-            {
-                Client.Country = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedCountry)));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Client)));
-            }
-        }
-    }
-
-    // Tax.Registration
-    public List<string> TaxRegistrationList { get; } = TaxRegistrationHelper.GetTaxRegistrationList();
-    public string? SelectedTaxRegistration
-    {
-        get => Client.TaxIdType;
-        set
-        {
-            if (Client.TaxIdType != value)
-            {
-                Client.TaxIdType = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedTaxRegistration)));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Client)));
-            }
-        }
-    }
-
-    public List<string> CurrencyDisplayList { get; } = CurrencyFlagHelper.GetCurrencyDisplayList();
-
-    public string? SelectedCurrencyDisplay
-    {
-        get => CurrencyDisplayList.FirstOrDefault(item =>
-            item.StartsWith(Client.DefaultCurrency ?? "", StringComparison.OrdinalIgnoreCase));
-        set
-        {
-            var currencyCode = CurrencyFlagHelper.GetCurrencyCodeFromDisplay(value ?? "");
-            if (Client.DefaultCurrency != currencyCode)
-            {
-                Client.DefaultCurrency = currencyCode;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedCurrencyDisplay)));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Client)));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedCurrencyFlag)));
-            }
-        }
-    }
-
-    public string? SelectedCurrencyFlag =>
-        CurrencyFlagHelper.GetFlagImage(Client.DefaultCurrency ?? "");
-
-    public List<string> CountryDisplayList { get; } = CountryCodeHelper.GetCountryDisplayList();
-
-    public string? SelectedContactCountryDisplay
-    {
-        get => CountryDisplayList.FirstOrDefault(item =>
-            item.Contains(Client.ContactPersonCountryCode ?? ""));
-        set
-        {
-            var dialCode = CountryCodeHelper.GetDialCodeFromDisplay(value ?? "");
-            if (Client.ContactPersonCountryCode != dialCode)
-            {
-                Client.ContactPersonCountryCode = dialCode;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedContactCountryDisplay)));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Client)));
-            }
-        }
-    }
-
-    public string? SelectedBillingCountryDisplay
-    {
-        get => CountryDisplayList.FirstOrDefault(item =>
-            item.Contains(Client.BillingPersonCountryCode ?? ""));
-        set
-        {
-            var dialCode = CountryCodeHelper.GetDialCodeFromDisplay(value ?? "");
-            if (Client.BillingPersonCountryCode != dialCode)
-            {
-                Client.BillingPersonCountryCode = dialCode;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedBillingCountryDisplay)));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Client)));
-            }
-        }
-    }
-
-    public string? SelectedAdminCountryDisplay
-    {
-        get => CountryDisplayList.FirstOrDefault(item =>
-            item.Contains(Client.AdminPersonCountryCode ?? ""));
-        set
-        {
-            var dialCode = CountryCodeHelper.GetDialCodeFromDisplay(value ?? "");
-            if (Client.AdminPersonCountryCode != dialCode)
-            {
-                Client.AdminPersonCountryCode = dialCode;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedAdminCountryDisplay)));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Client)));
-            }
-        }
-    }
-
-
-    public NewAvaClientViewModel(IAvaApiService avaApiService)
+    public NewAvaClientViewModel(
+        IAvaApiService avaApiService,
+        IPopupService popupService)
     {
         _avaApiService = avaApiService;
-        SaveCommand = new Command(async () => await SaveClientAsync());
-        CancelCommand = new Command(async () =>
+        _popupService = popupService;
+
+        // fire-and-forget load
+        _ = LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        TaxIdList = await _avaApiService.GetTaxIdsAsync();
+        CountryList = await _avaApiService.GetAvailableCountriesAsync();
+        DialCodeList = await _avaApiService.GetCountryDialCodesAsync();
+        CurrencyList = await _avaApiService.GetAvailableCurrencyCodesAsync();
+
+        OnPropertyChanged(nameof(TaxIdList));
+        OnPropertyChanged(nameof(CountryList));
+        OnPropertyChanged(nameof(DialCodeList));
+        OnPropertyChanged(nameof(CurrencyList));
+    }
+
+    // — commands to pop up each selector —
+
+    [RelayCommand]
+    private async Task SelectTaxIdAsync()
+    {
+        var sel = await _popupService.ShowSelectAsync(
+            "Select Tax ID", TaxIdList, Client.TaxId);
+        if (sel is not null)
         {
-            if (Shell.Current.Navigation.NavigationStack.Count > 1)
-                await Shell.Current.Navigation.PopAsync(); // smoother back animation
-            else
-                await Shell.Current.GoToAsync(".."); // fallback in case it's a root
-        });
+            Client.TaxIdType = sel;
+            OnPropertyChanged(nameof(Client));
+        }
     }
 
-    private void CopyContactToBilling()
+    [RelayCommand]
+    private async Task SelectCountryAsync()
     {
-        Client.BillingPersonFirstName = Client.ContactPersonFirstName;
-        Client.BillingPersonLastName = Client.ContactPersonLastName;
-        Client.BillingPersonJobTitle = Client.ContactPersonJobTitle;
-        Client.BillingPersonEmail = Client.ContactPersonEmail;
-        Client.BillingPersonCountryCode = Client.ContactPersonCountryCode;
-        Client.BillingPersonPhone = Client.ContactPersonPhone;
-
-        // Add more mappings here if needed...
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Client)));
-    }
-
-    private void CopyContactToAdmin()
-    {
-        Client.AdminPersonFirstName = Client.ContactPersonFirstName;
-        Client.AdminPersonLastName = Client.ContactPersonLastName;
-        Client.AdminPersonJobTitle = Client.ContactPersonJobTitle;
-        Client.AdminPersonEmail = Client.ContactPersonEmail;
-        Client.AdminPersonCountryCode = Client.ContactPersonCountryCode;
-        Client.AdminPersonPhone = Client.ContactPersonPhone;
-
-        // Add more mappings here if needed...
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Client)));
-    }
-
-
-    // creating a new AvaClientDto will automatically assign:
-    //  - .ClientId
-    //  - .LicenseAgreementId (this will be set to pending)
-    //  - .DefaultTravelPolicyId (this will be set to all defaults, takes details from the AvaClient record too)
-    public void NewClient()
-    {
-        Client = new AvaClientDto
+        var sel = await _popupService.ShowSelectAsync(
+            "Select Country", CountryList, Client.Country);
+        if (sel is not null)
         {
-            ContactPersonCountryCode = CountryCodeHelper.GetDialCodeFromDisplay(CountryDisplayList.FirstOrDefault() ?? ""),
-            BillingPersonCountryCode = CountryCodeHelper.GetDialCodeFromDisplay(CountryDisplayList.FirstOrDefault() ?? ""),
-            AdminPersonCountryCode = CountryCodeHelper.GetDialCodeFromDisplay(CountryDisplayList.FirstOrDefault() ?? "")
-        };
-
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedContactCountryDisplay)));
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedBillingCountryDisplay)));
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedAdminCountryDisplay)));
+            Client.Country = sel;
+            OnPropertyChanged(nameof(Client));
+        }
     }
 
-    public async Task SaveClientAsync()
+    [RelayCommand]
+    private async Task SelectContactDialCodeAsync()
     {
-        // response is bool, true is OK - navigate to main page again
-        var response = await _avaApiService.CreateClientAsync(Client);
-        if (response)
+        var sel = await _popupService.ShowSelectAsync(
+            "Contact Dial Code", DialCodeList, Client.ContactPersonCountryCode);
+        if (sel is not null)
         {
-            if (Shell.Current.Navigation.NavigationStack.Count > 1)
-                await Shell.Current.Navigation.PopAsync(); // smoother back animation
-            else
-                await Shell.Current.GoToAsync(".."); // fallback in case it's a root
+            Client.ContactPersonCountryCode = sel;
+            OnPropertyChanged(nameof(Client));
+        }
+    }
+
+    [RelayCommand]
+    private async Task SelectBillingDialCodeAsync()
+    {
+        var sel = await _popupService.ShowSelectAsync(
+            "Billing Dial Code", DialCodeList, Client.BillingPersonCountryCode);
+        if (sel is not null)
+        {
+            Client.BillingPersonCountryCode = sel;
+            OnPropertyChanged(nameof(Client));
+        }
+    }
+
+    [RelayCommand]
+    private async Task SelectAdminDialCodeAsync()
+    {
+        var sel = await _popupService.ShowSelectAsync(
+            "Admin Dial Code", DialCodeList, Client.AdminPersonCountryCode);
+        if (sel is not null)
+        {
+            Client.AdminPersonCountryCode = sel;
+            OnPropertyChanged(nameof(Client));
+        }
+    }
+
+    [RelayCommand]
+    private async Task SelectCurrencyAsync()
+    {
+        var sel = await _popupService.ShowSelectAsync(
+            "Select Currency", CurrencyList, Client.DefaultCurrency);
+        if (sel is not null)
+        {
+            Client.DefaultCurrency = sel;
+            OnPropertyChanged(nameof(Client));
+            OnPropertyChanged(nameof(SelectedCurrencyFlag));
+        }
+    }
+
+    // — save & cancel commands —
+
+    [RelayCommand]
+    private async Task SaveAsync()
+    {
+        // do client validation first, else return
+        var errors = DataValidator.ValidateAvaClientDto(Client);
+        var firstError = errors.FirstOrDefault(e => !e.isValid);
+
+        if (!string.IsNullOrEmpty(firstError.Title))
+        {
+            // a real error
+            await LogSinkService.WriteAsync(LogLevel.Warn, $"[NewClient.SaveAsync] Error saving record '{firstError.Title}' with message '{firstError.Message}'.");
+            await _popupService.ShowNoticeAsync(firstError.Title, firstError.Message);
+            return;
+        }
+
+        await LogSinkService.WriteAsync(LogLevel.Debug, "[NewClient.SaveAsync] Client passed validations.");
+
+        Client.ContactPersonEmail = Client.ContactPersonEmail.SetLowerCase();
+        Client.BillingPersonEmail = Client.BillingPersonEmail.SetLowerCase();
+        Client.AdminPersonEmail = Client.AdminPersonEmail.SetLowerCase();
+
+        await LogSinkService.WriteAsync(LogLevel.Debug, "[NewClient.SaveAsync] Sanitize email addresses.");
+
+        // sanitize country‐code and phone fields (only before saving)
+        Client.ContactPersonCountryCode = DataValidator.ReturnOnlyCountryCode(Client.ContactPersonCountryCode);
+        Client.BillingPersonCountryCode = DataValidator.ReturnOnlyCountryCode(Client.BillingPersonCountryCode);
+        Client.AdminPersonCountryCode = DataValidator.ReturnOnlyCountryCode(Client.AdminPersonCountryCode);
+
+        Client.ContactPersonPhone = DataValidator.CleanPhoneNumber(Client.ContactPersonPhone);
+        Client.BillingPersonPhone = DataValidator.CleanPhoneNumber(Client.BillingPersonPhone);
+        Client.AdminPersonPhone = DataValidator.CleanPhoneNumber(Client.AdminPersonPhone);
+
+        await LogSinkService.WriteAsync(LogLevel.Debug, "[NewClient.SaveAsync] Sanitize the phone number values.");
+
+        // save the data to a tmp file (debug)
+        if (File.Exists(Path.Combine(FileSystem.AppDataDirectory, "new_client.json")))
+            File.Delete(Path.Combine(FileSystem.AppDataDirectory, "new_client.json"));
+        await SaveAsJsonAsync(Client, Path.Combine(FileSystem.AppDataDirectory, "new_client.json"));
+
+        await LogSinkService.WriteAsync(LogLevel.Debug, "[NewClient.SaveAsync] Create json dump 'new_client.json'.");
+
+        var ok = await _avaApiService.CreateClientAsync(Client);
+
+        if (ok)
+        {
+            await LogSinkService.WriteAsync(LogLevel.Info, "[NewClient.SaveAsync] Record saved successfully to API.");
+            await Shell.Current.GoToAsync("..");
         }
         else
         {
-            var currentApp = Application.Current;
-            var window = currentApp?.Windows.FirstOrDefault();
-            if (window is not null && window.Page is not null)
-            {
-                await window.Page.DisplayAlert(
-                    "New Client Error",
-                    "Unable to create new Ava Client. Try again or contact support.",
-                    "OK"
-                );
-            }
+            await _popupService.ShowNoticeAsync(
+                "Error", "Unable to save client. Please try again.");
         }
-        // var dumpFilePath = await LogSinkService.ExportToTempJsonAsync(Client);
-
-        // var currentApp = Application.Current;
-        // var window = currentApp?.Windows.FirstOrDefault();
-
-        // if (window is not null && window.Page is not null)
-        // {
-        //     bool confirmed = await window.Page.DisplayAlert(
-        //         "Dump Created",
-        //         $"{dumpFilePath}",
-        //         "DO NOT CLICK",
-        //         "OK");
-
-        //     if (confirmed)
-        //     {
-        //         if (Shell.Current.Navigation.NavigationStack.Count > 1)
-        //             await Shell.Current.Navigation.PopAsync(); // smoother back animation
-        //         else
-        //             await Shell.Current.GoToAsync(".."); // fallback in case it's a root
-        //     }
-        // }
     }
 
-    private void SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+    [RelayCommand]
+    private async Task CancelAsync()
     {
-        if (!EqualityComparer<T>.Default.Equals(field, value))
-        {
-            field = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        await Shell.Current.GoToAsync("..");
     }
 
-    private void OnPropertyChanged([CallerMemberName] string? name = null) =>
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+    // - copy/unset billing contact
+
+    [ObservableProperty]
+    private bool isBillingPersonSameAsContact;
+
+    // partial method is called whenever that bool changes:
+    partial void OnIsBillingPersonSameAsContactChanged(bool value)
+    {
+        if (value)
+        {
+            // copy from contact
+            Client.BillingPersonFirstName = Client.ContactPersonFirstName;
+            Client.BillingPersonLastName = Client.ContactPersonLastName;
+            Client.BillingPersonCountryCode = Client.ContactPersonCountryCode;
+            Client.BillingPersonPhone = Client.ContactPersonPhone;
+            Client.BillingPersonEmail = Client.ContactPersonEmail;
+            Client.BillingPersonJobTitle = Client.ContactPersonJobTitle;
+        }
+        else
+        {
+            // clear out or leave as-is
+            Client.BillingPersonFirstName = string.Empty;
+            Client.BillingPersonLastName = string.Empty;
+            Client.BillingPersonCountryCode = null;
+            Client.BillingPersonPhone = string.Empty;
+            Client.BillingPersonEmail = string.Empty;
+            Client.BillingPersonJobTitle = string.Empty;
+        }
+
+        // notify the UI that the Client data has changed:
+        OnPropertyChanged(nameof(Client));
+    }
+
+    [ObservableProperty]
+    private bool isAdminPersonSameAsContact;
+
+    // partial method is called whenever that bool changes:
+    partial void OnIsAdminPersonSameAsContactChanged(bool value)
+    {
+        if (value)
+        {
+            // copy from contact
+            Client.AdminPersonFirstName = Client.ContactPersonFirstName;
+            Client.AdminPersonLastName = Client.ContactPersonLastName;
+            Client.AdminPersonCountryCode = Client.ContactPersonCountryCode;
+            Client.AdminPersonPhone = Client.ContactPersonPhone;
+            Client.AdminPersonEmail = Client.ContactPersonEmail;
+            Client.AdminPersonJobTitle = Client.ContactPersonJobTitle;
+        }
+        else
+        {
+            // clear out or leave as-is
+            Client.AdminPersonFirstName = string.Empty;
+            Client.AdminPersonLastName = string.Empty;
+            Client.AdminPersonCountryCode = null;
+            Client.AdminPersonPhone = string.Empty;
+            Client.AdminPersonEmail = string.Empty;
+            Client.AdminPersonJobTitle = string.Empty;
+        }
+
+        // notify the UI that the Client data has changed:
+        OnPropertyChanged(nameof(Client));
+    }
+
+    // - other stuff -
+    public string SelectedCurrencyFlag
+        => $"{Client?.DefaultCurrency?.ToLower()}.png";
+
+    public string LastUpdatedLocalTime =>
+        Client.LastUpdated?
+            .ToLocalTime()
+            .ToString("f")
+        ?? DateTime.UtcNow
+            .ToLocalTime()
+            .ToString("f");
+
+    public static Task SaveAsJsonAsync<T>(T obj, string path)
+        => File.WriteAllTextAsync(path, JsonSerializer.Serialize(obj, new JsonSerializerOptions { WriteIndented = true }));
+
 }

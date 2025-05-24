@@ -9,8 +9,8 @@ public interface IAvaApiService
 
 
     Task<bool> CreateClientAsync(AvaClientDto client);
-    Task<AvaClientDto> GetClientByIdAsync(string clientId);
-    Task UpdateClientAsync(string clientId, AvaClientDto client);
+    Task<AvaClientDto> GetAvaClientBySearchEverythingAsync(string searchValue);
+    Task<bool> UpdateClientAsync(AvaClientDto client);
 
 
     // for the NewAvaClientViewModel
@@ -18,4 +18,9 @@ public interface IAvaApiService
     Task<List<string>> GetAvailableCountriesAsync();
     Task<List<string>> GetCountryDialCodesAsync();
     Task<List<string>> GetAvailableCurrencyCodesAsync();
+
+    // for the ExistingAvaClientViewModel
+    Task<List<SupportedDialCodeDto>> GetCountryDialCodes2Async();
+
+    Task<string> MatchCountryDialCodeStringAsync(string? dialCode);
 }

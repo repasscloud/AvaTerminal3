@@ -26,7 +26,7 @@
 
                 <!-- Search Button -->
                 <Button Text="🔍 Search"
-                    Command="{Binding SearchCommand}"
+                    Command="{Binding SearchClientCommand}"
                     BackgroundColor="#007bff"
                     TextColor="White"
                     CornerRadius="8"
@@ -42,8 +42,10 @@
             </HorizontalStackLayout>
 
             <!-- Output area -->
-            <Label Text="{Binding ClientData}"
-                   FontSize="14"
+            <Label Text="{Binding ErrorMessage}"
+                   TextColor="Red"
+                   FontSize="24"
+                   FontAttributes="Italic"
                    LineBreakMode="WordWrap"
                    Margin="0,12,0,0" />
 

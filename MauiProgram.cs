@@ -1,4 +1,5 @@
-﻿using AvaTerminal3.Services;
+﻿using AvaTerminal3.Helpers;
+using AvaTerminal3.Services;
 using AvaTerminal3.Services.Interfaces;
 using AvaTerminal3.ViewModels;
 using AvaTerminal3.ViewModels.CLT;
@@ -33,17 +34,23 @@ public static class MauiProgram
             client.DefaultRequestHeaders.Add("Accept", "application/json");
         });
 
+        builder.Services.AddHttpClient("DevAvaAPI", client =>
+        {
+            client.BaseAddress = new Uri("http://localhost:5165");
+            client.DefaultRequestHeaders.Add("Accept", "application/json");
+        });
+
         builder.Services.AddHttpClient("ExternalAPI", client =>
         {
             client.BaseAddress = new Uri("https://api.external.com/");
             client.DefaultRequestHeaders.Add("Accept", "application/json");
         });
 
-		builder.Services.AddHttpClient("GithubCDN", client =>
+        builder.Services.AddHttpClient("GithubCDN", client =>
         {
             client.BaseAddress = new Uri("https://raw.githubusercontent.com/");
             client.DefaultRequestHeaders.UserAgent.ParseAdd("AvaTerminal2GithubCDNTool/1.0 (+https://github.com/repasscloud/AvaTerminal2)");
-			client.DefaultRequestHeaders.Add("Accept", "application/json");
+            client.DefaultRequestHeaders.Add("Accept", "application/json");
             client.Timeout = TimeSpan.FromSeconds(30);
         });
 
@@ -65,6 +72,13 @@ public static class MauiProgram
         builder.Services.AddSingleton<IPopupService, Services.PopupService>();
         builder.Services.AddSingleton<ISharedStateService, SharedStateService>();
 
-        return builder.Build();
+        //return builder.Build();
+        var app = builder.Build();
+
+        // after Build() the container is ready:
+        var factory = app.Services.GetRequiredService<IHttpClientFactory>();
+        ApiClient.Initialize(factory);
+
+        return app;
     }
 }

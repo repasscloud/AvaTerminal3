@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using AvaTerminal3.Models.Dto;
 using AvaTerminal3.Services.Interfaces;
 using System.ComponentModel;
+using AvaTerminal3.Helpers;
 
 namespace AvaTerminal3.ViewModels.CLT;
 
@@ -43,7 +44,8 @@ public partial class ExistingAvaClientViewModel : ObservableObject, INotifyPrope
     }
 
     public bool IsEditable => !IsLocked;
-    public string LockButtonText => IsLocked ? "Unlock" : "Lock";
+    public bool IsSavable => IsLocked;
+    public string LockButtonText => IsLocked ? "🔓 Unlock" : "🔐 Lock";
 
     private async Task LoadAsync()
     {
@@ -65,6 +67,7 @@ public partial class ExistingAvaClientViewModel : ObservableObject, INotifyPrope
     {
         IsLocked = !IsLocked;
         OnPropertyChanged(nameof(IsEditable));
+        OnPropertyChanged(nameof(IsSavable));
         OnPropertyChanged(nameof(LockButtonText));
     }
 
@@ -151,10 +154,39 @@ public partial class ExistingAvaClientViewModel : ObservableObject, INotifyPrope
     [RelayCommand]
     private async Task SaveAsync()
     {
-        // you can replicate New’s validation/sanitisation here if desired
+        string loggingPrefix = "[ExistingAvaClient.SaveAsync]";
 
-        await _api.UpdateClientAsync(Client.ClientId, Client);
-        await _popup.ShowNoticeAsync("Saved", "Client updated successfully.");
+        var errors = DataValidator.ValidateAvaClientDto(Client);
+        var firstError = errors.FirstOrDefault(e => !e.isValid);
+
+        if (!string.IsNullOrEmpty(firstError.Title))
+        {
+            // a real error
+            await LogSinkService.WriteAsync(LogLevel.Warn, $"{loggingPrefix} Error saving record '{firstError.Title}' with message '{firstError.Message}'.");
+            await _popup.ShowNoticeAsync(firstError.Title, firstError.Message);
+            return;
+        }
+
+        await LogSinkService.WriteAsync(LogLevel.Debug, $"{loggingPrefix} Client passed validations.");
+
+        Client.ContactPersonEmail = Client.ContactPersonEmail.SetLowerCase();
+        Client.BillingPersonEmail = Client.BillingPersonEmail.SetLowerCase();
+        Client.AdminPersonEmail = Client.AdminPersonEmail.SetLowerCase();
+
+        await LogSinkService.WriteAsync(LogLevel.Debug, $"{loggingPrefix} Sanitize email addresses.");
+
+        var ok = await _api.UpdateClientAsync(Client);
+
+        if (ok)
+        {
+            await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} Record updated successfully to API.");
+            await Shell.Current.GoToAsync("..");
+        }
+        else
+        {
+            await _popup.ShowNoticeAsync(
+                "Error", "Unable to save client. Please try again.");
+        }
     }
 
     [RelayCommand]

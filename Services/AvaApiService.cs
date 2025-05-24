@@ -135,9 +135,51 @@ public class AvaApiService : IAvaApiService
         );
     }
 
-    Task IAvaApiService.UpdateClientAsync(string clientId, AvaClientDto client)
+    public async Task<bool> UpdateClientAsync(AvaClientDto client)
     {
-        throw new NotImplementedException();
+        string loggingPrefix = $"[AvaApiService.UpdateClientAsync]";
+
+        await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} Starting client update process.");
+
+        // retrieve token from service
+        string jwtToken = await _authService.GetTokenAsync() ?? string.Empty;
+
+        if (!string.IsNullOrEmpty(jwtToken))
+        {
+            await LogSinkService.WriteAsync(LogLevel.Debug, $"{loggingPrefix} Obtained JWT token.");
+
+            try
+            {
+                using var request = new HttpRequestMessage(HttpMethod.Post, "/api/v1/avaclient/new-or-update")
+                {
+                    Content = JsonContent.Create(client)
+                };
+
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+
+                await LogSinkService.WriteAsync(LogLevel.Debug, $"{loggingPrefix} Sending POST request to /api/v1/avaclient/new-or-update with client ID: {client.ClientId}");
+
+                var response = await _http.SendAsync(request);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    await LogSinkService.WriteAsync(LogLevel.Error, $"{loggingPrefix} Failed to create client: {response.StatusCode} - {errorContent}");
+                    return false;
+                }
+
+                await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} Client created/updated successfully. Response status: {response.StatusCode}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                await LogSinkService.WriteAsync(LogLevel.Fatal, $"{loggingPrefix} Exception during client creation: {ex.Message}");
+                return false;
+            }
+        }
+
+        await LogSinkService.WriteAsync(LogLevel.Error, $"{loggingPrefix} Missing or invalid JWT Token with value: '{jwtToken}'.");
+        return false;
     }
 
     public async Task<List<string>> GetTaxIdsAsync()

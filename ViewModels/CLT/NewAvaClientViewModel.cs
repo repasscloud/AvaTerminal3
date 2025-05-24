@@ -158,11 +158,11 @@ public partial class NewAvaClientViewModel : ObservableObject, INotifyPropertyCh
         await LogSinkService.WriteAsync(LogLevel.Debug, "[NewClient.SaveAsync] Sanitize the phone number values.");
 
         // save the data to a tmp file (debug)
-        if (File.Exists(Path.Combine(FileSystem.AppDataDirectory, "new_client.json")))
-            File.Delete(Path.Combine(FileSystem.AppDataDirectory, "new_client.json"));
-        await SaveAsJsonAsync(Client, Path.Combine(FileSystem.AppDataDirectory, "new_client.json"));
+        // if (File.Exists(Path.Combine(FileSystem.AppDataDirectory, "new_client.json")))
+        //     File.Delete(Path.Combine(FileSystem.AppDataDirectory, "new_client.json"));
+        // await SaveAsJsonAsync(Client, Path.Combine(FileSystem.AppDataDirectory, "new_client.json"));
 
-        await LogSinkService.WriteAsync(LogLevel.Debug, "[NewClient.SaveAsync] Create json dump 'new_client.json'.");
+        // await LogSinkService.WriteAsync(LogLevel.Debug, "[NewClient.SaveAsync] Create json dump 'new_client.json'.");
 
         var ok = await _avaApiService.CreateClientAsync(Client);
 

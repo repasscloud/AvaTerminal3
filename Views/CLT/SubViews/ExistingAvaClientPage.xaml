@@ -81,7 +81,6 @@
             Text="{Binding Client.LicenseAgreementId}"
             IsReadOnly="True" />
 
-
         <!-- Row 3: Empty -->
         <BoxView Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="12" HeightRequest="8" />
 
@@ -94,7 +93,6 @@
             FontAttributes="Bold"
             TextColor="{AppThemeBinding Light=Black, Dark=White}"
             Margin="0,12,0,6" />
-
 
         <!-- Row 5: Label -->
         <Label Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="6" Text="Address Line 1" />
@@ -110,7 +108,6 @@
             Style="{StaticResource PrimaryEntryStyle}"
             Text="{Binding Client.AddressLine2}"
             IsEnabled="{Binding IsEditable}" />
-
 
         <!-- Row 7: Label -->
         <Label Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="6" Text="Address Line 3" />
@@ -421,6 +418,18 @@
             Style="{StaticResource PrimaryEntryStyle}"
             Text="{Binding LastUpdatedLocalTime}" IsEnabled="False" />
 
+        <!-- Edit Button -->
+        <Button Text="{Binding LockButtonText}"
+            Grid.Row="31"
+            Grid.Column="8"
+            Grid.ColumnSpan="1"
+            Command="{Binding ToggleLockCommand}"
+            BackgroundColor="#ffc107"
+            TextColor="Black"
+            CornerRadius="8"
+            HeightRequest="48"
+            FontAttributes="Bold" />
+
         <!-- Save Button -->
         <Button Text="💾 Save"
             Grid.Row="31"
@@ -431,7 +440,8 @@
             TextColor="White"
             CornerRadius="8"
             HeightRequest="48"
-            FontAttributes="Bold" />
+            FontAttributes="Bold"
+            IsEnabled="{Binding IsSavable}" />
 
         <!-- Cancel Button -->
         <Button Text="❌ Cancel"

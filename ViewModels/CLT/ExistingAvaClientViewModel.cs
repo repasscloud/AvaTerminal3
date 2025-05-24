@@ -22,6 +22,9 @@ public partial class ExistingAvaClientViewModel : ObservableObject, INotifyPrope
     public List<string> DialCodeList { get; private set; } = new();
     public List<string> CurrencyList { get; private set; } = new();
 
+    [ObservableProperty]
+    private bool isLocked = true;
+
     public ExistingAvaClientViewModel(
         ISharedStateService sharedStateService,
         IAvaApiService avaApiService,
@@ -33,18 +36,17 @@ public partial class ExistingAvaClientViewModel : ObservableObject, INotifyPrope
 
         // pull in the DTO from memory
         Client = _state.ReadAvaClientDto()
-                    ?? throw new InvalidOperationException("No client in shared state.");
+            ?? throw new InvalidOperationException("No client in shared state.");
 
         // fire-and-forget the lookups
         _ = LoadAsync();
     }
 
+    public bool IsEditable => !IsLocked;
+    public string LockButtonText => IsLocked ? "Unlock" : "Lock";
+
     private async Task LoadAsync()
     {
-        Client.ContactPersonCountryCode = await _api.MatchCountryDialCodeStringAsync(Client.ContactPersonCountryCode);
-        Client.BillingPersonCountryCode = await _api.MatchCountryDialCodeStringAsync(Client.BillingPersonCountryCode);
-        Client.AdminPersonCountryCode = await _api.MatchCountryDialCodeStringAsync(Client.AdminPersonCountryCode);
-
         TaxIdList = await _api.GetTaxIdsAsync();
         OnPropertyChanged(nameof(TaxIdList));
 
@@ -56,6 +58,14 @@ public partial class ExistingAvaClientViewModel : ObservableObject, INotifyPrope
 
         CurrencyList = await _api.GetAvailableCurrencyCodesAsync();
         OnPropertyChanged(nameof(CurrencyList));
+    }
+
+    [RelayCommand]
+    private void ToggleLock()
+    {
+        IsLocked = !IsLocked;
+        OnPropertyChanged(nameof(IsEditable));
+        OnPropertyChanged(nameof(LockButtonText));
     }
 
     // — pop-up selectors (no change from New) :contentReference[oaicite:0]{index=0} :contentReference[oaicite:1]{index=1}

@@ -147,9 +147,9 @@ public partial class NewAvaClientViewModel : ObservableObject, INotifyPropertyCh
         await LogSinkService.WriteAsync(LogLevel.Debug, "[NewClient.SaveAsync] Sanitize email addresses.");
 
         // sanitize country‐code and phone fields (only before saving)
-        Client.ContactPersonCountryCode = DataValidator.ReturnOnlyCountryCode(Client.ContactPersonCountryCode);
-        Client.BillingPersonCountryCode = DataValidator.ReturnOnlyCountryCode(Client.BillingPersonCountryCode);
-        Client.AdminPersonCountryCode = DataValidator.ReturnOnlyCountryCode(Client.AdminPersonCountryCode);
+        // Client.ContactPersonCountryCode = DataValidator.ReturnOnlyCountryCode(Client.ContactPersonCountryCode);
+        // Client.BillingPersonCountryCode = DataValidator.ReturnOnlyCountryCode(Client.BillingPersonCountryCode);
+        // Client.AdminPersonCountryCode = DataValidator.ReturnOnlyCountryCode(Client.AdminPersonCountryCode);
 
         Client.ContactPersonPhone = DataValidator.CleanPhoneNumber(Client.ContactPersonPhone);
         Client.BillingPersonPhone = DataValidator.CleanPhoneNumber(Client.BillingPersonPhone);

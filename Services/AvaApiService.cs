@@ -76,7 +76,7 @@ public class AvaApiService : IAvaApiService
     public async Task<AvaClientDto> GetAvaClientBySearchEverythingAsync(string searchValue)
     {
         string loggingPrefix = $"[AvaApiService.GetAvaClientBySearchEverythingAsync]";
-        string apiEndpoint = $"/api/v1/avaclient/search-everything/{searchValue}";
+        string apiEndpoint = $"/api/v1/avaclient/search-everything/dto/{searchValue}";
 
         await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} Starting ava client (ge) get process.");
 

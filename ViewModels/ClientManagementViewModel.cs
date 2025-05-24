@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using AvaTerminal3.Services.Interfaces;
 using AvaTerminal3.Views.CLT.SubViews;
 using AvaTerminal3.Models.Dto;
+using AvaTerminal3.Helpers;
 
 namespace AvaTerminal3.ViewModels
 {
@@ -38,6 +39,9 @@ namespace AvaTerminal3.ViewModels
 
                 if (data is not null)
                 {
+                    // debug - save the data to json
+                    await LogSinkService.DumpJsonAsync(LogLevel.Debug, data);
+
                     ClientData = data;
                     _sharedStateService.SaveAvaClientDto(ClientData);
                     

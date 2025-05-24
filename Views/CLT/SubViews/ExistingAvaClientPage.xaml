@@ -39,7 +39,7 @@
         <Entry
             Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="5"
             Text="{Binding Client.CompanyName, Mode=TwoWay}"
-            Placeholder="Company Name" />
+            IsEnabled="{Binding IsEditable}" />
 
         <!-- Row 2: Default Currency Selector -->
         <HorizontalStackLayout
@@ -103,11 +103,13 @@
         <!-- Row 6: Entry -->
         <Entry Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="6"
             Style="{StaticResource PrimaryEntryStyle}"
-            Text="{Binding Client.AddressLine1}" />
+            Text="{Binding Client.AddressLine1}"
+            IsEnabled="{Binding IsEditable}" />
 
         <Entry Grid.Row="6" Grid.Column="6" Grid.ColumnSpan="6"
             Style="{StaticResource PrimaryEntryStyle}"
-            Text="{Binding Client.AddressLine2}" />
+            Text="{Binding Client.AddressLine2}"
+            IsEnabled="{Binding IsEditable}" />
 
 
         <!-- Row 7: Label -->
@@ -118,13 +120,16 @@
         <!-- Row 8: Entry -->
         <Entry Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="6"
             Style="{StaticResource PrimaryEntryStyle}"
-            Text="{Binding Client.AddressLine3}" />
+            Text="{Binding Client.AddressLine3}"
+            IsEnabled="{Binding IsEditable}" />
         <Entry Grid.Row="8" Grid.Column="6" Grid.ColumnSpan="3"
             Style="{StaticResource PrimaryEntryStyle}"
-            Text="{Binding Client.City}" />
+            Text="{Binding Client.City}"
+            IsEnabled="{Binding IsEditable}" />
         <Entry Grid.Row="8" Grid.Column="9" Grid.ColumnSpan="3"
             Style="{StaticResource PrimaryEntryStyle}"
-            Text="{Binding Client.State}" />
+            Text="{Binding Client.State}"
+            IsEnabled="{Binding IsEditable}" />
 
         <!-- Row 9: Label -->
         <Label Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" Text="Postal Code" />
@@ -136,7 +141,8 @@
         <!-- Row 10: Entry -->
         <Entry Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="2"
             Style="{StaticResource PrimaryEntryStyle}"
-            Text="{Binding Client.PostalCode}" />
+            Text="{Binding Client.PostalCode}"
+            IsEnabled="{Binding IsEditable}" />
             
         <Button
             Grid.Row="10"
@@ -170,7 +176,8 @@
 
         <Entry Grid.Row="10" Grid.Column="8" Grid.ColumnSpan="2"
             Style="{StaticResource PrimaryEntryStyle}"
-            Text="{Binding Client.TaxId}" />
+            Text="{Binding Client.TaxId}"
+            IsEnabled="{Binding IsEditable}" />
         <Entry Grid.Row="10" Grid.Column="10" Grid.ColumnSpan="2"
             Style="{StaticResource PrimaryEntryStyle}"
             Text="{Binding Client.TaxLastValidated}" IsReadOnly="True" />
@@ -196,13 +203,16 @@
         <!-- Row 14: Entry -->
         <Entry Grid.Row="14" Grid.Column="0" Grid.ColumnSpan="4"
             Style="{StaticResource PrimaryEntryStyle}"
-            Text="{Binding Client.ContactPersonFirstName}" />
+            Text="{Binding Client.ContactPersonFirstName}"
+            IsEnabled="{Binding IsEditable}" />
         <Entry Grid.Row="14" Grid.Column="4" Grid.ColumnSpan="4"
             Style="{StaticResource PrimaryEntryStyle}"
-            Text="{Binding Client.ContactPersonLastName}" />
+            Text="{Binding Client.ContactPersonLastName}"
+            IsEnabled="{Binding IsEditable}" />
         <Entry Grid.Row="14" Grid.Column="8" Grid.ColumnSpan="4"
             Style="{StaticResource PrimaryEntryStyle}"
-            Text="{Binding Client.ContactPersonJobTitle}" />
+            Text="{Binding Client.ContactPersonJobTitle}"
+            IsEnabled="{Binding IsEditable}" />
 
         <!-- Row 15: Label -->
         <Label Grid.Row="15" Grid.Column="0" Grid.ColumnSpan="4" Text="Email" />
@@ -212,7 +222,8 @@
         <!-- Row 16: Entry -->
         <Entry Grid.Row="16" Grid.Column="0" Grid.ColumnSpan="6"
             Style="{StaticResource PrimaryEntryStyle}"
-            Text="{Binding Client.ContactPersonEmail}" />
+            Text="{Binding Client.ContactPersonEmail}"
+            IsEnabled="{Binding IsEditable}" />
 
         <Button
             Grid.Row="16" Grid.Column="6" Grid.ColumnSpan="2"
@@ -230,7 +241,8 @@
 
         <Entry Grid.Row="16" Grid.Column="8" Grid.ColumnSpan="4"
             Style="{StaticResource PrimaryEntryStyle}"
-            Text="{Binding Client.ContactPersonPhone}" />
+            Text="{Binding Client.ContactPersonPhone}"
+            IsEnabled="{Binding IsEditable}" />
 
         <!-- BILLING PERSON -->
         <!-- Row 17: Empty -->
@@ -270,15 +282,18 @@
         <Entry Grid.Row="20" Grid.Column="0" Grid.ColumnSpan="4"
             Style="{StaticResource PrimaryEntryStyle}"
             Text="{Binding Client.BillingPersonFirstName}"
-            IsReadOnly="{Binding IsBillingPersonSameAsContact}" />
+            IsReadOnly="{Binding IsBillingPersonSameAsContact}"
+            IsEnabled="{Binding IsEditable}" />
         <Entry Grid.Row="20" Grid.Column="4" Grid.ColumnSpan="4"
             Style="{StaticResource PrimaryEntryStyle}"
             Text="{Binding Client.BillingPersonLastName}"
-            IsReadOnly="{Binding IsBillingPersonSameAsContact}" />
+            IsReadOnly="{Binding IsBillingPersonSameAsContact}"
+            IsEnabled="{Binding IsEditable}" />
         <Entry Grid.Row="20" Grid.Column="8" Grid.ColumnSpan="4"
             Style="{StaticResource PrimaryEntryStyle}"
             Text="{Binding Client.BillingPersonJobTitle}"
-            IsReadOnly="{Binding IsBillingPersonSameAsContact}" />
+            IsReadOnly="{Binding IsBillingPersonSameAsContact}"
+            IsEnabled="{Binding IsEditable}" />
 
         <!-- Row 21: Label -->
         <Label Grid.Row="21" Grid.Column="0" Grid.ColumnSpan="4" Text="Email" />
@@ -289,7 +304,8 @@
         <Entry Grid.Row="22" Grid.Column="0" Grid.ColumnSpan="6"
             Style="{StaticResource PrimaryEntryStyle}"
             Text="{Binding Client.BillingPersonEmail}"
-            IsReadOnly="{Binding IsBillingPersonSameAsContact}" />
+            IsReadOnly="{Binding IsBillingPersonSameAsContact}"
+            IsEnabled="{Binding IsEditable}" />
         <Button
             Grid.Row="22" Grid.Column="6" Grid.ColumnSpan="2"
             Text="{Binding Client.BillingPersonCountryCode, TargetNullValue='Select Dial Code'}"
@@ -308,7 +324,8 @@
         <Entry Grid.Row="22" Grid.Column="8" Grid.ColumnSpan="4"
             Style="{StaticResource PrimaryEntryStyle}"
             Text="{Binding Client.BillingPersonJobTitle}"
-            IsReadOnly="{Binding IsBillingPersonSameAsContact}" />
+            IsReadOnly="{Binding IsBillingPersonSameAsContact}"
+            IsEnabled="{Binding IsEditable}" />
 
         <!-- ADMIN PERSON -->
         <!-- Row 23: Empty -->
@@ -348,15 +365,18 @@
         <Entry Grid.Row="26" Grid.Column="0" Grid.ColumnSpan="4"
             Style="{StaticResource PrimaryEntryStyle}"
             Text="{Binding Client.AdminPersonFirstName}"
-            IsReadOnly="{Binding IsAdminPersonSameAsContact}" />
+            IsReadOnly="{Binding IsAdminPersonSameAsContact}"
+            IsEnabled="{Binding IsEditable}" />
         <Entry Grid.Row="26" Grid.Column="4" Grid.ColumnSpan="4"
             Style="{StaticResource PrimaryEntryStyle}"
             Text="{Binding Client.AdminPersonLastName}"
-            IsReadOnly="{Binding IsAdminPersonSameAsContact}" />
+            IsReadOnly="{Binding IsAdminPersonSameAsContact}"
+            IsEnabled="{Binding IsEditable}" />
         <Entry Grid.Row="26" Grid.Column="8" Grid.ColumnSpan="4"
             Style="{StaticResource PrimaryEntryStyle}"
             Text="{Binding Client.AdminPersonJobTitle}"
-            IsReadOnly="{Binding IsAdminPersonSameAsContact}" />
+            IsReadOnly="{Binding IsAdminPersonSameAsContact}"
+            IsEnabled="{Binding IsEditable}" />
 
         <!-- Row 27: Label -->
         <Label Grid.Row="27" Grid.Column="0" Grid.ColumnSpan="4" Text="Email" />
@@ -367,7 +387,8 @@
         <Entry Grid.Row="28" Grid.Column="0" Grid.ColumnSpan="6"
             Style="{StaticResource PrimaryEntryStyle}"
             Text="{Binding Client.AdminPersonEmail}"
-            IsReadOnly="{Binding IsAdminPersonSameAsContact}" />
+            IsReadOnly="{Binding IsAdminPersonSameAsContact}"
+            IsEnabled="{Binding IsEditable}" />
 
         <Button
             Grid.Row="28" Grid.Column="6" Grid.ColumnSpan="2"
@@ -383,11 +404,11 @@
             VerticalOptions="Center"
             Padding="12,0"
             IsEnabled="{Binding IsAdminPersonSameAsContact, Converter={StaticResource InverseBoolConverter}, ConverterParameter=true}" />
-
         <Entry Grid.Row="28" Grid.Column="8" Grid.ColumnSpan="4"
             Style="{StaticResource PrimaryEntryStyle}"
             Text="{Binding Client.AdminPersonPhone}"
-            IsReadOnly="{Binding IsAdminPersonSameAsContact}" />
+            IsReadOnly="{Binding IsAdminPersonSameAsContact}"
+            IsEnabled="{Binding IsEditable}" />
 
         <!-- Row 29: Empty -->
         <BoxView Grid.Row="29" Grid.Column="0" Grid.ColumnSpan="12" HeightRequest="32" />

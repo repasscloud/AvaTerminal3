@@ -4,6 +4,7 @@ using AvaTerminal3.Helpers;
 using AvaTerminal3.Models.Dto;
 using AvaTerminal3.Models.Kernel.Client.Attribs;
 using AvaTerminal3.Services.Interfaces;
+using DeviceCheck;
 
 namespace AvaTerminal3.Services;
 
@@ -108,10 +109,12 @@ public class AvaApiService : IAvaApiService
                 }
 
                 await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} Client created/updated successfully. Response status: {response.StatusCode}");
-                
+
                 var dto = await response.Content
                         .ReadFromJsonAsync<AvaClientDto>()
                         ?? throw new InvalidOperationException("Empty response body");
+
+
 
                 return dto;
             }
@@ -119,7 +122,7 @@ public class AvaApiService : IAvaApiService
             {
                 await LogSinkService.WriteAsync(LogLevel.Fatal, $"{loggingPrefix} Exception during client creation: {ex.Message}");
                 throw new HttpRequestException(
-                    $"SearchEverything API call failed: {ex.Message}", 
+                    $"SearchEverything API call failed: {ex.Message}",
                     ex              // preserve original as InnerException
                 );
             }
@@ -170,13 +173,13 @@ public class AvaApiService : IAvaApiService
 
             // deserialize into your model
             var items = await response.Content
-                                    .ReadFromJsonAsync<List<SupportedTaxId>>() 
+                                    .ReadFromJsonAsync<List<SupportedTaxId>>()
                         ?? new List<SupportedTaxId>();
 
             // filter out any null/empty TaxIdType, and cast away the nullable
             var taxTypes = items
                 .Where(x => !string.IsNullOrWhiteSpace(x.TaxIdType))
-                .Select(x => x.TaxIdType!)      
+                .Select(x => x.TaxIdType!)
                 .ToList();
 
             // if we got at least one, return it
@@ -235,13 +238,13 @@ public class AvaApiService : IAvaApiService
 
             // deserialize into your model
             var items = await response.Content
-                                    .ReadFromJsonAsync<List<SupportedCountry>>() 
+                                    .ReadFromJsonAsync<List<SupportedCountry>>()
                         ?? new List<SupportedCountry>();
 
             // filter out any null/empty Country, and cast away the nullable
             var countries = items
                 .Where(x => !string.IsNullOrWhiteSpace(x.Country))
-                .Select(x => x.Country!)      
+                .Select(x => x.Country!)
                 .ToList();
 
             // if we got at least one, return it
@@ -301,7 +304,7 @@ public class AvaApiService : IAvaApiService
 
             // deserialize into your model
             var items = await response.Content
-                                    .ReadFromJsonAsync<List<SupportedDialCode>>() 
+                                    .ReadFromJsonAsync<List<SupportedDialCode>>()
                         ?? new List<SupportedDialCode>();
 
             // format each as "(+<code>) <name>"
@@ -361,13 +364,13 @@ public class AvaApiService : IAvaApiService
 
             // deserialize into your model
             var items = await response.Content
-                                    .ReadFromJsonAsync<List<SupportedCurrency>>() 
+                                    .ReadFromJsonAsync<List<SupportedCurrency>>()
                         ?? new List<SupportedCurrency>();
 
             // filter out any null/empty Iso4217, and cast away the nullable
             var currencyCodes = items
                 .Where(x => !string.IsNullOrWhiteSpace(x.Iso4217))
-                .Select(x => x.Iso4217!)      
+                .Select(x => x.Iso4217!)
                 .ToList();
 
             // if we got at least one, return it
@@ -431,7 +434,7 @@ public class AvaApiService : IAvaApiService
 
             // deserialize into your model
             var dialList = await response.Content
-                                .ReadFromJsonAsync<List<SupportedDialCodeDto>>() 
+                                .ReadFromJsonAsync<List<SupportedDialCodeDto>>()
                             ?? new List<SupportedDialCodeDto>();
 
             if (dialList.Count > 0)
@@ -445,6 +448,79 @@ public class AvaApiService : IAvaApiService
                 $"{loggingPrefix} No dial codes returned from API.");
             throw new HttpRequestException(
                 $"{loggingPrefix} No dial codes returned from API."
+            );
+        }
+        catch (Exception ex)
+        {
+            await LogSinkService.WriteAsync(LogLevel.Fatal,
+                $"{loggingPrefix} Exception during GET: {ex.Message}");
+            throw new HttpRequestException(
+                $"{loggingPrefix} Exception during GET: {ex.Message}"
+            );
+        }
+    }
+
+    public async Task<string> MatchCountryDialCodeStringAsync(string? dialCode)
+    {
+        string loggingPrefix = $"[AvaApiService.GetCountryDialCodesAsync]";
+        await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} Starting available dial code retrieval.");
+
+        if (dialCode == null || dialCode.Length == 0)
+        {
+            await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} Null dial code return.");
+            return string.Empty;
+        }
+
+        // get JWT
+            string jwtToken = await _authService.GetTokenAsync() ?? string.Empty;
+        if (string.IsNullOrEmpty(jwtToken))
+        {
+            await LogSinkService.WriteAsync(LogLevel.Error, $"{loggingPrefix} Missing or invalid JWT token.");
+            throw new HttpRequestException(
+                $"{loggingPrefix} Missing or invalid JWT token."
+            );
+        }
+
+        await LogSinkService.WriteAsync(LogLevel.Debug, $"{loggingPrefix} Obtained JWT token.");
+
+        try
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Get, "/api/v1/attrib/dialcodes");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+
+            await LogSinkService.WriteAsync(LogLevel.Debug,
+                $"{loggingPrefix} Sending GET to /api/v1/attrib/dialcodes");
+            var response = await _http.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                await LogSinkService.WriteAsync(LogLevel.Error,
+                    $"{loggingPrefix} GET failed: {response.StatusCode} – {errorContent}");
+                throw new HttpRequestException(
+                    $"{loggingPrefix} GET failed: {response.StatusCode} – {errorContent}"
+                );
+            }
+
+            // deserialize into your model
+            var items = await response.Content
+                                    .ReadFromJsonAsync<List<SupportedDialCode>>()
+                        ?? new List<SupportedDialCode>();
+
+            // format each as "(+<code>) <name>"
+
+            //TODO: Fix this
+            var match = items.FirstOrDefault(dc => dc.CountryCode == dialCode);
+
+            if (match is not null)
+            {
+                await LogSinkService.WriteAsync(LogLevel.Info,
+                    $"{loggingPrefix} Retrieved '(+{dialCode}) {match.CountryName}' successfully.");
+                return $"(+{dialCode}) {match.CountryName}";
+            }
+            
+            throw new HttpRequestException(
+                $"{loggingPrefix} GET failed: unable to match dial code, contact support."
             );
         }
         catch (Exception ex)

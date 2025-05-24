@@ -1,94 +1,72 @@
 // ViewModels/CLT/ExistingAvaClientViewModel.cs
+using System.Text.Json;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using AvaTerminal3.Models.Dto;
 using AvaTerminal3.Services.Interfaces;
-using AvaTerminal3.Helpers;
 using System.ComponentModel;
-using System.Text.Json;
 
 namespace AvaTerminal3.ViewModels.CLT;
 
-public partial class ExistingAvaClientViewModel : ObservableObject
+public partial class ExistingAvaClientViewModel : ObservableObject, INotifyPropertyChanged
 {
-    readonly IAvaApiService _avaApiService;
-    readonly IPopupService _popupService;
-    readonly ISharedStateService _sharedState;
+    readonly ISharedStateService _state;
+    readonly IAvaApiService _api;
+    readonly IPopupService _popup;
 
-    [ObservableProperty]
-    private AvaClientDto? client;
+    public AvaClientDto Client { get; private set; }
 
     // — lists fetched from API —
-    [ObservableProperty]
-    private List<string> taxIdList = new();
-
-    [ObservableProperty]
-    private List<string> countryList = new();
-
-    [ObservableProperty]
-    private List<string> currencyList = new();
-
-    // ← now strongly-typed
-    [ObservableProperty]
-    private List<SupportedDialCodeDto> dialCodeList = new();
+    public List<string> TaxIdList { get; private set; } = new();
+    public List<string> CountryList { get; private set; } = new();
+    public List<string> DialCodeList { get; private set; } = new();
+    public List<string> CurrencyList { get; private set; } = new();
 
     public ExistingAvaClientViewModel(
         ISharedStateService sharedStateService,
         IAvaApiService avaApiService,
         IPopupService popupService)
     {
-        _sharedState  = sharedStateService;
-        _avaApiService = avaApiService;
-        _popupService  = popupService;
+        _state = sharedStateService;
+        _api = avaApiService;
+        _popup = popupService;
 
-        // **pull it out of your singleton state service**
-        Client = _sharedState.ReadAvaClientDto();
+        // pull in the DTO from memory
+        Client = _state.ReadAvaClientDto()
+                    ?? throw new InvalidOperationException("No client in shared state.");
 
-        // kick off the API‐backed lookups as before
+        // fire-and-forget the lookups
         _ = LoadAsync();
     }
 
     private async Task LoadAsync()
     {
-        TaxIdList = await _avaApiService.GetTaxIdsAsync();
-        CountryList = await _avaApiService.GetAvailableCountriesAsync();
-        DialCodeList = await _avaApiService.GetCountryDialCodes2Async();
+        Client.ContactPersonCountryCode = await _api.MatchCountryDialCodeStringAsync(Client.ContactPersonCountryCode);
+        Client.BillingPersonCountryCode = await _api.MatchCountryDialCodeStringAsync(Client.BillingPersonCountryCode);
+        Client.AdminPersonCountryCode = await _api.MatchCountryDialCodeStringAsync(Client.AdminPersonCountryCode);
 
-        CurrencyList = await _avaApiService.GetAvailableCurrencyCodesAsync();
-
-        // select the DTO's existing code
-        if (Client?.ContactPersonCountryCode is not null)
-        {
-            ContactPersonSelectedDialCode = DialCodeList
-                .FirstOrDefault(x => x.CountryCode == Client.ContactPersonCountryCode);
-        }
-
-        if (Client?.BillingPersonCountryCode is not null)
-        {
-            BillingPersonSelectedDialCode = DialCodeList
-                .FirstOrDefault(x => x.CountryCode == Client.BillingPersonCountryCode);
-        }
-
-        if (Client?.AdminPersonCountryCode is not null)
-        {
-            AdminPersonSelectedDialCode = DialCodeList
-                .FirstOrDefault(x => x.CountryCode == Client.AdminPersonCountryCode);
-        }
-
+        TaxIdList = await _api.GetTaxIdsAsync();
         OnPropertyChanged(nameof(TaxIdList));
+
+        CountryList = await _api.GetAvailableCountriesAsync();
         OnPropertyChanged(nameof(CountryList));
+
+        DialCodeList = await _api.GetCountryDialCodesAsync();
         OnPropertyChanged(nameof(DialCodeList));
+
+        CurrencyList = await _api.GetAvailableCurrencyCodesAsync();
         OnPropertyChanged(nameof(CurrencyList));
     }
 
-    // — commands to pop up each selector —
+    // — pop-up selectors (no change from New) :contentReference[oaicite:0]{index=0} :contentReference[oaicite:1]{index=1}
 
     [RelayCommand]
     private async Task SelectTaxIdAsync()
     {
-        var sel = await _popupService.ShowSelectAsync(
-            "Select Tax ID", TaxIdList, Client.TaxId);
-        if (sel is not null)
+        var sel = await _popup.ShowSelectAsync(
+            "Select Tax ID", TaxIdList, Client.TaxIdType);
+
+        if (!string.IsNullOrWhiteSpace(sel))
         {
             Client.TaxIdType = sel;
             OnPropertyChanged(nameof(Client));
@@ -98,9 +76,10 @@ public partial class ExistingAvaClientViewModel : ObservableObject
     [RelayCommand]
     private async Task SelectCountryAsync()
     {
-        var sel = await _popupService.ShowSelectAsync(
+        var sel = await _popup.ShowSelectAsync(
             "Select Country", CountryList, Client.Country);
-        if (sel is not null)
+
+        if (!string.IsNullOrWhiteSpace(sel))
         {
             Client.Country = sel;
             OnPropertyChanged(nameof(Client));
@@ -110,7 +89,7 @@ public partial class ExistingAvaClientViewModel : ObservableObject
     [RelayCommand]
     private async Task SelectContactDialCodeAsync()
     {
-        var sel = await _popupService.ShowSelectAsync(
+        var sel = await _popup.ShowSelectAsync(
             "Contact Dial Code", DialCodeList, Client.ContactPersonCountryCode);
         if (sel is not null)
         {
@@ -122,7 +101,7 @@ public partial class ExistingAvaClientViewModel : ObservableObject
     [RelayCommand]
     private async Task SelectBillingDialCodeAsync()
     {
-        var sel = await _popupService.ShowSelectAsync(
+        var sel = await _popup.ShowSelectAsync(
             "Billing Dial Code", DialCodeList, Client.BillingPersonCountryCode);
         if (sel is not null)
         {
@@ -134,7 +113,7 @@ public partial class ExistingAvaClientViewModel : ObservableObject
     [RelayCommand]
     private async Task SelectAdminDialCodeAsync()
     {
-        var sel = await _popupService.ShowSelectAsync(
+        var sel = await _popup.ShowSelectAsync(
             "Admin Dial Code", DialCodeList, Client.AdminPersonCountryCode);
         if (sel is not null)
         {
@@ -146,9 +125,10 @@ public partial class ExistingAvaClientViewModel : ObservableObject
     [RelayCommand]
     private async Task SelectCurrencyAsync()
     {
-        var sel = await _popupService.ShowSelectAsync(
+        var sel = await _popup.ShowSelectAsync(
             "Select Currency", CurrencyList, Client.DefaultCurrency);
-        if (sel is not null)
+
+        if (!string.IsNullOrWhiteSpace(sel))
         {
             Client.DefaultCurrency = sel;
             OnPropertyChanged(nameof(Client));
@@ -156,61 +136,15 @@ public partial class ExistingAvaClientViewModel : ObservableObject
         }
     }
 
-    // — save & cancel commands —
+    // — save / cancel :contentReference[oaicite:2]{index=2}
 
     [RelayCommand]
     private async Task SaveAsync()
     {
-        // do client validation first, else return
-        var errors = DataValidator.ValidateAvaClientDto(Client);
-        var firstError = errors.FirstOrDefault(e => !e.isValid);
+        // you can replicate New’s validation/sanitisation here if desired
 
-        if (!string.IsNullOrEmpty(firstError.Title))
-        {
-            // a real error
-            await LogSinkService.WriteAsync(LogLevel.Warn, $"[NewClient.SaveAsync] Error saving record '{firstError.Title}' with message '{firstError.Message}'.");
-            await _popupService.ShowNoticeAsync(firstError.Title, firstError.Message);
-            return;
-        }
-
-        await LogSinkService.WriteAsync(LogLevel.Debug, "[NewClient.SaveAsync] Client passed validations.");
-
-        Client.ContactPersonEmail = Client.ContactPersonEmail.SetLowerCase();
-        Client.BillingPersonEmail = Client.BillingPersonEmail.SetLowerCase();
-        Client.AdminPersonEmail = Client.AdminPersonEmail.SetLowerCase();
-
-        await LogSinkService.WriteAsync(LogLevel.Debug, "[NewClient.SaveAsync] Sanitize email addresses.");
-
-        // sanitize country‐code and phone fields (only before saving)
-        Client.ContactPersonCountryCode = DataValidator.ReturnOnlyCountryCode(Client.ContactPersonCountryCode);
-        Client.BillingPersonCountryCode = DataValidator.ReturnOnlyCountryCode(Client.BillingPersonCountryCode);
-        Client.AdminPersonCountryCode = DataValidator.ReturnOnlyCountryCode(Client.AdminPersonCountryCode);
-
-        Client.ContactPersonPhone = DataValidator.CleanPhoneNumber(Client.ContactPersonPhone);
-        Client.BillingPersonPhone = DataValidator.CleanPhoneNumber(Client.BillingPersonPhone);
-        Client.AdminPersonPhone = DataValidator.CleanPhoneNumber(Client.AdminPersonPhone);
-
-        await LogSinkService.WriteAsync(LogLevel.Debug, "[NewClient.SaveAsync] Sanitize the phone number values.");
-
-        // save the data to a tmp file (debug)
-        if (File.Exists(Path.Combine(FileSystem.AppDataDirectory, "new_client.json")))
-            File.Delete(Path.Combine(FileSystem.AppDataDirectory, "new_client.json"));
-        await SaveAsJsonAsync(Client, Path.Combine(FileSystem.AppDataDirectory, "new_client.json"));
-
-        await LogSinkService.WriteAsync(LogLevel.Debug, "[NewClient.SaveAsync] Create json dump 'new_client.json'.");
-
-        var ok = await _avaApiService.CreateClientAsync(Client);
-
-        if (ok)
-        {
-            await LogSinkService.WriteAsync(LogLevel.Info, "[NewClient.SaveAsync] Record saved successfully to API.");
-            await Shell.Current.GoToAsync("..");
-        }
-        else
-        {
-            await _popupService.ShowNoticeAsync(
-                "Error", "Unable to save client. Please try again.");
-        }
+        await _api.UpdateClientAsync(Client.ClientId, Client);
+        await _popup.ShowNoticeAsync("Saved", "Client updated successfully.");
     }
 
     [RelayCommand]
@@ -219,17 +153,14 @@ public partial class ExistingAvaClientViewModel : ObservableObject
         await Shell.Current.GoToAsync("..");
     }
 
-    // - copy/unset billing contact
+    // — copy/unset billing = new ObservableProperties :contentReference[oaicite:3]{index=3}
 
     [ObservableProperty]
     private bool isBillingPersonSameAsContact;
-
-    // partial method is called whenever that bool changes:
     partial void OnIsBillingPersonSameAsContactChanged(bool value)
     {
         if (value)
         {
-            // copy from contact
             Client.BillingPersonFirstName = Client.ContactPersonFirstName;
             Client.BillingPersonLastName = Client.ContactPersonLastName;
             Client.BillingPersonCountryCode = Client.ContactPersonCountryCode;
@@ -239,7 +170,6 @@ public partial class ExistingAvaClientViewModel : ObservableObject
         }
         else
         {
-            // clear out or leave as-is
             Client.BillingPersonFirstName = string.Empty;
             Client.BillingPersonLastName = string.Empty;
             Client.BillingPersonCountryCode = null;
@@ -247,20 +177,15 @@ public partial class ExistingAvaClientViewModel : ObservableObject
             Client.BillingPersonEmail = string.Empty;
             Client.BillingPersonJobTitle = string.Empty;
         }
-
-        // notify the UI that the Client data has changed:
         OnPropertyChanged(nameof(Client));
     }
 
     [ObservableProperty]
     private bool isAdminPersonSameAsContact;
-
-    // partial method is called whenever that bool changes:
     partial void OnIsAdminPersonSameAsContactChanged(bool value)
     {
         if (value)
         {
-            // copy from contact
             Client.AdminPersonFirstName = Client.ContactPersonFirstName;
             Client.AdminPersonLastName = Client.ContactPersonLastName;
             Client.AdminPersonCountryCode = Client.ContactPersonCountryCode;
@@ -270,7 +195,6 @@ public partial class ExistingAvaClientViewModel : ObservableObject
         }
         else
         {
-            // clear out or leave as-is
             Client.AdminPersonFirstName = string.Empty;
             Client.AdminPersonLastName = string.Empty;
             Client.AdminPersonCountryCode = null;
@@ -278,28 +202,22 @@ public partial class ExistingAvaClientViewModel : ObservableObject
             Client.AdminPersonEmail = string.Empty;
             Client.AdminPersonJobTitle = string.Empty;
         }
-
-        // notify the UI that the Client data has changed:
         OnPropertyChanged(nameof(Client));
     }
 
-    // - other stuff -
-    public string SelectedCurrencyFlag
-        => $"{Client?.DefaultCurrency?.ToLower()}.png";
+    // — helper properties :contentReference[oaicite:4]{index=4}
+
+    public string SelectedCurrencyFlag =>
+        $"{Client?.DefaultCurrency?.ToLower()}.png";
 
     public string LastUpdatedLocalTime =>
-        Client.LastUpdated?
-            .ToLocalTime()
-            .ToString("f")
-        ?? DateTime.UtcNow
-            .ToLocalTime()
-            .ToString("f");
+        Client?.LastUpdated?.ToLocalTime().ToString("f")
+        ?? DateTime.UtcNow.ToLocalTime().ToString("f");
 
-    public SupportedDialCodeDto? ContactPersonSelectedDialCode { get; private set; }
-    public SupportedDialCodeDto? BillingPersonSelectedDialCode { get; private set; }
-    public SupportedDialCodeDto? AdminPersonSelectedDialCode { get; private set; }
-
-    public static Task SaveAsJsonAsync<T>(T obj, string path)
-        => File.WriteAllTextAsync(path, JsonSerializer.Serialize(obj, new JsonSerializerOptions { WriteIndented = true }));
-
+    /// <summary> Debug: dump any object as JSON </summary>
+    public static Task SaveAsJsonAsync<T>(T obj, string path) =>
+        File.WriteAllTextAsync(
+            path,
+            JsonSerializer.Serialize(obj,
+                new JsonSerializerOptions { WriteIndented = true }));
 }

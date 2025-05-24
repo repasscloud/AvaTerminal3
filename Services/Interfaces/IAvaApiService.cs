@@ -21,4 +21,6 @@ public interface IAvaApiService
 
     // for the ExistingAvaClientViewModel
     Task<List<SupportedDialCodeDto>> GetCountryDialCodes2Async();
+
+    Task<string> MatchCountryDialCodeStringAsync(string? dialCode);
 }

@@ -1,5 +1,4 @@
 // File: Views/CLT/SubViews/NewAvaClientPage.xaml.cs
-using Microsoft.Maui.Controls;
 using AvaTerminal3.ViewModels.CLT;
 
 namespace AvaTerminal3.Views.CLT.SubViews

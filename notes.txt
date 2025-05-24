@@ -6,3 +6,23 @@
 - AvaClient.DefaultCurrency => IAvaApiService.GetAvailableCurrencies()
 
 And as I said, they will each return List<string>
+
+
+
+git submodule add -b dev git@github.com:repasscloud/ava.terminal3.git ava.terminal3
+git submodule update --init --recursive
+git commit -m "Add ava.terminal3 submodule (branch=dev)"
+
+
+--------
+
+# tell your superproject which branch to track
+git submodule set-branch --branch dev dotnet-sdk-preloaded
+
+# sync and pull that branch
+git submodule sync
+git submodule update --init --remote dotnet-sdk-preloaded
+
+# commit the .gitmodules change
+git add .gitmodules
+git commit -m "Point dotnet-sdk-preloaded submodule at dev"

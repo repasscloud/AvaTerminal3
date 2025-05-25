@@ -9,9 +9,9 @@ And as I said, they will each return List<string>
 
 
 
-git submodule add -b dev git@github.com:repasscloud/ava.terminal3.git ava.terminal3
+git submodule add -b dev git@github.com:repasscloud/ava.api.git ava.api
 git submodule update --init --recursive
-git commit -m "Add ava.terminal3 submodule (branch=dev)"
+git commit -m "Add ava.api submodule (branch=dev)"
 
 
 --------

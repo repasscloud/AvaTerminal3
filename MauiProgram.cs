@@ -42,13 +42,13 @@ public static class MauiProgram
 
         builder.Services.AddHttpClient("ExternalAPI", client =>
         {
-            client.BaseAddress = new Uri("https://api.external.com/");
+            client.BaseAddress = new Uri("https://api.external.com");
             client.DefaultRequestHeaders.Add("Accept", "application/json");
         });
 
         builder.Services.AddHttpClient("GithubCDN", client =>
         {
-            client.BaseAddress = new Uri("https://raw.githubusercontent.com/");
+            client.BaseAddress = new Uri("https://raw.githubusercontent.com");
             client.DefaultRequestHeaders.UserAgent.ParseAdd("AvaTerminal2GithubCDNTool/1.0 (+https://github.com/repasscloud/AvaTerminal2)");
             client.DefaultRequestHeaders.Add("Accept", "application/json");
             client.Timeout = TimeSpan.FromSeconds(30);

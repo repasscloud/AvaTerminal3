@@ -9,7 +9,7 @@ public static class AttributeApi
 
     public static async Task<string> GetCurrentSupportedClientVersionAsync()
     {
-        var client = ApiClient.CreateClient("DevAvaAPI");
+        var client = ApiClient.CreateClient("AvaAPI");
         var resp   = await client.GetAsync(BaseRoute);
         resp.EnsureSuccessStatusCode();
 

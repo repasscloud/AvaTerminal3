@@ -54,6 +54,9 @@ public static class MauiProgram
             client.Timeout = TimeSpan.FromSeconds(30);
         });
 
+        // must go first
+        builder.Services.AddSingleton<IEnvironmentService, EnvironmentService>();
+
         // Register services
         builder.Services.AddTransient<IAvaApiService, AvaApiService>();
         builder.Services.AddTransient<IExternalApiService, ExternalApiService>();

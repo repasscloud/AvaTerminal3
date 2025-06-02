@@ -10,12 +10,27 @@ namespace AvaTerminal3.ViewModels;
 public class LoginViewModel : INotifyPropertyChanged
 {
     private readonly IAuthService _authService;
+    private readonly IEnvironmentService _envService;
+    private bool _useDev;
 
     public LoginViewModel()
     {
         _authService = ServiceHelper.Get<IAuthService>();
+        _envService  = ServiceHelper.Get<IEnvironmentService>();
         LoginCommand = new Command(async () => await LoginAsync());
         ForgotPasswordCommand = new Command(GoToForgotPassword);
+    }
+
+    public bool UseDev
+    {
+        get => _useDev;
+        set
+        {
+            if (_useDev == value) return;
+            _useDev = value;
+            OnPropertyChanged();
+            _envService.IsDev = _useDev;
+        }
     }
 
     private string _username = string.Empty;

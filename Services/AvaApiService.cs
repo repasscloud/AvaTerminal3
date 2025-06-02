@@ -4,23 +4,29 @@ using AvaTerminal3.Helpers;
 using AvaTerminal3.Models.Dto;
 using AvaTerminal3.Models.Kernel.Client.Attribs;
 using AvaTerminal3.Services.Interfaces;
-using DeviceCheck;
 
 namespace AvaTerminal3.Services;
 
 public class AvaApiService : IAvaApiService
 {
-    private readonly HttpClient _http;
+    private readonly IHttpClientFactory _factory;
+    private readonly IEnvironmentService _env;
     private readonly IAuthService _authService;
 
-    public AvaApiService(IHttpClientFactory factory, IAuthService authService)
+    public AvaApiService(IHttpClientFactory factory, IEnvironmentService env, IAuthService authService)
     {
-        _http = factory.CreateClient("AvaAPI");
+        _factory = factory;
+        _env = env;
         _authService = authService;
     }
 
+    private HttpClient GetClient()
+    => _factory.CreateClient(_env.IsDev ? "DevAvaAPI" : "AvaAPI");
+
+
     public async Task<string> GetClientAsync(string clientId)
     {
+        var _http = GetClient();
         var response = await _http.GetAsync($"clients/{clientId}");
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadAsStringAsync();
@@ -31,6 +37,8 @@ public class AvaApiService : IAvaApiService
         string loggingPrefix = $"[AvaApiService.CreateClientAsync]";
 
         await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} Starting client creation process.");
+
+        var _http = GetClient();
 
         // retrieve token from service
         string jwtToken = await _authService.GetTokenAsync() ?? string.Empty;
@@ -77,6 +85,8 @@ public class AvaApiService : IAvaApiService
     {
         string loggingPrefix = $"[AvaApiService.GetAvaClientBySearchEverythingAsync]";
         string apiEndpoint = $"/api/v1/avaclient/search-everything/dto/{searchValue}";
+
+        var _http = GetClient();
 
         await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} Starting ava client (ge) get process.");
 
@@ -139,6 +149,8 @@ public class AvaApiService : IAvaApiService
     {
         string loggingPrefix = $"[AvaApiService.UpdateClientAsync]";
 
+        var _http = GetClient();
+
         await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} Starting client update process.");
 
         // retrieve token from service
@@ -186,6 +198,8 @@ public class AvaApiService : IAvaApiService
     {
         string loggingPrefix = $"[AvaApiService.GetTaxIdsAsync]";
         await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} Starting tax-ID retrieval.");
+
+        var _http = GetClient();
 
         // get JWT
         string jwtToken = await _authService.GetTokenAsync() ?? string.Empty;
@@ -252,6 +266,8 @@ public class AvaApiService : IAvaApiService
         string loggingPrefix = $"[AvaApiService.GetAvailableCountriesAsync]";
         await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} Starting available country retrieval.");
 
+        var _http = GetClient();
+
         // get JWT
         string jwtToken = await _authService.GetTokenAsync() ?? string.Empty;
         if (string.IsNullOrEmpty(jwtToken))
@@ -317,6 +333,8 @@ public class AvaApiService : IAvaApiService
         string loggingPrefix = $"[AvaApiService.GetCountryDialCodesAsync]";
         await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} Starting available dial code retrieval.");
 
+        var _http = GetClient();
+
         // get JWT
         string jwtToken = await _authService.GetTokenAsync() ?? string.Empty;
         if (string.IsNullOrEmpty(jwtToken))
@@ -377,6 +395,8 @@ public class AvaApiService : IAvaApiService
     {
         string loggingPrefix = $"[AvaApiService.GetAvailableCurrencyCodesAsync";
         await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} Starting currency code retrieval.");
+
+        var _http = GetClient();
 
         // get JWT
         string jwtToken = await _authService.GetTokenAsync() ?? string.Empty;
@@ -443,6 +463,8 @@ public class AvaApiService : IAvaApiService
         string loggingPrefix = $"[AvaApiService.GetCountryDialCodes2Async]";
         await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} Starting available dial code retrieval.");
 
+        var _http = GetClient();
+
         // get JWT
         string jwtToken = await _authService.GetTokenAsync() ?? string.Empty;
         if (string.IsNullOrEmpty(jwtToken))
@@ -506,6 +528,8 @@ public class AvaApiService : IAvaApiService
     {
         string loggingPrefix = $"[AvaApiService.GetCountryDialCodesAsync]";
         await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} Starting available dial code retrieval.");
+
+        var _http = GetClient();
 
         if (dialCode == null || dialCode.Length == 0)
         {

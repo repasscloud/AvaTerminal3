@@ -26,3 +26,5 @@ git submodule update --init --remote dotnet-sdk-preloaded
 # commit the .gitmodules change
 git add .gitmodules
 git commit -m "Point dotnet-sdk-preloaded submodule at dev"
+
+62102bf07581b8a85a2c5e51b80c11c5fb70705d

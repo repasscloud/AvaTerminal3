@@ -22,4 +22,9 @@ public interface IAvaApiService
     Task<List<SupportedDialCodeDto>> GetCountryDialCodes2Async();
 
     Task<string> MatchCountryDialCodeStringAsync(string? dialCode);
+
+    // DBG
+    Task<bool> IsApiHealthyAsync();
+
+    Task<string> GetApiVersionStringAsync();
 }

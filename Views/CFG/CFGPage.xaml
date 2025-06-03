@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:AvaTerminal3.Views.Components"
+             xmlns:vm="clr-namespace:AvaTerminal3.ViewModels.CFG"
+             x:Class="AvaTerminal3.Views.CFG.CFGPage"
+             Title="Configuration"
+             x:DataType="vm:CFGViewModel">
+    <Grid RowDefinitions="*,Auto"
+          Padding="20">
+
+        <!-- Main Content -->
+        <VerticalStackLayout Padding="20" Spacing="16">
+        </VerticalStackLayout>
+
+        <!-- Bottom Clock Bar -->
+        <components:BottomClockBar Grid.Row="1" />
+    </Grid>
+</ContentPage>

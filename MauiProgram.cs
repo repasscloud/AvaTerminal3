@@ -3,8 +3,10 @@ using AvaTerminal3.Services;
 using AvaTerminal3.Services.Interfaces;
 using AvaTerminal3.ViewModels;
 using AvaTerminal3.ViewModels.CLT;
+using AvaTerminal3.ViewModels.DBG;
 using AvaTerminal3.Views.CLT;
 using AvaTerminal3.Views.CLT.SubViews;
+using AvaTerminal3.Views.DBG;
 using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
 
@@ -71,6 +73,9 @@ public static class MauiProgram
         builder.Services.AddTransient<NewAvaClientViewModel>();
         builder.Services.AddTransient<ExistingAvaClientPage>();
         builder.Services.AddTransient<ExistingAvaClientViewModel>();
+
+        builder.Services.AddTransient<DBGViewModel>();
+        builder.Services.AddTransient<DBGPage>();
 
         builder.Services.AddSingleton<IPopupService, Services.PopupService>();
         builder.Services.AddSingleton<ISharedStateService, SharedStateService>();

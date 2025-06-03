@@ -19,7 +19,7 @@
 
                 <VerticalStackLayout Spacing="20">
 
-                    <Label Text="Ava Terminal3 Sign In"
+                    <Label Text="Sign In"
                            FontSize="28"
                            FontAttributes="Bold"
                            HorizontalOptions="Center"
@@ -47,6 +47,14 @@
                            IsVisible="{Binding HasError}"
                            FontSize="13"
                            FontAttributes="Italic" />
+
+                    <StackLayout Orientation="Horizontal"
+                        VerticalOptions="Center"
+                        Spacing="10">
+                        <Label Text="Dev Mode:" VerticalOptions="Center" />
+                        <Switch IsToggled="{Binding UseDev}"
+                            HorizontalOptions="End" />
+                    </StackLayout>
 
                     <Button Text="🔐 Login"
                             Command="{Binding LoginCommand}"

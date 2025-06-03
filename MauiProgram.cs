@@ -42,17 +42,20 @@ public static class MauiProgram
 
         builder.Services.AddHttpClient("ExternalAPI", client =>
         {
-            client.BaseAddress = new Uri("https://api.external.com/");
+            client.BaseAddress = new Uri("https://api.external.com");
             client.DefaultRequestHeaders.Add("Accept", "application/json");
         });
 
         builder.Services.AddHttpClient("GithubCDN", client =>
         {
-            client.BaseAddress = new Uri("https://raw.githubusercontent.com/");
+            client.BaseAddress = new Uri("https://raw.githubusercontent.com");
             client.DefaultRequestHeaders.UserAgent.ParseAdd("AvaTerminal2GithubCDNTool/1.0 (+https://github.com/repasscloud/AvaTerminal2)");
             client.DefaultRequestHeaders.Add("Accept", "application/json");
             client.Timeout = TimeSpan.FromSeconds(30);
         });
+
+        // must go first
+        builder.Services.AddSingleton<IEnvironmentService, EnvironmentService>();
 
         // Register services
         builder.Services.AddTransient<IAvaApiService, AvaApiService>();
@@ -75,9 +78,10 @@ public static class MauiProgram
         //return builder.Build();
         var app = builder.Build();
 
+        // this (below) was removed because it's a headache
         // after Build() the container is ready:
-        var factory = app.Services.GetRequiredService<IHttpClientFactory>();
-        ApiClient.Initialize(factory);
+        // var factory = app.Services.GetRequiredService<IHttpClientFactory>();
+        // ApiClient.Initialize(factory);
 
         return app;
     }

@@ -18,43 +18,43 @@ public partial class PageOne : ContentPage
     protected async override void OnAppearing()
     {
         base.OnAppearing();
-        await CheckVersionAsync();
+        //await CheckVersionAsync();
     }
 
-    private async Task CheckVersionAsync()
-    {
-        try
-        {
-            // 1) fetch the “version” string from your API
-            var apiValue = await AttributeApi.GetCurrentSupportedClientVersionAsync();
+    // private async Task CheckVersionAsync()
+    // {
+    //     try
+    //     {
+    //         // 1) fetch the “version” string from your API
+    //         var apiValue = await AttributeApi.GetCurrentSupportedClientVersionAsync();
 
-            // 2) read your local version
-            var localVersion = AppVersion.VersionInfo;
+    //         // 2) read your local version
+    //         var localVersion = AppVersion.VersionInfo;
 
-            // 3) compare and give feedback
-            if (apiValue == localVersion)
-            {
-                await DisplayAlert(
-                    "Version Check",
-                    $"✅ Up to date ({localVersion})",
-                    "OK");
-            }
-            else
-            {
-                await DisplayAlert(
-                    "Version Mismatch",
-                    $"⚠️ API: {apiValue}\nLocal: {localVersion}",
-                    "OK");
-            }
-        }
-        catch (Exception ex)
-        {
-            await DisplayAlert(
-                "Error",
-                $"Failed to check version:\n{ex.Message}",
-                "OK");
-        }
-    }
+    //         // 3) compare and give feedback
+    //         if (apiValue == localVersion)
+    //         {
+    //             await DisplayAlert(
+    //                 "Version Check",
+    //                 $"✅ Up to date ({localVersion})",
+    //                 "OK");
+    //         }
+    //         else
+    //         {
+    //             await DisplayAlert(
+    //                 "Version Mismatch",
+    //                 $"⚠️ API: {apiValue}\nLocal: {localVersion}",
+    //                 "OK");
+    //         }
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         await DisplayAlert(
+    //             "Error",
+    //             $"Failed to check version:\n{ex.Message}",
+    //             "OK");
+    //     }
+    // }
 
     private void Button_Clicked(object sender, EventArgs e)
     {

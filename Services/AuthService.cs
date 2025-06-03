@@ -10,16 +10,23 @@ namespace AvaTerminal3.Services;
 public class AuthService : IAuthService
 {
     private const string TokenKey = "jwt_token";
-    private readonly HttpClient _http;
+    private readonly IHttpClientFactory _factory;
+    private readonly IEnvironmentService _env;
 
-    public AuthService(IHttpClientFactory factory)
+    public AuthService(IHttpClientFactory factory, IEnvironmentService env)
     {
-        _http = factory.CreateClient("AvaAPI");
+        _factory = factory;
+        _env     = env;
     }
+
+    private HttpClient GetClient()
+    => _factory.CreateClient(_env.IsDev ? "DevAvaAPI" : "AvaAPI");
+
 
     public async Task<AvaEmployeeLoginResponseDto> LoginAvaUserAsync(AvaEmployeeLoginDto dto)
     {
-        var response = await _http.PostAsJsonAsync("/api/v1/auth/login", dto);
+        var client = GetClient();
+        var response = await client.PostAsJsonAsync("/api/v1/auth/login", dto);
         response.EnsureSuccessStatusCode();
 
         var result = await response.Content.ReadFromJsonAsync<AvaEmployeeLoginResponseDto>();

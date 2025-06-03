@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:AvaTerminal3.ViewModels.DBG"
+    x:Class="AvaTerminal3.Views.DBG.DBGPage"
+    x:DataType="vm:DBGViewModel"
+    Title="Debug">
+
+  <ScrollView>
+    <VerticalStackLayout Padding="20" Spacing="20">
+
+      <!-- Log File Card -->
+      <Border
+        Stroke="LightGray"
+        StrokeThickness="1"
+        StrokeShape="RoundRectangle 8"
+        BackgroundColor="White"
+        Padding="15">
+        <Border.Shadow>
+          <Shadow Brush="Black" Opacity="0.1" Offset="2,2" Radius="4"/>
+        </Border.Shadow>
+        <VerticalStackLayout Spacing="10">
+          <Label Text="Log File Location" FontAttributes="Bold" FontSize="Medium" />
+          <Label Text="{Binding LogPath}" LineBreakMode="TailTruncation" />
+
+          <HorizontalStackLayout Spacing="10">
+            <Button
+              Text="Delete Log File"
+              Command="{Binding DeleteLogCommand}"
+              TextColor="Red"
+              BackgroundColor="Transparent" />
+            <Button
+              Text="View Log File"
+              Command="{Binding ViewLogCommand}"
+              TextColor="Blue"
+              BackgroundColor="Transparent" />
+          </HorizontalStackLayout>
+        </VerticalStackLayout>
+      </Border>
+
+      <!-- Dump File Card -->
+      <Border
+        Stroke="LightGray"
+        StrokeThickness="1"
+        StrokeShape="RoundRectangle 8"
+        BackgroundColor="White"
+        Padding="15">
+        <Border.Shadow>
+          <Shadow Brush="Black" Opacity="0.1" Offset="2,2" Radius="4"/>
+        </Border.Shadow>
+        <VerticalStackLayout Spacing="10">
+          <Label Text="Dump File Location" FontAttributes="Bold" FontSize="Medium" />
+          <Label Text="{Binding DumpPath}" LineBreakMode="TailTruncation" />
+
+          <HorizontalStackLayout Spacing="10">
+            <Button
+              Text="Delete Dump File"
+              Command="{Binding DeleteDumpCommand}"
+              TextColor="Red"
+              BackgroundColor="Transparent" />
+            <Button
+              Text="View Dump File"
+              Command="{Binding ViewDumpCommand}"
+              TextColor="Blue"
+              BackgroundColor="Transparent" />
+          </HorizontalStackLayout>
+        </VerticalStackLayout>
+      </Border>
+
+      <!-- API Health Card -->
+      <Border
+        Stroke="LightGray"
+        StrokeThickness="1"
+        StrokeShape="RoundRectangle 8"
+        BackgroundColor="White"
+        Padding="15">
+        <Border.Shadow>
+          <Shadow Brush="Black" Opacity="0.1" Offset="2,2" Radius="4"/>
+        </Border.Shadow>
+        <VerticalStackLayout Spacing="10">
+          <Label Text="API Health Check" FontAttributes="Bold" FontSize="Medium" />
+
+          <ActivityIndicator
+            IsRunning="{Binding IsCheckingApi}"
+            IsVisible="{Binding IsCheckingApi}" />
+
+          <Label
+            Text="{Binding ApiStatusText}"
+            IsVisible="{Binding IsCheckingApi, Converter={StaticResource InverseBooleanConverter}}">
+            <Label.Triggers>
+              <DataTrigger TargetType="Label" Binding="{Binding ApiHealthy}" Value="True">
+                <Setter Property="TextColor" Value="Green" />
+              </DataTrigger>
+              <DataTrigger TargetType="Label" Binding="{Binding ApiHealthy}" Value="False">
+                <Setter Property="TextColor" Value="Red" />
+              </DataTrigger>
+            </Label.Triggers>
+          </Label>
+        </VerticalStackLayout>
+      </Border>
+
+      <!-- Status Message -->
+      <Label
+        Text="{Binding StatusMessage}"
+        IsVisible="{Binding HasStatusMessage}"
+        BackgroundColor="LightGray"
+        Padding="10"
+        HorizontalOptions="Fill" />
+
+    </VerticalStackLayout>
+  </ScrollView>
+</ContentPage>

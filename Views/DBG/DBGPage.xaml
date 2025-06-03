@@ -10,103 +10,86 @@
   <ScrollView>
     <VerticalStackLayout Padding="20" Spacing="20">
 
-      <!-- Log File Card -->
-      <Border
-        Stroke="LightGray"
-        StrokeThickness="1"
-        StrokeShape="RoundRectangle 8"
-        BackgroundColor="White"
-        Padding="15">
-        <Border.Shadow>
-          <Shadow Brush="Black" Opacity="0.1" Offset="2,2" Radius="4"/>
-        </Border.Shadow>
-        <VerticalStackLayout Spacing="10">
-          <Label Text="Log File Location" FontAttributes="Bold" FontSize="Medium" />
-          <Label Text="{Binding LogPath}" LineBreakMode="TailTruncation" />
+      <!-- Log File Location -->
+      <Label Text="Log File Location"
+             FontAttributes="Bold"
+             FontSize="Medium" />
+      <Entry Text="{Binding LogPath}"
+             IsReadOnly="True"
+             BackgroundColor="LightGray"
+             TextColor="{AppThemeBinding Light=Black, Dark=White}"
+             HeightRequest="44" />
+      <HorizontalStackLayout Spacing="10">
+        <Button Text="🗑 Delete"
+                Command="{Binding DeleteLogCommand}"
+                BackgroundColor="#ffdddd"
+                TextColor="Red"
+                CornerRadius="6"
+                HeightRequest="44" />
+        <Button Text="📋 View"
+                Command="{Binding ViewLogCommand}"
+                BackgroundColor="#ddddff"
+                TextColor="Blue"
+                CornerRadius="6"
+                HeightRequest="44" />
+      </HorizontalStackLayout>
 
-          <HorizontalStackLayout Spacing="10">
-            <Button
-              Text="Delete Log File"
-              Command="{Binding DeleteLogCommand}"
-              TextColor="Red"
-              BackgroundColor="Transparent" />
-            <Button
-              Text="View Log File"
-              Command="{Binding ViewLogCommand}"
-              TextColor="Blue"
-              BackgroundColor="Transparent" />
-          </HorizontalStackLayout>
-        </VerticalStackLayout>
-      </Border>
+      <!-- Separator -->
+      <BoxView HeightRequest="1" BackgroundColor="Gray" />
 
-      <!-- Dump File Card -->
-      <Border
-        Stroke="LightGray"
-        StrokeThickness="1"
-        StrokeShape="RoundRectangle 8"
-        BackgroundColor="White"
-        Padding="15">
-        <Border.Shadow>
-          <Shadow Brush="Black" Opacity="0.1" Offset="2,2" Radius="4"/>
-        </Border.Shadow>
-        <VerticalStackLayout Spacing="10">
-          <Label Text="Dump File Location" FontAttributes="Bold" FontSize="Medium" />
-          <Label Text="{Binding DumpPath}" LineBreakMode="TailTruncation" />
+      <!-- Dump File Location -->
+      <Label Text="Dump File Location"
+             FontAttributes="Bold"
+             FontSize="Medium" />
+      <Entry Text="{Binding DumpPath}"
+             IsReadOnly="True"
+             BackgroundColor="LightGray"
+             TextColor="{AppThemeBinding Light=Black, Dark=White}"
+             HeightRequest="44" />
+      <HorizontalStackLayout Spacing="10">
+        <Button Text="🗑 Delete"
+                Command="{Binding DeleteDumpCommand}"
+                BackgroundColor="#ffdddd"
+                TextColor="Red"
+                CornerRadius="6"
+                HeightRequest="44" />
+        <Button Text="📋 View"
+                Command="{Binding ViewDumpCommand}"
+                BackgroundColor="#ddddff"
+                TextColor="Blue"
+                CornerRadius="6"
+                HeightRequest="44" />
+      </HorizontalStackLayout>
 
-          <HorizontalStackLayout Spacing="10">
-            <Button
-              Text="Delete Dump File"
-              Command="{Binding DeleteDumpCommand}"
-              TextColor="Red"
-              BackgroundColor="Transparent" />
-            <Button
-              Text="View Dump File"
-              Command="{Binding ViewDumpCommand}"
-              TextColor="Blue"
-              BackgroundColor="Transparent" />
-          </HorizontalStackLayout>
-        </VerticalStackLayout>
-      </Border>
+      <BoxView HeightRequest="1" BackgroundColor="Gray" />
 
-      <!-- API Health Card -->
-      <Border
-        Stroke="LightGray"
-        StrokeThickness="1"
-        StrokeShape="RoundRectangle 8"
-        BackgroundColor="White"
-        Padding="15">
-        <Border.Shadow>
-          <Shadow Brush="Black" Opacity="0.1" Offset="2,2" Radius="4"/>
-        </Border.Shadow>
-        <VerticalStackLayout Spacing="10">
-          <Label Text="API Health Check" FontAttributes="Bold" FontSize="Medium" />
+      <!-- API Health Check -->
+      <Label Text="API Health Check"
+             FontAttributes="Bold"
+             FontSize="Medium" />
+      <!-- Show spinner while checking -->
+      <ActivityIndicator
+        IsRunning="{Binding IsCheckingApi}"
+        IsVisible="{Binding IsCheckingApi}"
+        HeightRequest="30"
+        HorizontalOptions="Center" />
+      <!-- Once done, show status text in a readonly Entry -->
+      <Entry Text="{Binding ApiStatusText}"
+             IsReadOnly="True"
+             IsVisible="{Binding IsCheckingApi, Converter={StaticResource InverseBooleanConverter}}"
+             BackgroundColor="LightGray"
+             TextColor="{AppThemeBinding Light=Black, Dark=White}"
+             HeightRequest="44" />
 
-          <ActivityIndicator
-            IsRunning="{Binding IsCheckingApi}"
-            IsVisible="{Binding IsCheckingApi}" />
-
-          <Label
-            Text="{Binding ApiStatusText}"
-            IsVisible="{Binding IsCheckingApi}">
-            <Label.Triggers>
-              <DataTrigger TargetType="Label" Binding="{Binding ApiHealthy}" Value="True">
-                <Setter Property="TextColor" Value="Green" />
-              </DataTrigger>
-              <DataTrigger TargetType="Label" Binding="{Binding ApiHealthy}" Value="False">
-                <Setter Property="TextColor" Value="Red" />
-              </DataTrigger>
-            </Label.Triggers>
-          </Label>
-        </VerticalStackLayout>
-      </Border>
+      <BoxView HeightRequest="1" BackgroundColor="Gray" />
 
       <!-- Status Message -->
-      <Label
-        Text="{Binding StatusMessage}"
-        IsVisible="{Binding HasStatusMessage}"
-        BackgroundColor="LightGray"
-        Padding="10"
-        HorizontalOptions="Fill" />
+      <Label Text="{Binding StatusMessage}"
+             IsVisible="{Binding HasStatusMessage}"
+             BackgroundColor="#eeeeee"
+             TextColor="{AppThemeBinding Light=Black, Dark=White}"
+             Padding="8"
+             HorizontalOptions="Fill" />
 
     </VerticalStackLayout>
   </ScrollView>

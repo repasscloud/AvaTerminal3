@@ -21,7 +21,7 @@
       <Color x:Key="TextColorDark">#F2F2F7</Color>
 
       <!-- Converters -->
-      <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+      <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
 
       <!-- 1) Shared base for all buttons -->
       <Style x:Key="BootstrapButtonBase" TargetType="Button">
@@ -175,6 +175,8 @@
                           Dark={StaticResource TextColorDark}}" />
         <Setter Property="Margin" Value="0,4" />
       </Style>
+
+      
 
     </ResourceDictionary>
   </Application.Resources>

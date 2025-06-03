@@ -6,6 +6,7 @@
     xmlns:local="clr-namespace:AvaTerminal3"
     xmlns:views="clr-namespace:AvaTerminal3.Views"
     xmlns:clt="clr-namespace:AvaTerminal3.Views.CLT"
+    xmlns:dbg="clr-namespace:AvaTerminal3.Views.DBG"
     Shell.FlyoutBehavior="Flyout">
 
     <Shell.FlyoutHeader>
@@ -29,6 +30,15 @@
             Title="Client Management"
             ContentTemplate="{DataTemplate clt:ClientManagementPage}" />
     </FlyoutItem>
+
+    <FlyoutItem Title="Debug Tools"
+                Icon="icon_client.png"
+                Route="DBGPage">
+    <ShellContent
+        Title="Debug Tools"
+        ContentTemplate="{DataTemplate dbg:DBGPage}" />
+    </FlyoutItem>
+
 
     <Shell.FlyoutFooter>
         <Grid Padding="20">

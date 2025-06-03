@@ -60,6 +60,7 @@ public static class LogSinkService
     }
 
     public static void DeleteLogFile() => File.Delete(GetLogPath());
+    public static void DeleteDumpFile() => File.Delete(GetDumpFilePath());
 
     public static string GetLogPath() => LogPath;
     public static string GetDumpFilePath() => DumpFilePath;

@@ -3,8 +3,10 @@ using AvaTerminal3.Services;
 using AvaTerminal3.Services.Interfaces;
 using AvaTerminal3.ViewModels;
 using AvaTerminal3.ViewModels.CLT;
+using AvaTerminal3.ViewModels.DBG;
 using AvaTerminal3.Views.CLT;
 using AvaTerminal3.Views.CLT.SubViews;
+using AvaTerminal3.Views.DBG;
 using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
 
@@ -65,12 +67,18 @@ public static class MauiProgram
         builder.Services.AddTransient<Views.LoginPage>();
 
         // pages with DI
-        builder.Services.AddTransient<ClientManagementPage>();
         builder.Services.AddTransient<ClientManagementViewModel>();
-        builder.Services.AddTransient<NewAvaClientPage>();
+        builder.Services.AddTransient<ClientManagementPage>();
+        
         builder.Services.AddTransient<NewAvaClientViewModel>();
-        builder.Services.AddTransient<ExistingAvaClientPage>();
+        builder.Services.AddTransient<NewAvaClientPage>();
+
         builder.Services.AddTransient<ExistingAvaClientViewModel>();
+        builder.Services.AddTransient<ExistingAvaClientPage>();
+        
+        builder.Services.AddTransient<DBGViewModel>();
+        builder.Services.AddTransient<DBGPage>();
+        
 
         builder.Services.AddSingleton<IPopupService, Services.PopupService>();
         builder.Services.AddSingleton<ISharedStateService, SharedStateService>();
@@ -78,9 +86,10 @@ public static class MauiProgram
         //return builder.Build();
         var app = builder.Build();
 
+        // this (below) was removed because it's a headache
         // after Build() the container is ready:
-        var factory = app.Services.GetRequiredService<IHttpClientFactory>();
-        ApiClient.Initialize(factory);
+        // var factory = app.Services.GetRequiredService<IHttpClientFactory>();
+        // ApiClient.Initialize(factory);
 
         return app;
     }

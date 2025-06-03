@@ -87,7 +87,7 @@
 
           <Label
             Text="{Binding ApiStatusText}"
-            IsVisible="{Binding IsCheckingApi, Converter={StaticResource InverseBooleanConverter}}">
+            IsVisible="{Binding IsCheckingApi}">
             <Label.Triggers>
               <DataTrigger TargetType="Label" Binding="{Binding ApiHealthy}" Value="True">
                 <Setter Property="TextColor" Value="Green" />

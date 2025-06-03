@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using AvaTerminal3.Helpers;
 using AvaTerminal3.Models.Dto;
 using AvaTerminal3.Models.Kernel.Client.Attribs;
+using AvaTerminal3.Models.Kernel.Components;
 using AvaTerminal3.Services.Interfaces;
 
 namespace AvaTerminal3.Services;
@@ -596,6 +597,91 @@ public class AvaApiService : IAvaApiService
             throw new HttpRequestException(
                 $"{loggingPrefix} Exception during GET: {ex.Message}"
             );
+        }
+    }
+
+
+    // DBG
+    public async Task<bool> IsApiHealthyAsync()
+    {
+        string loggingPrefix = $"[AvaApiService.IsApiHealthyAsync]";
+        string apiRoute = "/api/v1/componentversion/api/health";
+        await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} Starting API health check.");
+
+        var _http = GetClient();
+
+        try
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Get, apiRoute);
+
+            await LogSinkService.WriteAsync(LogLevel.Debug,
+                $"{loggingPrefix} Sending GET to {apiRoute}");
+            var response = await _http.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                await LogSinkService.WriteAsync(LogLevel.Error,
+                    $"{loggingPrefix} GET failed: {response.StatusCode} – {errorContent}");
+                return false;
+            }
+
+            await LogSinkService.WriteAsync(LogLevel.Info,
+                $"{loggingPrefix} API health check OK.");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            await LogSinkService.WriteAsync(LogLevel.Fatal,
+                $"{loggingPrefix} Exception during GET: {ex.Message}");
+            return false;
+        }
+    }
+
+    public async Task<string> GetApiVersionStringAsync()
+    {
+        string loggingPrefix = $"[AvaApiService.GetApiVersionStringAsync]";
+        string apiRoute = "/api/v1/componentversion/api";
+        await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} Starting API component version check.");
+
+        var _http = GetClient();
+
+        try
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Get, apiRoute);
+
+            await LogSinkService.WriteAsync(LogLevel.Debug,
+                $"{loggingPrefix} Sending GET to {apiRoute}");
+            var response = await _http.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                await LogSinkService.WriteAsync(LogLevel.Error,
+                    $"{loggingPrefix} GET failed: {response.StatusCode} – {errorContent}");
+                return "VERSION CHECK FAILED";
+            }
+
+            await LogSinkService.WriteAsync(LogLevel.Info,
+                $"{loggingPrefix} API version returned.");
+
+            var apiVersion = await response.Content
+                                    .ReadFromJsonAsync<AvaTerminal3VersionResponse>()
+                        ?? new AvaTerminal3VersionResponse { AvaTerminal3Version = "ERROR: NO VERSION" };
+
+            if (apiVersion.AvaTerminal3Version == "ERROR: NO VERSION")
+            {
+                await LogSinkService.WriteAsync(LogLevel.Error,
+                    $"{loggingPrefix} ERROR: NO VERSION");
+            }
+
+            return apiVersion.AvaTerminal3Version;
+        }
+        catch (Exception ex)
+        {
+            await LogSinkService.WriteAsync(LogLevel.Fatal,
+                $"{loggingPrefix} Exception during GET: {ex.Message}");
+            return "ERROR: NO VERSION";
         }
     }
 }

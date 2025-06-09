@@ -1,5 +1,6 @@
 using AvaTerminal3.Views.CLT.SubViews;
 using AvaTerminal3.Views.DBG;
+using AvaTerminal3.Views.DBG.SubViews;
 using Microsoft.Maui.Controls;
 
 namespace AvaTerminal3;
@@ -19,6 +20,7 @@ public partial class AppShell : Shell
 
         // DBG
         Routing.RegisterRoute(nameof(DBGPage), typeof(DBGPage));
+        Routing.RegisterRoute(nameof(LogFileViewerPage), typeof(LogFileViewerPage));
     }
 
     private void OnToggleThemeClicked(object sender, EventArgs e)

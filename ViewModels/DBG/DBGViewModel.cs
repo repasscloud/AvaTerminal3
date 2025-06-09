@@ -7,6 +7,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.ApplicationModel;    // for Clipboard
 using AvaTerminal3.Services.Interfaces;
 using AvaTerminal3.Helpers;
+using AvaTerminal3.Views.DBG.SubViews;
 
 namespace AvaTerminal3.ViewModels.DBG;
 
@@ -27,9 +28,9 @@ public partial class DBGViewModel : ObservableObject
         // GetApiVersionCommand  = new AsyncRelayCommand(GetApiVersionAsync);
         // DeleteLogCommand      = new RelayCommand(DeleteLog);
         // DeleteDumpCommand     = new RelayCommand(DeleteDump);
-        // ViewLogCommand        = new RelayCommand(ViewLog);
+        ViewLogCommand        = new AsyncRelayCommand(ViewLogAsync);
         // ViewDumpCommand       = new RelayCommand(ViewDump);
-        // CopyLogPathCommand    = new RelayCommand(CopyLogPath);
+        CopyLogPathCommand    = new RelayCommand(CopyLogPath);
         // CopyDumpPathCommand   = new RelayCommand(CopyDumpPath);
     }
 
@@ -69,11 +70,11 @@ public partial class DBGViewModel : ObservableObject
     // —— Commands ——
     public IAsyncRelayCommand CheckApiHealthCommand { get; }
     // public IAsyncRelayCommand GetApiVersionCommand  { get; }
-    // public IRelayCommand    DeleteLogCommand        { get; }
+    public IRelayCommand    DeleteLogCommand        { get; }
     // public IRelayCommand    DeleteDumpCommand       { get; }
-    // public IRelayCommand    ViewLogCommand          { get; }
+    public IAsyncRelayCommand    ViewLogCommand          { get; }
     // public IRelayCommand    ViewDumpCommand         { get; }
-    // public IRelayCommand    CopyLogPathCommand      { get; }
+    public IRelayCommand    CopyLogPathCommand      { get; }
     // public IRelayCommand    CopyDumpPathCommand     { get; }
 
     // // —— Implementations ——
@@ -151,21 +152,22 @@ public partial class DBGViewModel : ObservableObject
     //     }
     // }
 
-    // private void ViewLog()
-    // {
-    //     StatusMessage = "Log would have been viewed here.";
-    // }
+
+    private async Task ViewLogAsync()
+    {
+        await Shell.Current.GoToAsync(nameof(LogFileViewerPage));
+    }
 
     // private void ViewDump()
     // {
     //     StatusMessage = "Dump would have been viewed here.";
     // }
 
-    // private void CopyLogPath()
-    // {
-    //     Clipboard.SetTextAsync(LogPath);
-    //     StatusMessage = "Log path copied to clipboard.";
-    // }
+    private void CopyLogPath()
+    {
+        Clipboard.SetTextAsync(LogPath);
+        StatusMessage = "Log path copied to clipboard.";
+    }
 
     // private void CopyDumpPath()
     // {

@@ -10,130 +10,140 @@
   <ScrollView>
     <VerticalStackLayout Padding="20" Spacing="20">
 
-      <!-- Log File Location -->
-      <Label Text="Log File Location"
-        FontAttributes="Bold"
-        FontSize="Medium" />
-      <Entry Text="{Binding LogPath}"
-        IsReadOnly="True"
-        BackgroundColor="LightGray"
-        TextColor="{AppThemeBinding Light=Black, Dark=Black}"
-        HeightRequest="44" />
-      <HorizontalStackLayout Spacing="10">
-        <Button Text="🗑 Delete"
-          Command="{Binding DeleteLogCommand}"
-          BackgroundColor="#ffdddd"
-          TextColor="Red"
-          CornerRadius="6"
-          HeightRequest="44" />
-        <Button Text="📋 View"
-          Command="{Binding ViewLogCommand}"
-          BackgroundColor="#ddddff"
-          TextColor="Blue"
-          CornerRadius="6"
-          HeightRequest="44" />
-        <Button Text="📄 Copy Log Path"
-          Command="{Binding CopyLogPathCommand}"
-          BackgroundColor="#ddffdd"
-          TextColor="Green"
-          CornerRadius="6"
-          HeightRequest="44" />
-      </HorizontalStackLayout>
+      <!-- Log File Section -->
+      <VerticalStackLayout Spacing="4">
+        <Label
+          Text="Log File Location"
+          FontAttributes="Bold"
+          FontSize="Medium" />
+        <Entry
+          Text="{Binding LogPath}"
+          IsReadOnly="True"
+          BackgroundColor="LightGray"
+          TextColor="{AppThemeBinding Light=Black, Dark=Black}"
+          HeightRequest="44"
+          HorizontalOptions="Fill" />
+        <HorizontalStackLayout Spacing="10" Margin="0,8,0,0">
+          <Button Text="🗑 Delete"
+            Command="{Binding DeleteLogCommand}"
+            BackgroundColor="#ffdddd"
+            TextColor="Red"
+            CornerRadius="6"
+            HeightRequest="44" />
+          <Button Text="📋 View"
+            Command="{Binding ViewLogCommand}"
+            BackgroundColor="#ddddff"
+            TextColor="Blue"
+            CornerRadius="6"
+            HeightRequest="44" />
+          <Button Text="📄 Copy Log Path"
+            Command="{Binding CopyLogPathCommand}"
+            BackgroundColor="#ddffdd"
+            TextColor="Green"
+            CornerRadius="6"
+            HeightRequest="44" />
+        </HorizontalStackLayout>
+      </VerticalStackLayout>
 
       <!-- Separator -->
       <BoxView HeightRequest="1" BackgroundColor="Gray" />
 
-      <!-- Dump File Location -->
-      <Label Text="Dump File Location"
-        FontAttributes="Bold"
-        FontSize="Medium" />
-      <Entry Text="{Binding DumpPath}"
-        IsReadOnly="True"
-        BackgroundColor="LightGray"
-        TextColor="{AppThemeBinding Light=Black, Dark=Black}"
-        HeightRequest="44" />
-      <HorizontalStackLayout Spacing="10">
-        <Button Text="🗑 Delete"
-          Command="{Binding DeleteDumpCommand}"
-          BackgroundColor="#ffdddd"
-          TextColor="Red"
-          CornerRadius="6"
-          HeightRequest="44" />
-        <Button Text="📋 View"
-          Command="{Binding ViewDumpCommand}"
-          BackgroundColor="#ddddff"
-          TextColor="Blue"
-          CornerRadius="6"
-          HeightRequest="44" />
-        <Button Text="📄 Copy Dump Path"
-          Command="{Binding CopyDumpPathCommand}"
-          BackgroundColor="#ddffdd"
-          TextColor="Green"
-          CornerRadius="6"
-          HeightRequest="44" />
-      </HorizontalStackLayout>
+      <!-- Dump File Section -->
+      <VerticalStackLayout Spacing="4">
+        <Label
+          Text="Dump File Location"
+          FontAttributes="Bold"
+          FontSize="Medium" />
+        <Entry
+          Text="{Binding DumpPath}"
+          IsReadOnly="True"
+          BackgroundColor="LightGray"
+          TextColor="{AppThemeBinding Light=Black, Dark=Black}"
+          HeightRequest="44"
+          HorizontalOptions="Fill" />
+        <HorizontalStackLayout Spacing="10" Margin="0,8,0,0">
+          <Button Text="🗑 Delete"
+            Command="{Binding DeleteDumpCommand}"
+            BackgroundColor="#ffdddd"
+            TextColor="Red"
+            CornerRadius="6"
+            HeightRequest="44" />
+          <Button Text="📋 View"
+            Command="{Binding ViewDumpCommand}"
+            BackgroundColor="#ddddff"
+            TextColor="Blue"
+            CornerRadius="6"
+            HeightRequest="44" />
+          <Button Text="📄 Copy Dump Path"
+            Command="{Binding CopyDumpPathCommand}"
+            BackgroundColor="#ddffdd"
+            TextColor="Green"
+            CornerRadius="6"
+            HeightRequest="44" />
+        </HorizontalStackLayout>
+      </VerticalStackLayout>
 
       <BoxView HeightRequest="1" BackgroundColor="Gray" />
 
+      <!-- API Check Section -->
+      <VerticalStackLayout Spacing="4">
+        <ActivityIndicator
+          IsRunning="{Binding IsCheckingApi}"
+          IsVisible="{Binding IsCheckingApi}"
+          HeightRequest="30"
+          HorizontalOptions="Center" />
+        <Grid
+          ColumnDefinitions="*,*"
+          ColumnSpacing="10"
+          HorizontalOptions="Fill">
 
-      <!-- Show spinner while checking -->
-      <ActivityIndicator
-        IsRunning="{Binding IsCheckingApi}"
-        IsVisible="{Binding IsCheckingApi}"
-        HeightRequest="30"
-        HorizontalOptions="Center" />
-      <!-- Once done, show status text in a readonly Entry -->
-<Grid
-  ColumnDefinitions="*,*"
-  ColumnSpacing="10"
-  HorizontalOptions="Fill">
+          <VerticalStackLayout Grid.Column="0" Spacing="4">
+            <Label
+              Text="API Health Check"
+              FontAttributes="Bold"
+              FontSize="Medium" />
+            <Entry
+              Text="{Binding ApiStatusText}"
+              IsReadOnly="True"
+              BackgroundColor="LightGray"
+              TextColor="{AppThemeBinding Light=Black, Dark=Black}"
+              HeightRequest="44"
+              HorizontalOptions="Fill" />
+          </VerticalStackLayout>
 
-  <VerticalStackLayout Grid.Column="0" Spacing="4">
-    <Label
-      Text="API Health Check"
-      FontAttributes="Bold"
-      FontSize="Medium" />
-    <Entry
-      Text="{Binding ApiStatusText}"
-      IsReadOnly="True"
-      BackgroundColor="LightGray"
-      TextColor="{AppThemeBinding Light=Black, Dark=Black}"
-      HeightRequest="44"
-      HorizontalOptions="Fill" />
-  </VerticalStackLayout>
+          <VerticalStackLayout Grid.Column="1" Spacing="4">
+            <Label
+              Text="API Version"
+              FontAttributes="Bold"
+              FontSize="Medium" />
+            <Entry
+              Text="{Binding ApiVersionText}"
+              BackgroundColor="LightGray"
+              TextColor="{AppThemeBinding Light=Black, Dark=Black}"
+              HeightRequest="44"
+              HorizontalOptions="Fill" />
+          </VerticalStackLayout>
 
-  <VerticalStackLayout Grid.Column="1" Spacing="4">
-    <Label
-      Text="API Version"
-      FontAttributes="Bold"
-      FontSize="Medium" />
-    <Entry
-      Text="{Binding ApiVersionText}"
-      BackgroundColor="LightGray"
-      TextColor="{AppThemeBinding Light=Black, Dark=Black}"
-      HeightRequest="44"
-      HorizontalOptions="Fill" />
-  </VerticalStackLayout>
-
-</Grid>
-
-
-
+        </Grid>
+      </VerticalStackLayout>
 
       <BoxView HeightRequest="1" BackgroundColor="Gray" />
 
-      <!-- Status Message -->
-      <Label Text="Status Message"
-        FontAttributes="Bold"
-        FontSize="Medium" />
-
-      <Label Text="{Binding StatusMessage}"
-        IsVisible="{Binding HasStatusMessage}"
-        BackgroundColor="#eeeeee"
-        TextColor="{AppThemeBinding Light=Black, Dark=Black}"
-        Padding="8"
-        HeightRequest="44"
-        HorizontalOptions="Fill" />
+      <!-- Status Message Section -->
+      <VerticalStackLayout Spacing="4">
+        <Label
+          Text="Status Message"
+          FontAttributes="Bold"
+          FontSize="Medium" />
+        <Label
+          Text="{Binding StatusMessage}"
+          IsVisible="{Binding HasStatusMessage}"
+          BackgroundColor="#eeeeee"
+          TextColor="{AppThemeBinding Light=Black, Dark=Black}"
+          Padding="8"
+          HeightRequest="44"
+          HorizontalOptions="Fill" />
+      </VerticalStackLayout>
 
     </VerticalStackLayout>
   </ScrollView>

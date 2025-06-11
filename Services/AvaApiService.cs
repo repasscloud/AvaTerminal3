@@ -1,9 +1,12 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text;
+using System.Text.Json;
 using AvaTerminal3.Helpers;
 using AvaTerminal3.Models.Dto;
 using AvaTerminal3.Models.Kernel.Client.Attribs;
 using AvaTerminal3.Models.Kernel.Components;
+using AvaTerminal3.Models.Kernel.SysVar;
 using AvaTerminal3.Services.Interfaces;
 
 namespace AvaTerminal3.Services;
@@ -461,7 +464,7 @@ public class AvaApiService : IAvaApiService
             return string.Empty;
         }
         // get JWT
-            string jwtToken = await _authService.GetTokenAsync() ?? string.Empty;
+        string jwtToken = await _authService.GetTokenAsync() ?? string.Empty;
         if (string.IsNullOrEmpty(jwtToken))
         {
             await LogSinkService.WriteAsync(LogLevel.Error, $"{loggingPrefix} Missing or invalid JWT token.");
@@ -499,7 +502,7 @@ public class AvaApiService : IAvaApiService
                     $"{loggingPrefix} Retrieved '(+{dialCode}) {match.CountryName}' successfully.");
                 return $"(+{dialCode}) {match.CountryName}";
             }
-            
+
             throw new HttpRequestException(
                 $"{loggingPrefix} GET failed: unable to match dial code, contact support."
             );
@@ -596,6 +599,45 @@ public class AvaApiService : IAvaApiService
             await LogSinkService.WriteAsync(LogLevel.Fatal,
                 $"{loggingPrefix} Exception during GET: {ex.Message}");
             return "ERROR: NO VERSION";
+        }
+    }
+
+    public async Task<bool> PostInternalSupportTicketAsync(InternalSupportTicket ticket)
+    {
+        string loggingPrefix = $"[AvaApiService.PostInternalSupportTicketAsync]";
+        string apiRoute = "/api/v1/github/issues/internal";
+        await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} starting internal support ticket post.");
+
+        var _http = GetClient();
+
+        try
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Post, apiRoute);
+            var payload = JsonSerializer.Serialize(ticket);
+            request.Content = new StringContent(payload, Encoding.UTF8, "application/json");
+
+            await LogSinkService.WriteAsync(LogLevel.Debug,
+                $"{loggingPrefix} Sending POST to {apiRoute} with body: {payload}");
+
+            var response = await _http.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                await LogSinkService.WriteAsync(LogLevel.Error,
+                    $"{loggingPrefix} POST failed: {response.StatusCode} - {errorContent}");
+                return false;
+            }
+            await LogSinkService.WriteAsync(LogLevel.Debug,
+                $"{loggingPrefix} POST sent to {apiRoute} successfully.");
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            await LogSinkService.WriteAsync(LogLevel.Fatal,
+                $"{loggingPrefix} Exception during GET: {ex.Message}");
+            return false;
         }
     }
 }

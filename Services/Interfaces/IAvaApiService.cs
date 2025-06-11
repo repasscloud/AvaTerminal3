@@ -1,4 +1,5 @@
 using AvaTerminal3.Models.Dto;
+using AvaTerminal3.Models.Kernel.SysVar;
 namespace AvaTerminal3.Services.Interfaces;
 
 public interface IAvaApiService
@@ -23,4 +24,8 @@ public interface IAvaApiService
     Task<bool> IsApiHealthyAsync();
 
     Task<string> GetApiVersionStringAsync();
+
+
+    // GitHub Issues
+    Task<bool> PostInternalSupportTicketAsync(InternalSupportTicket ticket);
 }

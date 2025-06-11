@@ -14,4 +14,7 @@ public interface IAuthService
     Task<bool> HasTokenAsync();
     Task<string?> GetTokenAsync();
     void ClearToken();
+
+    // user specific
+    Task<string> GetLoggedInUserAsync();
 }

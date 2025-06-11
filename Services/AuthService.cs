@@ -113,6 +113,28 @@ public class AuthService : IAuthService
         }
     }
 
+    public async Task<string> GetLoggedInUserAsync()
+    {
+        var token = await GetTokenAsync();
+        if (string.IsNullOrWhiteSpace(token)) return string.Empty;
+
+        try
+        {
+            var parts = token.Split('.');
+            if (parts.Length != 3) return string.Empty;
+
+            var payload = parts[1];
+            var json = DecodeBase64Url(payload);
+            var root = JsonDocument.Parse(json).RootElement;
+
+            return root.GetProperty("unique_name").GetString() ?? string.Empty;
+        }
+        catch
+        {
+            return string.Empty;
+        }
+    }
+
     private static string DecodeBase64Url(string input)
     {
         input = input.Replace('-', '+').Replace('_', '/');

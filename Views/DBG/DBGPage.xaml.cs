@@ -16,6 +16,7 @@ namespace AvaTerminal3.Views.DBG
             // Trigger the health-check command as soon as the page appears:
             var vm = (DBGViewModel)BindingContext;
             _ = vm.CheckApiHealthCommand.ExecuteAsync(null);
+            _ = vm.GetApiVersionCommand.ExecuteAsync(null);
         }
     }
 }

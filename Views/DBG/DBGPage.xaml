@@ -75,10 +75,7 @@
 
       <BoxView HeightRequest="1" BackgroundColor="Gray" />
 
-      <!-- API Health Check -->
-      <Label Text="API Health Check"
-        FontAttributes="Bold"
-        FontSize="Medium" />
+
       <!-- Show spinner while checking -->
       <ActivityIndicator
         IsRunning="{Binding IsCheckingApi}"
@@ -86,12 +83,42 @@
         HeightRequest="30"
         HorizontalOptions="Center" />
       <!-- Once done, show status text in a readonly Entry -->
-      <Entry Text="{Binding ApiStatusText}"
-        IsReadOnly="True"
+<Grid
+  ColumnDefinitions="*,*"
+  ColumnSpacing="10"
+  HorizontalOptions="Fill">
 
-        BackgroundColor="LightGray"
-        TextColor="{AppThemeBinding Light=Black, Dark=Black}"
-        HeightRequest="44" />
+  <VerticalStackLayout Grid.Column="0" Spacing="4">
+    <Label
+      Text="API Health Check"
+      FontAttributes="Bold"
+      FontSize="Medium" />
+    <Entry
+      Text="{Binding ApiStatusText}"
+      IsReadOnly="True"
+      BackgroundColor="LightGray"
+      TextColor="{AppThemeBinding Light=Black, Dark=Black}"
+      HeightRequest="44"
+      HorizontalOptions="Fill" />
+  </VerticalStackLayout>
+
+  <VerticalStackLayout Grid.Column="1" Spacing="4">
+    <Label
+      Text="API Version"
+      FontAttributes="Bold"
+      FontSize="Medium" />
+    <Entry
+      Text="{Binding ApiVersionText}"
+      BackgroundColor="LightGray"
+      TextColor="{AppThemeBinding Light=Black, Dark=Black}"
+      HeightRequest="44"
+      HorizontalOptions="Fill" />
+  </VerticalStackLayout>
+
+</Grid>
+
+
+
 
       <BoxView HeightRequest="1" BackgroundColor="Gray" />
 
@@ -105,6 +132,7 @@
         BackgroundColor="#eeeeee"
         TextColor="{AppThemeBinding Light=Black, Dark=Black}"
         Padding="8"
+        HeightRequest="44"
         HorizontalOptions="Fill" />
 
     </VerticalStackLayout>

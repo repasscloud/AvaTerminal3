@@ -610,34 +610,45 @@ public class AvaApiService : IAvaApiService
 
         var _http = GetClient();
 
-        try
+        // retrieve token from service
+        string jwtToken = await _authService.GetTokenAsync() ?? string.Empty;
+
+        if (!string.IsNullOrEmpty(jwtToken))
         {
-            using var request = new HttpRequestMessage(HttpMethod.Post, apiRoute);
-            var payload = JsonSerializer.Serialize(ticket);
-            request.Content = new StringContent(payload, Encoding.UTF8, "application/json");
-
-            await LogSinkService.WriteAsync(LogLevel.Debug,
-                $"{loggingPrefix} Sending POST to {apiRoute} with body: {payload}");
-
-            var response = await _http.SendAsync(request);
-
-            if (!response.IsSuccessStatusCode)
+            await LogSinkService.WriteAsync(LogLevel.Debug, $"{loggingPrefix} Obtained JWT token.");
+            try
             {
-                var errorContent = await response.Content.ReadAsStringAsync();
-                await LogSinkService.WriteAsync(LogLevel.Error,
-                    $"{loggingPrefix} POST failed: {response.StatusCode} - {errorContent}");
+                using var request = new HttpRequestMessage(HttpMethod.Post, apiRoute);
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+                var payload = JsonSerializer.Serialize(ticket);
+                request.Content = new StringContent(payload, Encoding.UTF8, "application/json");
+
+                await LogSinkService.WriteAsync(LogLevel.Debug,
+                    $"{loggingPrefix} Sending POST to {apiRoute} with body: {payload}");
+
+                var response = await _http.SendAsync(request);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    await LogSinkService.WriteAsync(LogLevel.Error,
+                        $"{loggingPrefix} POST failed: {response.StatusCode} - {errorContent}");
+                    return false;
+                }
+                await LogSinkService.WriteAsync(LogLevel.Debug,
+                    $"{loggingPrefix} POST sent to {apiRoute} successfully.");
+
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                await LogSinkService.WriteAsync(LogLevel.Fatal,
+                    $"{loggingPrefix} Exception during GET: {ex.Message}");
                 return false;
             }
-            await LogSinkService.WriteAsync(LogLevel.Debug,
-                $"{loggingPrefix} POST sent to {apiRoute} successfully.");
-
-            return true;
         }
-        catch (Exception ex)
-        {
-            await LogSinkService.WriteAsync(LogLevel.Fatal,
-                $"{loggingPrefix} Exception during GET: {ex.Message}");
-            return false;
-        }
+        await LogSinkService.WriteAsync(LogLevel.Error, $"{loggingPrefix} Missing or invalid JWT Token with value: '{jwtToken}'.");
+        return false;       
     }
 }

@@ -1,55 +1,50 @@
-// LogFileViewerViewModel.cs
-using System;
-using System.IO;
-using System.Threading.Tasks;
+// JsonDumpViewerViewModel.cs
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Maui.ApplicationModel;    // for Clipboard
-using Microsoft.Maui.Controls;           // for Shell pop
 using AvaTerminal3.Services.Interfaces;
 using AvaTerminal3.Helpers;
 using AvaTerminal3.Models.Kernel.SysVar;
 
 namespace AvaTerminal3.ViewModels.DBG.SubViews;
 
-public partial class LogFileViewerViewModel : ObservableObject
+public partial class JsonDumpViewerViewModel : ObservableObject
 {
     private readonly IAvaApiService _avaApiService;
     private readonly IAuthService _authService;
 
-    public LogFileViewerViewModel(IAvaApiService avaApiService, IAuthService authService)
+    public JsonDumpViewerViewModel(IAvaApiService avaApiService, IAuthService authService)
     {
         _avaApiService = avaApiService;
         _authService = authService;
 
-        LogPath = LogSinkService.GetLogPath();
+        JsonDumpPath = LogSinkService.GetDumpFilePath();
 
         // kick off load
-        LoadLogContentsCommand = new AsyncRelayCommand(LoadLogContentsAsync);
+        LoadJsonDumpContentsCommand = new AsyncRelayCommand(LoadJsonDumpContentsAsync);
 
         // navigation / actions
         BackCommand = new RelayCommand(async () =>
             await Shell.Current.Navigation.PopAsync(animated: true)
         );
-        DeleteFileCommand = new AsyncRelayCommand(DeleteLogAsync);
+        DeleteFileCommand = new AsyncRelayCommand(DeleteJsonDumpAsync);
         CopyContentCommand = new RelayCommand(CopyContent);
         LogTicketCommand = new AsyncRelayCommand(LogTicketPlaceholderAsync);
     }
 
     [ObservableProperty]
-    string logPath;
+    string jsonDumpPath;
 
     [ObservableProperty]
     string statusMessage = string.Empty;
 
     [ObservableProperty]
-    string logFileContent = string.Empty;    // renamed from 'logContents'
+    string jsonDumpFileContent = string.Empty;
 
     public bool HasStatusMessage 
         => !string.IsNullOrWhiteSpace(StatusMessage);
 
     // —— Commands ——
-    public IAsyncRelayCommand LoadLogContentsCommand { get; }
+    public IAsyncRelayCommand LoadJsonDumpContentsCommand { get; }
     public IRelayCommand      BackCommand            { get; }
     public IAsyncRelayCommand DeleteFileCommand      { get; }
     public IRelayCommand      CopyContentCommand     { get; }
@@ -57,12 +52,12 @@ public partial class LogFileViewerViewModel : ObservableObject
 
     // —— Implementation ——
 
-    private async Task LoadLogContentsAsync()
+    private async Task LoadJsonDumpContentsAsync()
     {
         try
         {
             // READ ENTIRE FILE (includes line breaks)
-            LogFileContent = await File.ReadAllTextAsync(LogPath);
+            JsonDumpFileContent = await File.ReadAllTextAsync(JsonDumpPath);
             StatusMessage  = string.Empty;
         }
         catch (Exception ex)
@@ -71,31 +66,31 @@ public partial class LogFileViewerViewModel : ObservableObject
         }
     }
 
-    private async Task DeleteLogAsync()
+    private async Task DeleteJsonDumpAsync()
     {
         try
         {
-            if (File.Exists(LogPath))
+            if (File.Exists(JsonDumpPath))
             {
-                LogSinkService.DeleteLogFile();
-                StatusMessage = "Log file deleted.";
+                LogSinkService.DeleteDumpFile();
+                StatusMessage = "Dump file deleted.";
                 await Shell.Current.GoToAsync("..");
             }
             else
             {
-                StatusMessage = "Log file not found.";
+                StatusMessage = "Json dump file not found.";
             }
         }
         catch (Exception ex)
         {
-            StatusMessage = $"Failed to delete log: {ex.Message}";
+            StatusMessage = $"Failed to delete json dump file: {ex.Message}";
         }
     }
 
     private void CopyContent()
     {
-        _ = Clipboard.SetTextAsync(LogFileContent);
-        StatusMessage = "Log content copied to clipboard.";
+        _ = Clipboard.SetTextAsync(JsonDumpFileContent);
+        StatusMessage = "Json dump file content copied to clipboard.";
     }
 
     private async Task LogTicketPlaceholderAsync()
@@ -107,10 +102,10 @@ public partial class LogFileViewerViewModel : ObservableObject
         InternalSupportTicket supportTicket = new InternalSupportTicket
         {
             IssueId = "n/a",
-            Subject = "LogFile Ticket Upload",
-            Category = "Internal_LogFileUpload",
+            Subject = "JsonDumpFile Ticket Upload",
+            Category = "Internal_JsonDumpFileUpload",
             UserId = _userId,
-            Message = LogFileContent,
+            Message = JsonDumpFileContent,
         };
 
         // upload it to api (api handles it)

@@ -27,14 +27,20 @@ public class AvaApiService : IAvaApiService
     private HttpClient GetClient()
     => _factory.CreateClient(_env.IsDev ? "DevAvaAPI" : "AvaAPI");
 
-
     public async Task<string> GetClientAsync(string clientId)
     {
         var _http = GetClient();
-        var response = await _http.GetAsync($"clients/{clientId}");
+        string jwtToken = await _authService.GetTokenAsync() ?? string.Empty;
+
+        using var request = new HttpRequestMessage(HttpMethod.Get, $"clients/{clientId}");
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+
+        using var response = await _http.SendAsync(request);
         response.EnsureSuccessStatusCode();
+
         return await response.Content.ReadAsStringAsync();
     }
+
     public async Task<bool> CreateClientAsync(AvaClientDto client)
     {
         string loggingPrefix = $"[AvaApiService.CreateClientAsync]";
@@ -42,8 +48,6 @@ public class AvaApiService : IAvaApiService
         await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} Starting client creation process.");
 
         var _http = GetClient();
-
-        // retrieve token from service
         string jwtToken = await _authService.GetTokenAsync() ?? string.Empty;
 
         if (!string.IsNullOrEmpty(jwtToken))
@@ -56,7 +60,10 @@ public class AvaApiService : IAvaApiService
                     Content = JsonContent.Create(client)
                 };
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
-                await LogSinkService.WriteAsync(LogLevel.Debug, $"{loggingPrefix} Sending POST request to /api/v1/avaclient/new-or-update with client ID: {client.ClientId}");
+                await LogSinkService.WriteAsync(
+                    LogLevel.Debug,
+                    $"{loggingPrefix} Sending POST request to /api/v1/avaclient/new-or-update with client ID: {client.ClientId}"
+                );
                 var response = await _http.SendAsync(request);
                 if (!response.IsSuccessStatusCode)
                 {
@@ -64,7 +71,10 @@ public class AvaApiService : IAvaApiService
                     await LogSinkService.WriteAsync(LogLevel.Error, $"{loggingPrefix} Failed to create client: {response.StatusCode} - {errorContent}");
                     return false;
                 }
-                await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} Client created/updated successfully. Response status: {response.StatusCode}");
+                await LogSinkService.WriteAsync(
+                    LogLevel.Info,
+                    $"{loggingPrefix} Client created/updated successfully. Response status: {response.StatusCode}"
+                );
                 return true;
             }
             catch (Exception ex)
@@ -76,17 +86,17 @@ public class AvaApiService : IAvaApiService
         await LogSinkService.WriteAsync(LogLevel.Error, $"{loggingPrefix} Missing or invalid JWT Token with value: '{jwtToken}'.");
         return false;
     }
+
     public async Task<AvaClientDto> GetAvaClientBySearchEverythingAsync(string searchValue)
     {
         string loggingPrefix = $"[AvaApiService.GetAvaClientBySearchEverythingAsync]";
         string apiEndpoint = $"/api/v1/avaclient/search-everything/dto/{searchValue}";
 
         var _http = GetClient();
+        string jwtToken = await _authService.GetTokenAsync() ?? string.Empty;
 
         await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} Starting ava client (ge) get process.");
 
-        // retrieve token from service
-        string jwtToken = await _authService.GetTokenAsync() ?? string.Empty;
         if (!string.IsNullOrEmpty(jwtToken))
         {
             await LogSinkService.WriteAsync(LogLevel.Debug, $"{loggingPrefix} Obtained JWT token.");
@@ -125,16 +135,16 @@ public class AvaApiService : IAvaApiService
             $"SearchEverything API call failed: {loggingPrefix} Missing or invalid JWT Token with value: '{jwtToken}'."
         );
     }
+
     public async Task<bool> UpdateClientAsync(AvaClientDto client)
     {
         string loggingPrefix = $"[AvaApiService.UpdateClientAsync]";
 
         var _http = GetClient();
+        string jwtToken = await _authService.GetTokenAsync() ?? string.Empty;
 
         await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} Starting client update process.");
-
-        // retrieve token from service
-        string jwtToken = await _authService.GetTokenAsync() ?? string.Empty;
+        
         if (!string.IsNullOrEmpty(jwtToken))
         {
             await LogSinkService.WriteAsync(LogLevel.Debug, $"{loggingPrefix} Obtained JWT token.");
@@ -165,15 +175,15 @@ public class AvaApiService : IAvaApiService
         await LogSinkService.WriteAsync(LogLevel.Error, $"{loggingPrefix} Missing or invalid JWT Token with value: '{jwtToken}'.");
         return false;
     }
+
     public async Task<List<string>> GetTaxIdsAsync()
     {
         string loggingPrefix = $"[AvaApiService.GetTaxIdsAsync]";
         await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} Starting tax-ID retrieval.");
 
         var _http = GetClient();
-
-        // get JWT
         string jwtToken = await _authService.GetTokenAsync() ?? string.Empty;
+
         if (string.IsNullOrEmpty(jwtToken))
         {
             await LogSinkService.WriteAsync(LogLevel.Error, $"{loggingPrefix} Missing or invalid JWT token.");
@@ -223,15 +233,15 @@ public class AvaApiService : IAvaApiService
             return new List<string> { "ERROR" };
         }
     }
+
     public async Task<List<string>> GetAvailableCountriesAsync()
     {
         string loggingPrefix = $"[AvaApiService.GetAvailableCountriesAsync]";
         await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} Starting available country retrieval.");
 
         var _http = GetClient();
-
-        // get JWT
         string jwtToken = await _authService.GetTokenAsync() ?? string.Empty;
+
         if (string.IsNullOrEmpty(jwtToken))
         {
             await LogSinkService.WriteAsync(LogLevel.Error, $"{loggingPrefix} Missing or invalid JWT token.");
@@ -287,9 +297,8 @@ public class AvaApiService : IAvaApiService
         await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} Starting available dial code retrieval.");
 
         var _http = GetClient();
-
-        // get JWT
         string jwtToken = await _authService.GetTokenAsync() ?? string.Empty;
+
         if (string.IsNullOrEmpty(jwtToken))
         {
             await LogSinkService.WriteAsync(LogLevel.Error, $"{loggingPrefix} Missing or invalid JWT token.");
@@ -335,15 +344,15 @@ public class AvaApiService : IAvaApiService
             return new List<string> { "ERROR" };
         }
     }
+
     public async Task<List<string>> GetAvailableCurrencyCodesAsync()
     {
         string loggingPrefix = $"[AvaApiService.GetAvailableCurrencyCodesAsync";
         await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} Starting currency code retrieval.");
 
         var _http = GetClient();
-
-        // get JWT
         string jwtToken = await _authService.GetTokenAsync() ?? string.Empty;
+
         if (string.IsNullOrEmpty(jwtToken))
         {
             await LogSinkService.WriteAsync(LogLevel.Error, $"{loggingPrefix} Missing or invalid JWT token.");
@@ -393,15 +402,15 @@ public class AvaApiService : IAvaApiService
             return new List<string> { "ERROR" };
         }
     }
+
     public async Task<List<SupportedDialCodeDto>> GetCountryDialCodes2Async()
     {
         string loggingPrefix = $"[AvaApiService.GetCountryDialCodes2Async]";
         await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} Starting available dial code retrieval.");
 
         var _http = GetClient();
-
-        // get JWT
         string jwtToken = await _authService.GetTokenAsync() ?? string.Empty;
+
         if (string.IsNullOrEmpty(jwtToken))
         {
             await LogSinkService.WriteAsync(LogLevel.Error, $"{loggingPrefix} Missing or invalid JWT token.");
@@ -409,33 +418,42 @@ public class AvaApiService : IAvaApiService
                 $"{loggingPrefix} Missing or invalid JWT token."
             );
         }
+
         await LogSinkService.WriteAsync(LogLevel.Debug, $"{loggingPrefix} Obtained JWT token.");
+
         try
         {
             using var request = new HttpRequestMessage(HttpMethod.Get, "/api/v1/attrib/dialcodes");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+
             await LogSinkService.WriteAsync(LogLevel.Debug,
                 $"{loggingPrefix} Sending GET to /api/v1/attrib/dialcodes");
+
             var response = await _http.SendAsync(request);
+
             if (!response.IsSuccessStatusCode)
             {
                 var errorContent = await response.Content.ReadAsStringAsync();
+
                 await LogSinkService.WriteAsync(LogLevel.Error,
                     $"{loggingPrefix} GET failed: {response.StatusCode} – {errorContent}");
                 throw new HttpRequestException(
                     $"{loggingPrefix} GET failed: {response.StatusCode} – {errorContent}"
                 );
             }
+
             // deserialize into your model
             var dialList = await response.Content
                                 .ReadFromJsonAsync<List<SupportedDialCodeDto>>()
                             ?? new List<SupportedDialCodeDto>();
+
             if (dialList.Count > 0)
             {
                 await LogSinkService.WriteAsync(LogLevel.Info,
                     $"{loggingPrefix} Retrieved {dialList.Count} dial codes successfully.");
                 return dialList;
             }
+
             await LogSinkService.WriteAsync(LogLevel.Error,
                 $"{loggingPrefix} No dial codes returned from API.");
             throw new HttpRequestException(
@@ -451,20 +469,21 @@ public class AvaApiService : IAvaApiService
             );
         }
     }
+
     public async Task<string> MatchCountryDialCodeStringAsync(string? dialCode)
     {
         string loggingPrefix = $"[AvaApiService.GetCountryDialCodesAsync]";
         await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} Starting available dial code retrieval.");
 
         var _http = GetClient();
+        string jwtToken = await _authService.GetTokenAsync() ?? string.Empty;
 
         if (dialCode == null || dialCode.Length == 0)
         {
             await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} Null dial code return.");
             return string.Empty;
         }
-        // get JWT
-        string jwtToken = await _authService.GetTokenAsync() ?? string.Empty;
+
         if (string.IsNullOrEmpty(jwtToken))
         {
             await LogSinkService.WriteAsync(LogLevel.Error, $"{loggingPrefix} Missing or invalid JWT token.");
@@ -472,7 +491,9 @@ public class AvaApiService : IAvaApiService
                 $"{loggingPrefix} Missing or invalid JWT token."
             );
         }
+
         await LogSinkService.WriteAsync(LogLevel.Debug, $"{loggingPrefix} Obtained JWT token.");
+
         try
         {
             using var request = new HttpRequestMessage(HttpMethod.Get, "/api/v1/attrib/dialcodes");
@@ -526,10 +547,12 @@ public class AvaApiService : IAvaApiService
         await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} Starting API health check.");
 
         var _http = GetClient();
+        string jwtToken = await _authService.GetTokenAsync() ?? string.Empty;
 
         try
         {
             using var request = new HttpRequestMessage(HttpMethod.Get, apiRoute);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
 
             await LogSinkService.WriteAsync(LogLevel.Debug,
                 $"{loggingPrefix} Sending GET to {apiRoute}");
@@ -563,9 +586,13 @@ public class AvaApiService : IAvaApiService
 
         var _http = GetClient();
 
+        // retrieve token from service
+        string jwtToken = await _authService.GetTokenAsync() ?? string.Empty;
+
         try
         {
             using var request = new HttpRequestMessage(HttpMethod.Get, apiRoute);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
 
             await LogSinkService.WriteAsync(LogLevel.Debug,
                 $"{loggingPrefix} Sending GET to {apiRoute}");
@@ -609,8 +636,6 @@ public class AvaApiService : IAvaApiService
         await LogSinkService.WriteAsync(LogLevel.Info, $"{loggingPrefix} starting internal support ticket post.");
 
         var _http = GetClient();
-
-        // retrieve token from service
         string jwtToken = await _authService.GetTokenAsync() ?? string.Empty;
 
         if (!string.IsNullOrEmpty(jwtToken))

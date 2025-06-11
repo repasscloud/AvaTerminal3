@@ -29,9 +29,9 @@ public partial class DBGViewModel : ObservableObject
         // DeleteLogCommand      = new RelayCommand(DeleteLog);
         // DeleteDumpCommand     = new RelayCommand(DeleteDump);
         ViewLogCommand        = new AsyncRelayCommand(ViewLogAsync);
-        // ViewDumpCommand       = new RelayCommand(ViewDump);
+        ViewDumpCommand       = new AsyncRelayCommand(ViewDumpAsync);
         CopyLogPathCommand    = new RelayCommand(CopyLogPath);
-        // CopyDumpPathCommand   = new RelayCommand(CopyDumpPath);
+        CopyDumpPathCommand   = new RelayCommand(CopyDumpPath);
     }
 
     [ObservableProperty]
@@ -73,9 +73,9 @@ public partial class DBGViewModel : ObservableObject
     public IRelayCommand    DeleteLogCommand        { get; }
     // public IRelayCommand    DeleteDumpCommand       { get; }
     public IAsyncRelayCommand    ViewLogCommand          { get; }
-    // public IRelayCommand    ViewDumpCommand         { get; }
+    public IAsyncRelayCommand    ViewDumpCommand         { get; }
     public IRelayCommand    CopyLogPathCommand      { get; }
-    // public IRelayCommand    CopyDumpPathCommand     { get; }
+    public IRelayCommand    CopyDumpPathCommand     { get; }
 
     // // —— Implementations ——
 
@@ -158,10 +158,10 @@ public partial class DBGViewModel : ObservableObject
         await Shell.Current.GoToAsync(nameof(LogFileViewerPage));
     }
 
-    // private void ViewDump()
-    // {
-    //     StatusMessage = "Dump would have been viewed here.";
-    // }
+    private async Task ViewDumpAsync()
+    {
+        await Shell.Current.GoToAsync(nameof(JsonDumpViewerPage));
+    }
 
     private void CopyLogPath()
     {
@@ -169,9 +169,9 @@ public partial class DBGViewModel : ObservableObject
         StatusMessage = "Log path copied to clipboard.";
     }
 
-    // private void CopyDumpPath()
-    // {
-    //     Clipboard.SetTextAsync(DumpPath);
-    //     StatusMessage = "Dump path copied to clipboard.";
-    // }
+    private void CopyDumpPath()
+    {
+        Clipboard.SetTextAsync(DumpPath);
+        StatusMessage = "Dump path copied to clipboard.";
+    }
 }

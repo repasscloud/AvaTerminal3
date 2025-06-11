@@ -80,6 +80,8 @@ public static class MauiProgram
         builder.Services.AddTransient<DBGPage>();
         builder.Services.AddTransient<LogFileViewerViewModel>();
         builder.Services.AddTransient<LogFileViewerPage>();
+        builder.Services.AddTransient<JsonDumpViewerViewModel>();
+        builder.Services.AddTransient<JsonDumpViewerPage>();
 
         builder.Services.AddSingleton<IPopupService, Services.PopupService>();
         builder.Services.AddSingleton<ISharedStateService, SharedStateService>();

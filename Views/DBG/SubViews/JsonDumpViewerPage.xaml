@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:components="clr-namespace:AvaTerminal3.Views.Components"
+    xmlns:vm="clr-namespace:AvaTerminal3.ViewModels.DBG.SubViews"
+    x:Class="AvaTerminal3.Views.DBG.SubViews.JsonDumpViewerPage"
+    x:DataType="vm:JsonDumpViewerViewModel"
+    Title="JSON Dump Viewer">
+
+  <Grid RowDefinitions="*,Auto" Padding="20" RowSpacing="16">
+    
+    <!-- SCROLLABLE LOG + BUTTONS -->
+    <Grid Grid.Row="0" RowDefinitions="*,Auto,Auto" RowSpacing="12">
+      <!-- 1) Log text -->
+      <Editor
+        Grid.Row="0"
+        Text="{Binding JsonDumpFileContent}"
+        IsReadOnly="True"
+        FontFamily="Courier New"
+        FontSize="14"
+        VerticalOptions="Fill"
+        HorizontalOptions="Fill" />
+
+      <!-- 2) Status message -->
+      <Label
+        Grid.Row="1"
+        Text="{Binding StatusMessage}"
+        IsVisible="{Binding HasStatusMessage}"
+        TextColor="{DynamicResource ErrorColor}"
+        FontAttributes="Italic"
+        HorizontalOptions="Fill" />
+
+      <!-- 3) Action buttons -->
+      <HorizontalStackLayout
+        Grid.Row="2"
+        Spacing="12"
+        HorizontalOptions="Center">
+
+        <!-- Back: light gray -->
+        <Button
+          Text="◀️ Back"
+          Command="{Binding BackCommand}"
+          BackgroundColor="#EEEEEE"
+          TextColor="Black"
+          CornerRadius="6"
+          WidthRequest="130"
+          HeightRequest="44" />
+
+        <!-- Delete: red tint -->
+        <Button
+          Text="🗑️ Delete"
+          Command="{Binding DeleteFileCommand}"
+          BackgroundColor="#FFDDDD"
+          TextColor="Red"
+          CornerRadius="6"
+          WidthRequest="130"
+          HeightRequest="44" />
+
+        <!-- Copy: green tint -->
+        <Button
+          Text="📋 Copy"
+          Command="{Binding CopyContentCommand}"
+          BackgroundColor="#DDFFDD"
+          TextColor="Green"
+          CornerRadius="6"
+          WidthRequest="130"
+          HeightRequest="44" />
+
+        <!-- Log Ticket: soft orange -->
+        <Button
+          Text="🎫 Log Ticket"
+          Command="{Binding LogTicketCommand}"
+          BackgroundColor="#FFF5DD"
+          TextColor="#FF8800"
+          CornerRadius="6"
+          WidthRequest="130"
+          HeightRequest="44" />
+
+      </HorizontalStackLayout>
+    </Grid>
+
+    <!-- BOTTOM CLOCK BAR -->
+    <components:BottomClockBar Grid.Row="1" />
+
+  </Grid>
+</ContentPage>

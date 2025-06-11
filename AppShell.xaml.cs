@@ -21,6 +21,7 @@ public partial class AppShell : Shell
         // DBG
         Routing.RegisterRoute(nameof(DBGPage), typeof(DBGPage));
         Routing.RegisterRoute(nameof(LogFileViewerPage), typeof(LogFileViewerPage));
+        Routing.RegisterRoute(nameof(JsonDumpViewerPage), typeof(JsonDumpViewerPage));
     }
 
     private void OnToggleThemeClicked(object sender, EventArgs e)

@@ -72,14 +72,40 @@
 
         <!-- Row 2: IDs (read-only) -->
         <Entry
-            Grid.Row="2" Grid.Column="8" Grid.ColumnSpan="2"
+            Grid.Row="2" Grid.Column="8" Grid.ColumnSpan="1"
             Text="{Binding Client.DefaultTravelPolicyId}"
             IsReadOnly="True" />
 
+        <Button
+            Grid.Row="2" Grid.Column="9" Grid.ColumnSpan="1"
+            Text="View/Edit"
+            BackgroundColor="Transparent"
+            TextColor="{DynamicResource TextBrush}"
+            BorderColor="{AppThemeBinding Light=Gray, Dark=LightGray}"
+            BorderWidth="1"
+            CornerRadius="4"
+            HeightRequest="48"
+            HorizontalOptions="Fill"
+            VerticalOptions="Center"
+            Padding="12,0" />
+
         <Entry
-            Grid.Row="2" Grid.Column="10" Grid.ColumnSpan="2"
+            Grid.Row="2" Grid.Column="10" Grid.ColumnSpan="1"
             Text="{Binding Client.LicenseAgreementId}"
             IsReadOnly="True" />
+
+        <Button
+            Grid.Row="2" Grid.Column="11" Grid.ColumnSpan="1"
+            Text="View/Edit"
+            BackgroundColor="Transparent"
+            TextColor="{DynamicResource TextBrush}"
+            BorderColor="{AppThemeBinding Light=Gray, Dark=LightGray}"
+            BorderWidth="1"
+            CornerRadius="4"
+            HeightRequest="48"
+            HorizontalOptions="Fill"
+            VerticalOptions="Center"
+            Padding="12,0" />
 
         <!-- Row 3: Empty -->
         <BoxView Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="12" HeightRequest="8" />
@@ -320,7 +346,7 @@
 
         <Entry Grid.Row="22" Grid.Column="8" Grid.ColumnSpan="4"
             Style="{StaticResource PrimaryEntryStyle}"
-            Text="{Binding Client.BillingPersonJobTitle}"
+            Text="{Binding Client.BillingPersonPhone}"
             IsReadOnly="{Binding IsBillingPersonSameAsContact}"
             IsEnabled="{Binding IsEditable}" />
 

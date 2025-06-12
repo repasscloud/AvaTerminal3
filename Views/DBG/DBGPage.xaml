@@ -19,7 +19,7 @@
         <Entry
           Text="{Binding LogPath}"
           IsReadOnly="True"
-          BackgroundColor="LightGray"
+          BackgroundColor="#eeeeee"
           TextColor="{AppThemeBinding Light=Black, Dark=Black}"
           HeightRequest="44"
           HorizontalOptions="Fill" />
@@ -57,7 +57,7 @@
         <Entry
           Text="{Binding DumpPath}"
           IsReadOnly="True"
-          BackgroundColor="LightGray"
+          BackgroundColor="#eeeeee"
           TextColor="{AppThemeBinding Light=Black, Dark=Black}"
           HeightRequest="44"
           HorizontalOptions="Fill" />
@@ -105,7 +105,7 @@
             <Entry
               Text="{Binding ApiStatusText}"
               IsReadOnly="True"
-              BackgroundColor="LightGray"
+              BackgroundColor="#eeeeee"
               TextColor="{AppThemeBinding Light=Black, Dark=Black}"
               HeightRequest="44"
               HorizontalOptions="Fill" />
@@ -118,7 +118,7 @@
               FontSize="Medium" />
             <Entry
               Text="{Binding ApiVersionText}"
-              BackgroundColor="LightGray"
+              BackgroundColor="#eeeeee"
               TextColor="{AppThemeBinding Light=Black, Dark=Black}"
               HeightRequest="44"
               HorizontalOptions="Fill" />
@@ -135,12 +135,11 @@
           Text="Status Message"
           FontAttributes="Bold"
           FontSize="Medium" />
-        <Label
+        <Entry
           Text="{Binding StatusMessage}"
-          IsVisible="{Binding HasStatusMessage}"
+          IsReadOnly="True"
           BackgroundColor="#eeeeee"
           TextColor="{AppThemeBinding Light=Black, Dark=Black}"
-          Padding="8"
           HeightRequest="44"
           HorizontalOptions="Fill" />
       </VerticalStackLayout>
